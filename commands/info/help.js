@@ -9,24 +9,24 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 /* <--- Command ---> */
 
 module.exports = {
-  name: 'help',
-  aliases: ['h'],
-  category: 'info',
-  description: 'pomoc',
+    name: 'help',
+    aliases: ['h'],
+    category: 'info',
+    description: 'pomoc',
 
-  async run(client, msg, args, prefix) {
+    async run(client, msg, args, prefix) {
 
-    /* <--- command ---> */
+        /* <--- command ---> */
 
-    msg.react('✅');
-    msgAutoDelete(msg, 60);
+        msg.react('✅');
+        msgAutoDelete(msg, 60);
 
-    return msg.channel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color1)
-        .setThumbnail(config.icon)
-        .setTitle(`Hej, jestem ${config.name}!`)
-        .setDescription(`
+        return msg.channel.send({
+            embeds: [new MessageEmbed()
+                .setColor(config.color1)
+                .setThumbnail(config.icon)
+                .setTitle(`Hej, jestem ${config.name}!`)
+                .setDescription(`
 Zaawansowany, darmowy bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist, auto odtwarzania, zapętlania i dużo dużo więcej!
 
 ** ● Dostępne Komendy:** (31)
@@ -51,10 +51,10 @@ Pełne wytłumaczenie wszystkich komend znajduje się na stronie internetowej (l
 --->> [strona internetowa](${config.website}) <<---
 --->> [moje zaproszenie](${config.invite}) <<---
         `)
-        .setFooter(`Bot stworzony przez: ${config.author}`)
-        .setTimestamp()
-      ]
-    }).then(msg => msgAutoDelete(msg, 60));
+                .setFooter(`Bot stworzony przez: ${config.author}`)
+                .setTimestamp()
+            ]
+        }).then(msg => msgAutoDelete(msg, 60));
 
-  }
+    }
 };

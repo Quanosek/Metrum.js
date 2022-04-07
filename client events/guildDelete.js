@@ -11,17 +11,17 @@ const db = new Database()
 /* <--- Event ---> */
 
 module.exports = {
-  name: 'guildDelete',
+    name: 'guildDelete',
 
-  async execute(client, guild) {
+    async execute(client, guild) {
 
-    /* <--- delete log ---> */
+        /* <--- delete log ---> */
 
-    console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Guild: ${guild.name}, ${guild.id}\n>> Bot ` + clr.brightRed(`left`) + ` the server!`);
+        console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Guild: ${guild.name}, ${guild.id}\n>> Bot ` + clr.brightRed(`left`) + ` the server!`);
 
-    /* <--- db-prefix delete ---> */
+        /* <--- db-prefix delete ---> */
 
-    if (db.get(`prefix_${guild.id}`)) { await db.delete(`prefix_${guild.id}`) }
+        if (db.get(`prefix_${guild.id}`)) { await db.delete(`prefix_${guild.id}`) }
 
-  }
+    }
 };

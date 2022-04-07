@@ -20,9 +20,9 @@ Website();
 const { Client, Intents, Collection, MessageEmbed } = require('discord.js');
 const intents = new Intents(32767);
 const client = new Client({
-  shards: 'auto',
-  restTimeOffset: 0,
-  intents
+    shards: 'auto',
+    restTimeOffset: 0,
+    intents
 });
 
 
@@ -33,16 +33,16 @@ const { SoundCloudPlugin } = require('@distube/soundcloud')
 const { SpotifyPlugin } = require('@distube/spotify')
 
 client.distube = new DisTube.default(client, {
-  plugins: [new SoundCloudPlugin(), new SpotifyPlugin()],
-  emitNewSongOnly: true,
-  leaveOnStop: false,
-  updateYouTubeDL: false,
-  ytdlOptions: {
-    quality: "highestaudio",
-    format: "audioonly",
-  },
-  emptyCooldown: 10,
-  nsfw: true
+    plugins: [new SoundCloudPlugin(), new SpotifyPlugin()],
+    emitNewSongOnly: true,
+    leaveOnStop: false,
+    updateYouTubeDL: false,
+    ytdlOptions: {
+        quality: "highestaudio",
+        format: "audioonly",
+    },
+    emptyCooldown: 10,
+    nsfw: true
 });
 
 client.distube.setMaxListeners(99);
@@ -57,14 +57,14 @@ client.commands = new Collection();
 
 for (const folder of commandFolders) {
 
-  const commandFiles = fs
-    .readdirSync(`./commands/${folder}`)
-    .filter(file => file.endsWith('.js'));
+    const commandFiles = fs
+        .readdirSync(`./commands/${folder}`)
+        .filter(file => file.endsWith('.js'));
 
-  for (const file of commandFiles) {
-    const command = require(`./commands/${folder}/${file}`);
-    client.commands.set(command.name, command);
-  };
+    for (const file of commandFiles) {
+        const command = require(`./commands/${folder}/${file}`);
+        client.commands.set(command.name, command);
+    };
 };
 
 // client events
@@ -72,21 +72,21 @@ for (const folder of commandFolders) {
 client.events = new Collection();
 
 fs
-  .readdirSync('./client events/')
-  .filter(file => file.endsWith('.js'))
-  .forEach(file => {
-    const event = require(`./client events/${file}`);
-    client.on(event.name, (...args) => event.execute(client, ...args));
-  });
+    .readdirSync('./client events/')
+    .filter(file => file.endsWith('.js'))
+    .forEach(file => {
+        const event = require(`./client events/${file}`);
+        client.on(event.name, (...args) => event.execute(client, ...args));
+    });
 
 
 /* <--- Distube events ---> */
 
 client.distube
 
-  // addList
+// addList
 
-  .on('addList', (queue, playlist) => {
+    .on('addList', (queue, playlist) => {
 
     let songs;
     let rest = playlist.songs.length % 10;
@@ -96,112 +96,112 @@ client.distube
     else if (rest > 1 || rest < 5) songs = 'utwory'
 
     return queue.textChannel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color1)
-        .setTitle('➕ | Dodano do kolejki playlistę:')
-        .setDescription(`
+        embeds: [new MessageEmbed()
+            .setColor(config.color1)
+            .setTitle('➕ | Dodano do kolejki playlistę:')
+            .setDescription(`
 \`${playlist.name}\`
 \n**łącznie ${playlist.songs.length} ${songs}**!
         `)
-        .setThumbnail(playlist.thumbnail)
-        .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
-        .setTimestamp()
-      ]
+            .setThumbnail(playlist.thumbnail)
+            .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+            .setTimestamp()
+        ]
     });
 
-  })
+})
 
-  // addSong
+// addSong
 
-  .on('addSong', (queue, song) => {
+.on('addSong', (queue, song) => {
 
     if (queue.songs.length < 2) return;
 
     return queue.textChannel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color1)
-        .setTitle('➕ | Dodano do kolejki:')
-        .setDescription(`
+        embeds: [new MessageEmbed()
+            .setColor(config.color1)
+            .setTitle('➕ | Dodano do kolejki:')
+            .setDescription(`
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
         `)
-        .setThumbnail(song.thumbnail)
-        .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
-        .setTimestamp()
-      ]
+            .setThumbnail(song.thumbnail)
+            .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+            .setTimestamp()
+        ]
     });
 
-  })
+})
 
-  // error
+// error
 
-  .on('error', (channel, err) => {
+.on('error', (channel, err) => {
 
     return channel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color_err)
-        .setDescription(`${err}`)
-      ]
+        embeds: [new MessageEmbed()
+            .setColor(config.color_err)
+            .setDescription(`${err}`)
+        ]
     }).then(msg => msgAutoDelete(msg, 20));
 
-  })
+})
 
-  // initQueue
+// initQueue
 
-  .on('initQueue', (queue) => {
+.on('initQueue', (queue) => {
 
     queue.paused = false;
     queue.autoplay = false;
     queue.loop = 2;
     queue.volume = 100;
 
-  })
+})
 
-  // noRelated
+// noRelated
 
-  .on('noRelated', (queue) => {
+.on('noRelated', (queue) => {
 
     return queue.textChannel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color_err)
-        .setDescription('Nie znaleziono podobnych utworów.')
-      ]
+        embeds: [new MessageEmbed()
+            .setColor(config.color_err)
+            .setDescription('Nie znaleziono podobnych utworów.')
+        ]
     }).then(msg => msgAutoDelete(msg));
 
-  })
+})
 
-  // playSong
+// playSong
 
-  .on('playSong', (queue, song) => {
+.on('playSong', (queue, song) => {
 
     client.distube.setSelfDeaf
 
     return queue.textChannel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color2)
-        .setTitle('🎶 | Teraz odtwarzane:')
-        .setDescription(`
+        embeds: [new MessageEmbed()
+            .setColor(config.color2)
+            .setTitle('🎶 | Teraz odtwarzane:')
+            .setDescription(`
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
         `)
-        .setThumbnail(`${song.thumbnail}`)
-        .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
-        .setTimestamp()
-      ]
+            .setThumbnail(`${song.thumbnail}`)
+            .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+            .setTimestamp()
+        ]
     });
 
-  })
+})
 
-  // searchNoResult
+// searchNoResult
 
-  .on('searchNoResult', (msg, query) => {
+.on('searchNoResult', (msg, query) => {
 
     return msg.channel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color_err)
-        .setDescription(`Nie znaleziono utworów dla: \`${query}\``)
-      ]
+        embeds: [new MessageEmbed()
+            .setColor(config.color_err)
+            .setDescription(`Nie znaleziono utworów dla: \`${query}\``)
+        ]
     });
 
-  });
+});
 
 
 /* <--- Token ---> */

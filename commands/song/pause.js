@@ -9,86 +9,86 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 /* <--- Command ---> */
 
 module.exports = {
-  name: 'pause',
-  aliases: ['ps'],
-  category: 'song',
-  description: 'wstrzymanie/wznowienie odtwarzania utworu',
+    name: 'pause',
+    aliases: ['ps'],
+    category: 'song',
+    description: 'wstrzymanie/wznowienie odtwarzania utworu',
 
-  async run(client, msg, args, prefix) {
+    async run(client, msg, args, prefix) {
 
-    /* <--- errors ---> */
+        /* <--- errors ---> */
 
-    const queue = client.distube.getQueue(msg);
-    const botvoice = msg.guild.me.voice.channel;
-    const uservoice = msg.member.voice.channel;
+        const queue = client.distube.getQueue(msg);
+        const botvoice = msg.guild.me.voice.channel;
+        const uservoice = msg.member.voice.channel;
 
-    if (!botvoice) {
-      msg.react('❌');
-      msgAutoDelete(msg);
+        if (!botvoice) {
+            msg.react('❌');
+            msgAutoDelete(msg);
 
-      return msg.channel.send({
-        embeds: [new MessageEmbed()
-          .setColor(config.color_err)
-          .setDescription('Nie jestem na żadnym kanale głosowym!')
-        ]
-      }).then(msg => msgAutoDelete(msg));
-    };
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(config.color_err)
+                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                ]
+            }).then(msg => msgAutoDelete(msg));
+        };
 
-    if (!uservoice || botvoice != uservoice) {
-      msg.react('❌');
-      msgAutoDelete(msg);
+        if (!uservoice || botvoice != uservoice) {
+            msg.react('❌');
+            msgAutoDelete(msg);
 
-      return msg.channel.send({
-        embeds: [new MessageEmbed()
-          .setColor(config.color_err)
-          .setDescription('Musisz być na kanale głosowym razem ze mną!')
-        ]
-      }).then(msg => msgAutoDelete(msg));
-    };
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(config.color_err)
+                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
+                ]
+            }).then(msg => msgAutoDelete(msg));
+        };
 
-    if (!queue) {
-      msg.react('❌');
-      msgAutoDelete(msg);
+        if (!queue) {
+            msg.react('❌');
+            msgAutoDelete(msg);
 
-      return msg.channel.send({
-        embeds: [new MessageEmbed()
-          .setColor(config.color_err)
-          .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-        ]
-      }).then(msg => msgAutoDelete(msg));
-    };
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(config.color_err)
+                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
+                ]
+            }).then(msg => msgAutoDelete(msg));
+        };
 
-    /* <--- command ---> */
+        /* <--- command ---> */
 
-    // playing
+        // playing
 
-    if (queue.playing) {
-      msg.react('✅');
+        if (queue.playing) {
+            msg.react('✅');
 
-      client.distube.pause(msg);
+            client.distube.pause(msg);
 
-      return msg.channel.send({
-        embeds: [new MessageEmbed()
-          .setColor(config.color1)
-          .setDescription('⏸️ | Wstrzymano odtwarzanie.')
-        ]
-      });
-    };
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(config.color1)
+                    .setDescription('⏸️ | Wstrzymano odtwarzanie.')
+                ]
+            });
+        };
 
-    // paused
+        // paused
 
-    if (queue.paused) {
-      msg.react('✅');
+        if (queue.paused) {
+            msg.react('✅');
 
-      client.distube.resume(msg);
+            client.distube.resume(msg);
 
-      return msg.channel.send({
-        embeds: [new MessageEmbed()
-          .setColor(config.color1)
-          .setDescription('▶️ | Wznowiono odtwarzanie.')
-        ]
-      });
-    };
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(config.color1)
+                    .setDescription('▶️ | Wznowiono odtwarzanie.')
+                ]
+            });
+        };
 
-  }
+    }
 };

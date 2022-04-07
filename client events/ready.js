@@ -11,30 +11,30 @@ const realDate = require('../functions/realDate.js')
 /* <--- Event ---> */
 
 module.exports = {
-  name: 'ready',
+    name: 'ready',
 
-  execute(client) {
+    execute(client) {
 
-    /* <--- on-ready ---> */
+        /* <--- on-ready ---> */
 
-    console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Bot logged in successfully.\n`);
-    client.user.setActivity(`@${config.name}`, { type: 'LISTENING' });
+        console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Bot logged in successfully.\n`);
+        client.user.setActivity(`@${config.name}`, { type: 'LISTENING' });
 
-    /* <--- auto-leave voice channels ---> */
+        /* <--- auto-leave voice channels ---> */
 
-    const guildsID = client.guilds.cache.map(guild => guild.id);
+        const guildsID = client.guilds.cache.map(guild => guild.id);
 
-    setInterval(() => {
+        setInterval(() => {
 
-      guildsID.forEach(id => {
+            guildsID.forEach(id => {
 
-        const connection = getVoiceConnection(id)
-        const queue = client.distube.getQueue(id);
+                const connection = getVoiceConnection(id)
+                const queue = client.distube.getQueue(id);
 
-        if (connection && !queue) { connection.destroy() };
+                if (connection && !queue) { connection.destroy() };
 
-      })
-    }, ms('10min'));
+            })
+        }, ms('10min'));
 
-  }
+    }
 };

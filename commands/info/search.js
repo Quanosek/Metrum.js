@@ -9,49 +9,49 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 /* <--- Command ---> */
 
 module.exports = {
-  name: 'search',
-  aliases: ['sr', 'find', 'f'],
-  category: 'info',
-  description: 'wyszukiwanie utworów po podanym tytule',
+    name: 'search',
+    aliases: ['sr', 'find', 'f'],
+    category: 'info',
+    description: 'wyszukiwanie utworów po podanym tytule',
 
-  async run(client, msg, args, prefix) {
+    async run(client, msg, args, prefix) {
 
-    /* <--- errors ---> */
+        /* <--- errors ---> */
 
-    const name = args.join(' ');
+        const name = args.join(' ');
 
-    if (!name) {
-      msg.react('❌');
-      msgAutoDelete(msg);
+        if (!name) {
+            msg.react('❌');
+            msgAutoDelete(msg);
 
-      return msg.channel.send({
-        embeds: [new MessageEmbed()
-          .setColor(config.color_err)
-          .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
-        ]
-      }).then(msg => msgAutoDelete(msg));
-    };
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(config.color_err)
+                    .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
+                ]
+            }).then(msg => msgAutoDelete(msg));
+        };
 
-    /* <--- command ---> */
+        /* <--- command ---> */
 
-    msg.react('✅');
+        msg.react('✅');
 
-    let result = await client.distube.search(name);
-    let searchResult = '';
+        let result = await client.distube.search(name);
+        let searchResult = '';
 
-    for (let i = 0; i < 10; i++) {
-      searchResult += `**${i + 1}.** [${result[i].name}](${result[i].url}) - \`${result[i].formattedDuration}\`\n`
-    };
+        for (let i = 0; i < 10; i++) {
+            searchResult += `**${i + 1}.** [${result[i].name}](${result[i].url}) - \`${result[i].formattedDuration}\`\n`
+        };
 
-    return msg.channel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color1)
-        .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
-        .setDescription(searchResult)
-        .setFooter(`${prefix}play <nazwa/link>`)
-        .setTimestamp()
-      ]
-    });
+        return msg.channel.send({
+            embeds: [new MessageEmbed()
+                .setColor(config.color1)
+                .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
+                .setDescription(searchResult)
+                .setFooter(`${prefix}play <nazwa/link>`)
+                .setTimestamp()
+            ]
+        });
 
-  }
+    }
 };

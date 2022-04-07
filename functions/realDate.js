@@ -2,15 +2,19 @@
 
 function realDate() {
 
-  const date = new Date()
+    const date = new Date()
 
-  options = {
-    year: 'numeric', month: 'numeric', day: 'numeric',
-    hour: 'numeric', minute: 'numeric', second: 'numeric',
-    timeZone: 'Europe/Brussels',
-  };
+    options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        timeZone: 'Europe/Brussels',
+    };
 
-  return new Intl.DateTimeFormat('pl-PL', options).format(date);
+    return new Intl.DateTimeFormat('pl-PL', options).format(date);
 
 };
 

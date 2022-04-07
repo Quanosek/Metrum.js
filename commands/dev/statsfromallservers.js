@@ -9,46 +9,46 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js')
 /* <--- Command ---> */
 
 module.exports = {
-  name: 'statsfromallservers',
-  aliases: ['sfas'],
-  category: 'dev',
-  description: 'test',
+    name: 'statsfromallservers',
+    aliases: ['sfas'],
+    category: 'dev',
+    description: 'test',
 
-  async run(client, msg, args, prefix) {
+    async run(client, msg, args, prefix) {
 
-    /* <--- dev only ---> */
+        /* <--- dev only ---> */
 
-    const msgAuthor = msg.author.username + '#' + msg.author.discriminator;
+        const msgAuthor = msg.author.username + '#' + msg.author.discriminator;
 
-    if (!(msgAuthor === config.author)) {
-      msg.react('❌');
-      msgAutoDelete(msg);
+        if (!(msgAuthor === config.author)) {
+            msg.react('❌');
+            msgAutoDelete(msg);
 
-      return msg.channel.send({
-        embeds: [new MessageEmbed()
-          .setColor(config.color_err)
-          .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
-        ]
-      }).then(msg => msgAutoDelete(msg));
-    };
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(config.color_err)
+                    .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
+                ]
+            }).then(msg => msgAutoDelete(msg));
+        };
 
-    /* <--- command ---> */
+        /* <--- command ---> */
 
-    msg.react('✅');
-    msgAutoDelete(msg, 1);
+        msg.react('✅');
+        msgAutoDelete(msg, 1);
 
-    return msg.channel.send({
-      embeds: [new MessageEmbed()
-        .setColor(config.color1)
-        .setTitle(`**Lista wszystkich serwerów, na których jestem:**`)
-        .setDescription(client.guilds.cache.map(
-          (guild, number) =>
-            ` ● **${guild}**, ${number}`
-        )
-          .join('\n')
-        )
-      ]
-    }).then(msg => msgAutoDelete(msg, 30));
+        return msg.channel.send({
+            embeds: [new MessageEmbed()
+                .setColor(config.color1)
+                .setTitle(`**Lista wszystkich serwerów, na których jestem:**`)
+                .setDescription(client.guilds.cache.map(
+                        (guild, number) =>
+                        ` ● **${guild}**, ${number}`
+                    )
+                    .join('\n')
+                )
+            ]
+        }).then(msg => msgAutoDelete(msg, 30));
 
-  }
+    }
 };
