@@ -1,0 +1,67 @@
+{
+  
+  "metrum1": {
+    
+    "author": "Quanosek#5930",
+
+    "name": "Metrum",
+    "id": "890577647980146688",
+    "icon": "https://i.imgur.com/hbeDhiq.jpg",
+    "website": "https://bit.ly/metrumwebsite",
+    "invite": "https://bit.ly/invitemetrum",
+    
+    "prefix": "-",
+    "color_err": "DARK_RED",
+    "color1": "DARK_PURPLE",
+    "color2": "PURPLE"
+  },
+  
+  "metrum2": {
+    
+    "author": "Quanosek#5930",
+
+    "name": "Metrum 2",
+    "id": "901543092547637289",
+    "icon": "https://i.imgur.com/sa00i4A.jpg",
+    "website": "https://bit.ly/metrumwebsite",
+    "invite": "https://bit.ly/invitemetrum2",
+    
+    "prefix": "--",
+    "color_err": "DARK_RED",
+    "color1": "DARK_ORANGE",
+    "color2": "ORANGE"
+  },
+  
+  "metrum3": {
+    
+    "author": "Quanosek#5930",
+
+    "name": "Metrum 3",
+    "id": "901543130468323399",
+    "icon": "https://i.imgur.com/5QIyXGY.jpg",
+    "website": "https://bit.ly/metrumwebsite",
+    "invite": "https://bit.ly/invitemetrum3",
+    
+    "prefix": "---",
+    "color_err": "DARK_RED",
+    "color1": "DARK_GREEN",
+    "color2": "GREEN"
+  },
+  
+  "metrumdev": {
+    
+    "author": "Quanosek#5930",
+
+    "name": "Metrum (dev)",
+    "id": "919648854582906900",
+    "icon": "https://i.imgur.com/QHUOBdM.png",
+    "website": "https://bit.ly/metrumwebsite",
+    "invite": "https://bit.ly/invitemetrum",
+    
+    "prefix": "!",
+    "color_err": "DARK_RED",
+    "color1": "DARK_BLUE",
+    "color2": "BLUE"
+  }
+  
+}
