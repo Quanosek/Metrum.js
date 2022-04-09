@@ -15,7 +15,7 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 module.exports = {
     name: 'forceleave',
-    aliases: ['fl', 'leave', 'l', 'disconnect'],
+    aliases: ['fl', 'leave', 'disconnect', 'dc'],
     category: 'moderation',
     description: 'wymuszenie wyjścia z kanału głosowego',
 

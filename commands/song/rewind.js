@@ -116,7 +116,7 @@ module.exports = {
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color1)
-                    .setDescription(`⏪ | Przewinięto utwór o \`${fixedNumber}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
+                    .setDescription(`⏪ | Przewinięto utwór o \`${number}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
                 ]
             });
 
@@ -133,7 +133,7 @@ module.exports = {
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color1)
-                    .setDescription(`⏩ | Przewinięto utwór o \`${number}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
+                    .setDescription(`⏩ | Przewinięto utwór o \`${fixedNumber}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
                 ]
             });
 

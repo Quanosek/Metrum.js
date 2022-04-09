@@ -75,7 +75,7 @@ module.exports = {
                 .setColor(color1)
                 .setTitle('➕ | Dodano do kolejki podobny utwór do:')
                 .setDescription(`\`${song.name}\`.`)
-                .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+                .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
                 .setTimestamp()
             ]
         });

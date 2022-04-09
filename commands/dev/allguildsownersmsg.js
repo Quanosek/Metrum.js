@@ -49,7 +49,7 @@ module.exports = {
                         .setDescription(`
 Wiadomość do właścicieli serwerów.
         `)
-                        .setFooter(`Bot stworzony przez: ${process.env.AUTHOR}`)
+                        .setFooter({ text: `Bot stworzony przez: ${process.env.AUTHOR}` })
                         .setTimestamp()
                     ]
 

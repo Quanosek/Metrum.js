@@ -53,7 +53,7 @@ module.exports = {
                 .setColor(color1)
                 .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
                 .setDescription(searchResult)
-                .setFooter(`${prefix}play <nazwa/link>`)
+                .setFooter({ text: `${prefix}play <nazwa/link>` })
                 .setTimestamp()
             ]
         });

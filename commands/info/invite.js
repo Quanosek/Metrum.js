@@ -27,7 +27,7 @@ module.exports = {
                 .setColor(process.env.COLOR1)
                 .setTitle('📧 | Zaproś mnie na swój serwer!')
                 .setDescription(`[Kliknij tutaj!](${process.env.INVITE})`)
-                .setFooter(`Bot stworzony przez: ${process.env.AUTHOR}`)
+                .setFooter({ text: `Bot stworzony przez: ${process.env.AUTHOR}` })
                 .setTimestamp()
             ]
         }).then(msg => msgAutoDelete(msg));

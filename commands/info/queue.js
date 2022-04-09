@@ -67,13 +67,13 @@ module.exports = {
 
         if (queue.songs.length < 2) {
             embed
-                .setFooter(`${prefix}nowplaying wyświetla więcej szczegółów`)
+                .setFooter({ text: `${prefix}nowplaying wyświetla więcej szczegółów` })
                 .setTimestamp()
         };
 
         if (queue.songs.length > 1) {
             embed
-                .setFooter(`Łącza długość kolejki - ${queue.formattedDuration}`)
+                .setFooter({ text: `Łącza długość kolejki - ${queue.formattedDuration}` })
                 .setTimestamp()
         };
 

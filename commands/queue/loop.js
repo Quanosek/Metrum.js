@@ -14,7 +14,7 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 module.exports = {
     name: 'loop',
-    aliases: ['lp', 'repeat', 'rp'],
+    aliases: ['l', 'repeat', 'rp'],
     category: 'queue',
     description: 'przełączanie zapętlenia: utworu/kolejki/wyłączone',
 

@@ -103,7 +103,7 @@ client.distube
 \n**łącznie ${playlist.songs.length} ${songs}**!
         `)
             .setThumbnail(playlist.thumbnail)
-            .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
             .setTimestamp()
         ]
     });
@@ -124,25 +124,13 @@ client.distube
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
         `)
             .setThumbnail(song.thumbnail)
-            .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
             .setTimestamp()
         ]
     });
 
 })
 
-// error
-
-.on('error', (channel, err) => {
-
-    return channel.send({
-        embeds: [new MessageEmbed()
-            .setColor(color_err)
-            .setDescription(`${err}`)
-        ]
-    }).then(msg => msgAutoDelete(msg, 20));
-
-})
 
 // initQueue
 
@@ -182,7 +170,7 @@ client.distube
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
         `)
             .setThumbnail(`${song.thumbnail}`)
-            .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
             .setTimestamp()
         ]
     });

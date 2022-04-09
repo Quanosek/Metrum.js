@@ -60,7 +60,7 @@ module.exports = {
             .setColor(color1)
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
-            .setFooter(`${prefix}queue wyświetla obecną kolejkę`)
+            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
             .setTimestamp()
 
         embed.addFields({ name: 'Tytuł:', value: `[${song.name}](${song.url})` }, { name: 'Autor:', value: `[${song.uploader.name}](${song.uploader.url})` }, )

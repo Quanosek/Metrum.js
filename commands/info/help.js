@@ -46,13 +46,13 @@ Pełne wytłumaczenie wszystkich komend znajduje się na stronie internetowej (l
 \`add\`, \`clear\`, \`forceleave\`, \`forceplay\`, \`forceskip\`, \`jump\`, \`move\`, \`remove\`
 
 ** - Administracja:** (3)
-\`prefix\`, \`reload\`, \`stop\`
+\`reload\`, \`stop\`
 
 ** ● Linki:**
 --->> [strona internetowa](${process.env.WEBSITE}) <<---
 --->> [zaproś mnie](${process.env.INVITE}) <<---
         `)
-                .setFooter(`Bot stworzony przez: ${process.env.AUTHOR}`)
+                .setFooter({ text: `Bot stworzony przez: ${process.env.AUTHOR}` })
                 .setTimestamp()
             ]
         }).then(msg => msgAutoDelete(msg, 60));
