@@ -1,6 +1,7 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../../functions/msgAutoDelete.js')
@@ -14,7 +15,7 @@ module.exports = {
     category: 'dev',
     description: 'test',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- dev only ---> */
 

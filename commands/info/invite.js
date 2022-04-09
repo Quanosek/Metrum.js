@@ -1,6 +1,7 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
@@ -14,7 +15,7 @@ module.exports = {
     category: 'info',
     description: 'zaproszenia',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- command ---> */
 
@@ -25,9 +26,7 @@ module.exports = {
             embeds: [new MessageEmbed()
                 .setColor(process.env.COLOR1)
                 .setTitle('📧 | Zaproś mnie na swój serwer!')
-                .setDescription(`
-[Metrum](${process.env.INVITE}) | [Metrum 2]() | [Metrum 3]()
-        `)
+                .setDescription(`[Kliknij tutaj!](${process.env.INVITE})`)
                 .setFooter(`Bot stworzony przez: ${process.env.AUTHOR}`)
                 .setTimestamp()
             ]

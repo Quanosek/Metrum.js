@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { MessageEmbed } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 
@@ -15,7 +19,7 @@ module.exports = {
     category: 'song',
     description: 'odtwarzanie muzyki (obsługuje: wyszukiwanie haseł, oraz linki YouTube, Spotify, SoundCloud)',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- errors ---> */
 
@@ -29,7 +33,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -41,7 +45,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`Jesteś na kanale AFK!`)
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -59,7 +63,7 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(process.env.COLOR_ERR)
+                        .setColor(color_err)
                         .setDescription('Musisz być na kanale głosowym razem ze mną!')
                     ]
                 }).then(msg => msgAutoDelete(msg));
@@ -75,7 +79,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`
 Musisz jeszcze wpisać **nazwę** utworu
 albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
@@ -91,7 +95,7 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`)
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -103,7 +107,7 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`)
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -122,14 +126,18 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR1)
+                    .setColor(color1)
                     .setDescription(`🔍 | Szukam: \`${name}\`, może to chwilę zająć...`)
                 ]
             });
 
         };
 
-        return client.distube.play(msg, name);
+        return client.distube.play(msg.member.voice.channel, args.join(/ +/), {
+            msg,
+            textChannel: msg.channel,
+            member: msg.member,
+        })
 
     }
 };

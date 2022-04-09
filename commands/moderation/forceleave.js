@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { Permissions, MessageEmbed } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 
@@ -15,7 +19,7 @@ module.exports = {
     category: 'moderation',
     description: 'wymuszenie wyjścia z kanału głosowego',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- moderation ---> */
 
@@ -27,7 +31,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -44,7 +48,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -56,7 +60,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -72,7 +76,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(process.env.COLOR2)
+                .setColor(color2)
                 .setDescription('🚪 | Wyszedłem z kanału głosowego!')
             ]
         }).then(msg => msgAutoDelete(msg));

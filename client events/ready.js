@@ -1,6 +1,5 @@
 /* <--- Import ---> */
 
-require('dotenv').config();
 const ms = require('ms');
 const clr = require('colors');
 const { getVoiceConnection } = require('@discordjs/voice');

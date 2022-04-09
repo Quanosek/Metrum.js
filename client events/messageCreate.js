@@ -1,4 +1,10 @@
+/* <--- Import ---> */
+
 require('dotenv').config();
+const prefix = process.env.PREFIX;
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../functions/msgAutoDelete.js')
@@ -16,11 +22,6 @@ module.exports = {
 
         if (!msg.channel.permissionsFor(msg.guild.me).has('SEND_MESSAGES')) return;
 
-        // let customPrefix = await db.get(`prefix_${msg.guild.id}`)
-        // if (customPrefix) { prefix = customPrefix } else { prefix = process.env.PREFIX };
-
-        let prefix = process.env.PREFIX;
-
         const mentionRegex = new RegExp(`^<@!?(${client.user.id})>( |)$`, 'gi');
 
         if (msg.content.match(mentionRegex)) {
@@ -30,11 +31,11 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR1)
+                    .setColor(color1)
                     .setThumbnail(process.env.ICON)
                     .setTitle(`Mój prefix to : \`${prefix}\``)
                     .setDescription(`
-Jestem **${config.name}**, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
+Jestem Metrum, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
 
 Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub odwiedź moją [stronę internetową](${process.env.WEBSITE})!
           `)
@@ -67,7 +68,7 @@ Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub o
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`
 **Nie mam uprawnień** do zarządzania wiadomościami na tym kanale! Skontaktuj się z administracją serwera.
           `)
@@ -77,12 +78,12 @@ Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub o
         };
 
 
-        command.run(client, msg, args, prefix)
+        command.run(client, msg, args)
             .catch(err => {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(process.env.COLOR_ERR)
+                        .setColor(color_err)
                         .setDescription(`${err}`)
                     ]
                 }).then(msg => msgAutoDelete(msg, 20));

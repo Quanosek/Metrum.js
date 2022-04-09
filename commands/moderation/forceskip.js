@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { Permissions, MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
@@ -14,7 +18,7 @@ module.exports = {
     category: 'moderation',
     description: 'wymuszenie pominięcia utworu',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- moderation ---> */
 
@@ -26,7 +30,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -44,7 +48,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -56,7 +60,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -68,7 +72,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -86,7 +90,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(process.env.COLOR1)
+                .setColor(color1)
                 .setDescription('⏭️ | Pominięto utwór.')
             ]
         });

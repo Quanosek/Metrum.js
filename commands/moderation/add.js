@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { Permissions, MessageEmbed } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 
@@ -15,7 +19,7 @@ module.exports = {
     category: 'moderation',
     description: 'dodanie podanego utworu **jako kolejny** w kolejce',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- moderation ---> */
 
@@ -27,7 +31,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -45,7 +49,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -57,7 +61,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`Jesteś na kanale AFK!`)
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -75,7 +79,7 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(process.env.COLOR_ERR)
+                        .setColor(color_err)
                         .setDescription('Musisz być na kanale głosowym razem ze mną!')
                     ]
                 }).then(msg => msgAutoDelete(msg));
@@ -91,7 +95,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`
 Musisz jeszcze wpisać **nazwę** utworu
 albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
@@ -113,7 +117,7 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR1)
+                    .setColor(color1)
                     .setDescription(`🔍 | Szukam: \`${name}\`, może to chwilę zająć...`)
                 ]
             });

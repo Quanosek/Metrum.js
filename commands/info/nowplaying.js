@@ -1,6 +1,11 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const prefix = process.env.PREFIX;
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
@@ -14,7 +19,7 @@ module.exports = {
     category: 'info',
     description: 'informacje o odtwarzanym utworze',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- errors ---> */
 
@@ -27,7 +32,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -39,7 +44,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -52,7 +57,7 @@ module.exports = {
         const song = queue.songs[0];
 
         const embed = new MessageEmbed()
-            .setColor(process.env.COLOR1)
+            .setColor(color1)
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
             .setFooter(`${prefix}queue wyświetla obecną kolejkę`)

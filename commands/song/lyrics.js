@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 
@@ -15,7 +19,7 @@ module.exports = {
     category: 'song',
     description: 'wyświetlenie tekstu do odtwarzanego utworu',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- errors ---> */
 
@@ -29,7 +33,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -41,7 +45,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -53,7 +57,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -83,7 +87,7 @@ module.exports = {
                 const isFirst = index === 0;
 
                 return new MessageEmbed()
-                    .setColor(config.color1)
+                    .setColor(color1)
                     .setTitle(isFirst ? `${data.title} - ${data.author}` : '')
                     .setURL(isFirst ? `${data.links.genius}` : '')
                     .setThumbnail(isFirst ? `${data.thumbnail.genius}` : '')
@@ -102,7 +106,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Nie znaleziono tekstu dla tego utworu!')
                 ]
             }).then(msg => msgAutoDelete(msg));

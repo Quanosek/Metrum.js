@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { Permissions, MessageEmbed } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 
@@ -15,7 +19,7 @@ module.exports = {
     category: 'admin',
     description: 'zatrzymanie awaryjne bota',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- admin ---> */
 
@@ -25,7 +29,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -42,7 +46,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -60,7 +64,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(process.env.COLOR1)
+                .setColor(color1)
                 .setDescription('✋ | Zatrzymano awaryjnie bota.')
             ]
         }).then(msg => msgAutoDelete(msg));

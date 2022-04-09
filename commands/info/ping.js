@@ -13,7 +13,7 @@ module.exports = {
     category: 'info',
     description: 'ping',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- command ---> */
 

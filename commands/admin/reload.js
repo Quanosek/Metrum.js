@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const glob = require('glob');
 const clr = require('colors');
 const { Permissions, MessageEmbed } = require('discord.js');
@@ -17,7 +21,7 @@ module.exports = {
     category: 'admin',
     description: 'odświeżenie wszystkich komend bota (globalnie)',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- admin ---> */
 
@@ -27,7 +31,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(color_err)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -55,7 +59,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(config.color1)
+                .setColor(color1)
                 .setDescription('🔃 | Odświeżono wszystkie moje komendy (globalnie).')
             ]
         }).then(msg => msgAutoDelete(msg));

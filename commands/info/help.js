@@ -1,6 +1,7 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
@@ -14,7 +15,7 @@ module.exports = {
     category: 'info',
     description: 'pomoc',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- command ---> */
 
@@ -49,7 +50,7 @@ Pełne wytłumaczenie wszystkich komend znajduje się na stronie internetowej (l
 
 ** ● Linki:**
 --->> [strona internetowa](${process.env.WEBSITE}) <<---
---->> [moje zaproszenie](${process.env.INVITE}) <<---
+--->> [zaproś mnie](${process.env.INVITE}) <<---
         `)
                 .setFooter(`Bot stworzony przez: ${process.env.AUTHOR}`)
                 .setTimestamp()

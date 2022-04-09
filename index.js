@@ -1,6 +1,11 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const prefix = process.env.PREFIX;
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const fs = require('fs');
 const clr = require('colors');
 
@@ -26,21 +31,17 @@ const client = new Client({
 
 /* <--- Distube ---> */
 
-const DisTube = require('distube')
-const { SoundCloudPlugin } = require('@distube/soundcloud')
-const { SpotifyPlugin } = require('@distube/spotify')
+const { DisTube } = require('distube');
+const { YtDlpPlugin } = require("@distube/yt-dlp");
+const { SoundCloudPlugin } = require('@distube/soundcloud');
+const { SpotifyPlugin } = require('@distube/spotify');
 
-client.distube = new DisTube.default(client, {
-    plugins: [new SoundCloudPlugin(), new SpotifyPlugin()],
+client.distube = new DisTube(client, {
+    youtubeDL: false,
+    plugins: [new YtDlpPlugin(), new SoundCloudPlugin(), new SpotifyPlugin()],
     emitNewSongOnly: true,
     leaveOnStop: false,
-    updateYouTubeDL: false,
-    ytdlOptions: {
-        quality: "highestaudio",
-        format: "audioonly",
-    },
-    emptyCooldown: 10,
-    nsfw: true
+    nsfw: true,
 });
 
 client.distube.setMaxListeners(99);
@@ -95,7 +96,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(process.env.CLOR1)
+            .setColor(color1)
             .setTitle('➕ | Dodano do kolejki playlistę:')
             .setDescription(`
 \`${playlist.name}\`
@@ -117,7 +118,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(process.env.COLOR1)
+            .setColor(color1)
             .setTitle('➕ | Dodano do kolejki:')
             .setDescription(`
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
@@ -136,7 +137,7 @@ client.distube
 
     return channel.send({
         embeds: [new MessageEmbed()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(color_err)
             .setDescription(`${err}`)
         ]
     }).then(msg => msgAutoDelete(msg, 20));
@@ -160,7 +161,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(color_err)
             .setDescription('Nie znaleziono podobnych utworów.')
         ]
     }).then(msg => msgAutoDelete(msg));
@@ -175,7 +176,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(process.env.COLOR2)
+            .setColor(color2)
             .setTitle('🎶 | Teraz odtwarzane:')
             .setDescription(`
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
@@ -194,7 +195,7 @@ client.distube
 
     return msg.channel.send({
         embeds: [new MessageEmbed()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(color_err)
             .setDescription(`Nie znaleziono utworów dla: \`${query}\``)
         ]
     });

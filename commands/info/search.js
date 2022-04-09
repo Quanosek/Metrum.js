@@ -1,6 +1,11 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const prefix = process.env.PREFIX;
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
@@ -14,7 +19,7 @@ module.exports = {
     category: 'info',
     description: 'wyszukiwanie utworów po podanym tytule',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- errors ---> */
 
@@ -26,7 +31,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -45,7 +50,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(process.env.COLOR1)
+                .setColor(color1)
                 .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
                 .setDescription(searchResult)
                 .setFooter(`${prefix}play <nazwa/link>`)

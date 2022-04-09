@@ -1,6 +1,10 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
+const color_err = process.env.COLOR_ERR;
+const color1 = process.env.COLOR1;
+const color2 = process.env.COLOR2;
+
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
@@ -16,7 +20,7 @@ module.exports = {
     category: 'queue',
     description: 'jednorazowe wymieszanie kolejki utworów (głosowanie)',
 
-    async run(client, msg, args, prefix) {
+    async run(client, msg, args) {
 
         /* <--- errors ---> */
 
@@ -30,7 +34,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -42,7 +46,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -54,7 +58,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany *żaden utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -82,7 +86,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR_ERR)
+                    .setColor(color_err)
                     .setDescription(`🗳️ | Już zagłosowałeś/aś!`)
                 ]
             }).then(msg => msgAutoDelete(msg, 5));
@@ -104,7 +108,7 @@ module.exports = {
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR2)
+                    .setColor(color2)
                     .setDescription(`🗳️ | Głosujesz za **wymieszaniem kolejki utworów** (**${shuffleVotes.length}**/${required} ${votes}).`)
                 ]
             });
@@ -127,7 +131,7 @@ module.exports = {
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR1)
+                    .setColor(color1)
                     .setDescription(`🔀 | Wymieszano kolejkę zawierającą **${queue.songs.length}** ${songs}.`)
                 ]
             });
