@@ -1,8 +1,8 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 
@@ -28,7 +28,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -40,7 +40,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -52,7 +52,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -64,7 +64,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Utwór jest już odtwarzany!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -79,7 +79,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color1)
+                    .setColor(process.env.COLOR1)
                     .setDescription('▶️ | Wznowiono odtwarzanie.')
                 ]
             });

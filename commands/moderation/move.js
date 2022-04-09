@@ -1,9 +1,8 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
-const axios = require('axios');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 
@@ -27,7 +26,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -45,7 +44,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -57,7 +56,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -69,7 +68,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -86,7 +85,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz jeszcze wpisać numer, który utwór z kolejki chcesz przesunąć!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -98,7 +97,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość (number utworu)!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -110,7 +109,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Nie można przesunąć obecnie granego utwóru! Wpisz wartość większą od 1.')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -127,7 +126,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz jeszcze wpisać pozycję w kolejce, na którą chcesz przesunąć wybrany utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -139,7 +138,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość (pozycja po przesunięciu)!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -151,7 +150,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Nie można przesunąć przed obecnie grany utwór! Wpisz wartość większą od 1.')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -163,7 +162,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Pozycja po przesunięciu nie może być taka sama jak obecna pozycja utowru w kolejce!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -178,7 +177,7 @@ module.exports = {
 
         msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(config.color2)
+                .setColor(process.env.COLOR2)
                 .setTitle('💿 | Zmodyfikowano kolejność kolejki:')
                 .setDescription(`
 ( **${numberOne + 1}. ==> ${numberTwo}.** ) [${song.name}](${song.url}) - \`${song.formattedDuration}\`

@@ -1,15 +1,13 @@
-/* <--- Import ---> */
+/*
 
+require('dotenv').config();
 const { Permissions, MessageEmbed } = require('discord.js');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 const Database = require('@replit/database')
 const db = new Database()
 
-
-/* <--- Command ---> */
 
 module.exports = {
     name: 'prefix',
@@ -19,7 +17,6 @@ module.exports = {
 
     async run(client, msg, args, prefix) {
 
-        /* <--- admin ---> */
 
         if (!msg.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
             msg.react('❌');
@@ -27,13 +24,12 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
         };
 
-        /* <--- change ---> */
 
         if (args[0] === 'change' || args[0] === 'ch') {
 
@@ -47,7 +43,7 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(config.color_err)
+                        .setColor(process.env.COLOR_ERR)
                         .setDescription('⚙️ | Musisz jeszcze wpisać nowy prefix!')
                     ]
                 }).then(msg => msgAutoDelete(msg));
@@ -59,7 +55,7 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(config.color_err)
+                        .setColor(process.env.COLOR_ERR)
                         .setDescription('⚙️ | Wybrany prefix jest zbyt długi!')
                     ]
                 }).then(msg => msgAutoDelete(msg));
@@ -71,7 +67,7 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(config.color_err)
+                        .setColor(process.env.COLOR_ERR)
                         .setDescription('⚙️ | W prefixie nie może być spacji!')
                     ]
                 }).then(msg => msgAutoDelete(msg));
@@ -86,13 +82,12 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color1)
+                    .setColor(process.env.COLOR1)
                     .setDescription(`⚙️ | Zmieniono prefix na: \`${newPrefix}\``)
                 ]
             }).then(msg => msgAutoDelete(msg, 15));
         };
 
-        /* <--- reset ---> */
 
         if (args[0] === 'reset' || args[0] === 'r') {
             msg.react('✅');
@@ -102,35 +97,36 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color1)
-                    .setDescription(`⚙️ | Przywrócono domyślny prefix: \`${config.prefix}\``)
+                    .setColor(process.env.COLOR1)
+                    .setDescription(`⚙️ | Przywrócono domyślny prefix: \`${process.env.PREFIX}\``)
                 ]
             }).then(msg => msgAutoDelete(msg, 15));
         };
 
-        /* <--- help ---> */
 
         msg.react('✅');
         msgAutoDelete(msg, 45);
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(config.color1)
+                .setColor(process.env.COLOR1)
                 .setTitle(`⚙️ | Menu zmiany prefixu`)
                 .setDescription(`
-Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia prefixu zawsze można wspomnieć bota, tzn. wpisać @${config.name}.
+Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia prefixu zawsze można wspomnieć bota, tzn. wpisać @Metrum.
 
 ** ● Komendy:**
 \`${prefix}prefix change <nowy prefix>\` - ustawia nowy prefix
-\`${prefix}prefix reset\` - przywraca domyślny prefix (\`${config.prefix}\`)
+\`${prefix}prefix reset\` - przywraca domyślny prefix (\`${process.env.PREFIX}\`)
 
 ** ● Informacje dodatkowe:**
-Wszystkie komendy obsługują również skróty np. zamiast pisać \`${config.prefix}prefix\`, równie dobrze możesz wpisać: \`${config.prefix}pf\` itp..
+Wszystkie komendy obsługują również skróty np. zamiast pisać \`${process.env.PREFIX}prefix\`, równie dobrze możesz wpisać: \`${process.env.PREFIX}pf\` itp..
           `)
-                .setFooter(`Bot stworzony przez: ${config.author}`)
+                .setFooter(`Bot stworzony przez: Quanosek`)
                 .setTimestamp()
             ]
         }).then(msg => msgAutoDelete(msg, 45));
 
     }
 };
+
+*/

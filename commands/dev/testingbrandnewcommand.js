@@ -1,8 +1,8 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js')
 const realDate = require('../../functions/realDate.js')
 
@@ -21,13 +21,13 @@ module.exports = {
 
         const msgAuthor = msg.author.username + '#' + msg.author.discriminator;
 
-        if (!(msgAuthor === config.author)) {
+        if (!(msgAuthor === process.env.AUTHOR)) {
             msg.react('❌');
             msgAutoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));

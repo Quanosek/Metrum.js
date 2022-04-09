@@ -1,9 +1,8 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
-const axios = require('axios');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 
@@ -27,7 +26,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -45,7 +44,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -57,7 +56,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -69,7 +68,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -84,7 +83,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz jeszcze wpisać numer, który utwór z koleji chcesz usunąć!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -96,7 +95,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -116,7 +115,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color2)
+                    .setColor(process.env.COLOR2)
                     .setDescription('🗑️ | Usunięto **obecnie odtwarzany** utwór z kolejki.')
                 ]
             });
@@ -130,7 +129,7 @@ module.exports = {
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color2)
+                    .setColor(process.env.COLOR2)
                     .setTitle('🗑️ | Usunięto z kolejki utworów pozycję:')
                     .setDescription(`
 **${number + 1}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\`

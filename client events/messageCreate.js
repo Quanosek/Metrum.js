@@ -1,15 +1,13 @@
-/* <--- Import ---> */
+/*
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
 
-const config = require('../bot/config.js').config();
 const msgAutoDelete = require('../functions/msgAutoDelete.js')
 
 const Database = require('@replit/database')
 const db = new Database()
 
-
-/* <--- Event ---> */
 
 module.exports = {
     name: 'messageCreate',
@@ -20,13 +18,11 @@ module.exports = {
 
         if (!msg.channel.permissionsFor(msg.guild.me).has('SEND_MESSAGES')) return;
 
-        /* <--- change prefix ---> */
 
         let customPrefix = await db.get(`prefix_${msg.guild.id}`)
 
-        if (customPrefix) { prefix = customPrefix } else { prefix = config.prefix };
+        if (customPrefix) { prefix = customPrefix } else { prefix = process.env.PREFIX };
 
-        /* <--- on mention reply ---> */
 
         const mentionRegex = new RegExp(`^<@!?(${client.user.id})>( |)$`, 'gi');
 
@@ -37,19 +33,18 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color1)
-                    .setThumbnail(config.icon)
+                    .setColor(process.env.COLOR1)
+                    .setThumbnail(process.env.ICON)
                     .setTitle(`Mój prefix to : \`${prefix}\``)
                     .setDescription(`
 Jestem **${config.name}**, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
 
-Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub odwiedź moją [stronę internetową](${config.website})!
+Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub odwiedź moją [stronę internetową](${process.env.WEBSITE})!
           `)
                 ]
             }).then(msg => msgAutoDelete(msg, 20));
         };
 
-        /* <--- command-build ---> */
 
         msg.content = msg.content.toLowerCase();
 
@@ -68,7 +63,6 @@ Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub o
 
         if (!command) return;
 
-        /* <--- no-permission ---> */
 
         if (!msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES')) {
 
@@ -76,7 +70,7 @@ Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub o
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription(`
 **Nie mam uprawnień** do zarządzania wiadomościami na tym kanale! Skontaktuj się z administracją serwera.
           `)
@@ -85,14 +79,13 @@ Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub o
 
         };
 
-        /* <--- command-run ---> */
 
         command.run(client, msg, args, prefix)
             .catch(err => {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(config.color_err)
+                        .setColor(process.env.COLOR_ERR)
                         .setDescription(`${err}`)
                     ]
                 }).then(msg => msgAutoDelete(msg, 20));
@@ -101,3 +94,5 @@ Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub o
 
     }
 };
+
+*/

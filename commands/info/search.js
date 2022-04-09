@@ -1,8 +1,8 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 
@@ -26,7 +26,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -45,7 +45,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(config.color1)
+                .setColor(process.env.COLOR1)
                 .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
                 .setDescription(searchResult)
                 .setFooter(`${prefix}play <nazwa/link>`)

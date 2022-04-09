@@ -1,18 +1,16 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const fs = require('fs');
 const clr = require('colors');
 
-const config = require('./bot/config.js').config();
-const Website = require('./functions/website.js');
 const msgAutoDelete = require('./functions/msgAutoDelete.js')
 const realDate = require('./functions/realDate.js')
 
 
 /* <--- Start ---> */
 
-console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` ${config.name} starting up...`);
-Website();
+console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Metrum starting up...`);
 
 
 /* <--- Client ---> */
@@ -97,7 +95,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(config.color1)
+            .setColor(process.env.CLOR1)
             .setTitle('➕ | Dodano do kolejki playlistę:')
             .setDescription(`
 \`${playlist.name}\`
@@ -119,7 +117,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(config.color1)
+            .setColor(process.env.COLOR1)
             .setTitle('➕ | Dodano do kolejki:')
             .setDescription(`
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
@@ -138,7 +136,7 @@ client.distube
 
     return channel.send({
         embeds: [new MessageEmbed()
-            .setColor(config.color_err)
+            .setColor(process.env.COLOR_ERR)
             .setDescription(`${err}`)
         ]
     }).then(msg => msgAutoDelete(msg, 20));
@@ -162,7 +160,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(config.color_err)
+            .setColor(process.env.COLOR_ERR)
             .setDescription('Nie znaleziono podobnych utworów.')
         ]
     }).then(msg => msgAutoDelete(msg));
@@ -177,7 +175,7 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(config.color2)
+            .setColor(process.env.COLOR2)
             .setTitle('🎶 | Teraz odtwarzane:')
             .setDescription(`
 [${song.name}](${song.url}) - \`${song.formattedDuration}\`
@@ -196,7 +194,7 @@ client.distube
 
     return msg.channel.send({
         embeds: [new MessageEmbed()
-            .setColor(config.color_err)
+            .setColor(process.env.COLOR_ERR)
             .setDescription(`Nie znaleziono utworów dla: \`${query}\``)
         ]
     });
@@ -206,4 +204,4 @@ client.distube
 
 /* <--- Token ---> */
 
-client.login(process.env['TOKEN']);
+client.login(process.env.TOKEN);

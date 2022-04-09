@@ -1,9 +1,8 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
 
-const config = require('../../bot/config.js').config();
-const settings = require('../../bot/settings.json')
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 
@@ -24,12 +23,12 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(config.color1)
+                .setColor(process.env.COLOR1)
                 .setTitle('📧 | Zaproś mnie na swój serwer!')
                 .setDescription(`
-[Metrum](${settings.metrum1.invite}) | [Metrum 2](${settings.metrum2.invite}) | [Metrum 3](${settings.metrum3.invite})
+[Metrum](${process.env.INVITE}) | [Metrum 2]() | [Metrum 3]()
         `)
-                .setFooter(`Bot stworzony przez: ${config.author}`)
+                .setFooter(`Bot stworzony przez: ${process.env.AUTHOR}`)
                 .setTimestamp()
             ]
         }).then(msg => msgAutoDelete(msg));

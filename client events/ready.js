@@ -1,10 +1,10 @@
 /* <--- Import ---> */
 
-const { getVoiceConnection } = require('@discordjs/voice');
+require('dotenv').config();
 const ms = require('ms');
 const clr = require('colors');
+const { getVoiceConnection } = require('@discordjs/voice');
 
-const config = require('../bot/config.js').config();
 const realDate = require('../functions/realDate.js')
 
 
@@ -18,7 +18,7 @@ module.exports = {
         /* <--- on-ready ---> */
 
         console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Bot logged in successfully.\n`);
-        client.user.setActivity(`@${config.name}`, { type: 'LISTENING' });
+        client.user.setActivity(`@Metrum`, { type: 'LISTENING' });
 
         /* <--- auto-leave voice channels ---> */
 

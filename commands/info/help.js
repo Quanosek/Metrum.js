@@ -1,8 +1,8 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 
@@ -23,9 +23,9 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(config.color1)
-                .setThumbnail(config.icon)
-                .setTitle(`Hej, jestem ${config.name}!`)
+                .setColor(process.env.COLOR1)
+                .setThumbnail(process.env.ICON)
+                .setTitle(`Hej, jestem Metrum!`)
                 .setDescription(`
 Zaawansowany, darmowy bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist, auto odtwarzania, zapętlania i dużo dużo więcej!
 
@@ -48,10 +48,10 @@ Pełne wytłumaczenie wszystkich komend znajduje się na stronie internetowej (l
 \`prefix\`, \`reload\`, \`stop\`
 
 ** ● Linki:**
---->> [strona internetowa](${config.website}) <<---
---->> [moje zaproszenie](${config.invite}) <<---
+--->> [strona internetowa](${process.env.WEBSITE}) <<---
+--->> [moje zaproszenie](${process.env.INVITE}) <<---
         `)
-                .setFooter(`Bot stworzony przez: ${config.author}`)
+                .setFooter(`Bot stworzony przez: ${process.env.AUTHOR}`)
                 .setTimestamp()
             ]
         }).then(msg => msgAutoDelete(msg, 60));

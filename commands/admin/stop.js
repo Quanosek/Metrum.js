@@ -1,9 +1,9 @@
 /* <--- Import ---> */
 
+require('dotenv').config();
 const { Permissions, MessageEmbed } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 
 
@@ -25,7 +25,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -42,7 +42,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color_err)
+                    .setColor(process.env.COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
             }).then(msg => msgAutoDelete(msg));
@@ -60,7 +60,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(config.color1)
+                .setColor(process.env.COLOR1)
                 .setDescription('✋ | Zatrzymano awaryjnie bota.')
             ]
         }).then(msg => msgAutoDelete(msg));

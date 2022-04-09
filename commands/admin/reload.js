@@ -1,10 +1,10 @@
 /* <--- Import ---> */
 
-const { Permissions, MessageEmbed } = require('discord.js');
+require('dotenv').config();
 const glob = require('glob');
 const clr = require('colors');
+const { Permissions, MessageEmbed } = require('discord.js');
 
-const config = require('../../bot/config.js').config();
 const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 const realDate = require('../../functions/realDate.js')
 

@@ -1,9 +1,9 @@
 /* <--- Import ---> */
 
-const { MessageEmbed } = require('discord.js');
+require('dotenv').config();
 const clr = require('colors');
+const { MessageEmbed } = require('discord.js');
 
-const config = require('../bot/config.js').config();
 const realDate = require('../functions/realDate.js')
 
 
@@ -33,15 +33,15 @@ module.exports = {
 
             return channelToSend.send({
                 embeds: [new MessageEmbed()
-                    .setColor(config.color1)
-                    .setThumbnail(config.icon)
+                    .setColor(process.env.COLOR1)
+                    .setThumbnail(process.env.ICON)
                     .setTitle('😄 | Cieszę się, że tu jestem!')
                     .setDescription(`
-Dziękuję za dodanie mnie na serwer!!! Jestem **${config.name}**, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
+Dziękuję za dodanie mnie na serwer!!! Jestem Metrum, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
 
-Moim domyślnym prefixem jest: \`${config.prefix}\`
+Moim domyślnym prefixem jest: \`${process.env.PREFIX}\`
 
-Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${config.prefix}help\` lub odwiedź moją [stronę internetową](${config.website})!
+Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${process.env.PREFIX}help\` lub odwiedź moją [stronę internetową](${process.env.WEBSITE})!
         `)
                     .setTimestamp()
                 ]
