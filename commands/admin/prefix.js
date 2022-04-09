@@ -1,4 +1,5 @@
 /*
+
 require('dotenv').config();
 const { Permissions, MessageEmbed } = require('discord.js');
 
@@ -7,7 +8,6 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 const Database = require('@replit/database')
 const db = new Database()
 
-
 module.exports = {
     name: 'prefix',
     aliases: ['pref', 'pf', 'px'],
@@ -15,7 +15,6 @@ module.exports = {
     description: 'zmiana prefixu bota',
 
     async run(client, msg, args, prefix) {
-
 
         if (!msg.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
             msg.react('❌');
@@ -29,12 +28,9 @@ module.exports = {
             }).then(msg => msgAutoDelete(msg));
         };
 
-
         if (args[0] === 'change' || args[0] === 'ch') {
 
             const newPrefix = args[1]
-
-            // errors
 
             if (!newPrefix) {
                 msg.react('❌');
@@ -70,9 +66,7 @@ module.exports = {
                         .setDescription('⚙️ | W prefixie nie może być spacji!')
                     ]
                 }).then(msg => msgAutoDelete(msg));
-            }
-
-            // command
+            };
 
             msg.react('✅');
             msgAutoDelete(msg, 15);
@@ -87,7 +81,6 @@ module.exports = {
             }).then(msg => msgAutoDelete(msg, 15));
         };
 
-
         if (args[0] === 'reset' || args[0] === 'r') {
             msg.react('✅');
             msgAutoDelete(msg, 15);
@@ -101,7 +94,6 @@ module.exports = {
                 ]
             }).then(msg => msgAutoDelete(msg, 15));
         };
-
 
         msg.react('✅');
         msgAutoDelete(msg, 45);
