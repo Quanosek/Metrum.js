@@ -1,12 +1,10 @@
-/*
-
 require('dotenv').config();
 const { MessageEmbed } = require('discord.js');
 
 const msgAutoDelete = require('../functions/msgAutoDelete.js')
 
-const Database = require('@replit/database')
-const db = new Database()
+// const Database = require('@replit/database')
+// const db = new Database()
 
 
 module.exports = {
@@ -18,11 +16,10 @@ module.exports = {
 
         if (!msg.channel.permissionsFor(msg.guild.me).has('SEND_MESSAGES')) return;
 
+        // let customPrefix = await db.get(`prefix_${msg.guild.id}`)
+        // if (customPrefix) { prefix = customPrefix } else { prefix = process.env.PREFIX };
 
-        let customPrefix = await db.get(`prefix_${msg.guild.id}`)
-
-        if (customPrefix) { prefix = customPrefix } else { prefix = process.env.PREFIX };
-
+        let prefix = process.env.PREFIX;
 
         const mentionRegex = new RegExp(`^<@!?(${client.user.id})>( |)$`, 'gi');
 
@@ -94,5 +91,3 @@ Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub o
 
     }
 };
-
-*/

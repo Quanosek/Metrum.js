@@ -1,5 +1,4 @@
 /*
-
 require('dotenv').config();
 const { Permissions, MessageEmbed } = require('discord.js');
 
