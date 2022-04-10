@@ -60,7 +60,7 @@ module.exports = {
         return msg.channel.send({
             embeds: [new MessageEmbed()
                 .setColor(color1)
-                .setDescription('🔃 | Odświeżono wszystkie moje komendy (globalnie).')
+                .setDescription('🔃 | Odświeżono wszystkie moje komendy globalnie.')
             ]
         }).then(msg => msgAutoDelete(msg));
 

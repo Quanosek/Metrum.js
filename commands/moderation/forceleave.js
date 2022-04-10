@@ -71,8 +71,7 @@ module.exports = {
         msg.react('✅');
         msgAutoDelete(msg);
 
-        const connection = getVoiceConnection(msg.guild.id)
-        connection.destroy();
+        client.distube.voices.get(msg).leave();
 
         return msg.channel.send({
             embeds: [new MessageEmbed()

@@ -54,8 +54,7 @@ module.exports = {
         if (botvoice) {
 
             if (botvoice.members.size === 1) {
-                const connection = getVoiceConnection(msg.guild.id)
-                connection.destroy();
+                client.distube.voices.get(msg).leave();
 
             } else if (queue && uservoice != botvoice) {
                 msg.react('❌');
@@ -133,7 +132,7 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
         };
 
-        return client.distube.play(msg.member.voice.channel, args.join(/ +/), {
+        return client.distube.play(uservoice, args.join(/ +/), {
             msg,
             textChannel: msg.channel,
             member: msg.member,
