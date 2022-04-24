@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR2 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** MOVE COMMAND */
 
 module.exports = {
     name: 'move',
@@ -20,20 +17,20 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -42,9 +39,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -53,13 +50,13 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        // numberOne
+        // WHAT
 
         if (!args[0]) args[0] = 0;
         let numberOne = Number(args[0]);
@@ -69,9 +66,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz jeszcze wpisać numer, który utwór z kolejki chcesz przesunąć!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -80,9 +77,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość (number utworu)!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -91,13 +88,13 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie można przesunąć obecnie granego utwóru! Wpisz wartość większą od 1.')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        // numberOne
+        // WHERE
 
         if (!args[1]) args[1] = 0;
         let numberTwo = Number(args[1]);
@@ -107,9 +104,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz jeszcze wpisać pozycję w kolejce, na którą chcesz przesunąć wybrany utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -118,9 +115,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość (pozycja po przesunięciu)!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -129,9 +126,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie można przesunąć przed obecnie grany utwór! Wpisz wartość większą od 1.')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -140,29 +137,27 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Pozycja po przesunięciu nie może być taka sama jak obecna pozycja utowru w kolejce!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         numberOne = numberOne - 1;
-        let song = queue.songs[numberOne]
+        let song = queue.songs[numberOne];
 
         msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(color2)
+                .setColor(COLOR2)
                 .setTitle('💿 | Zmodyfikowano kolejność kolejki:')
-                .setDescription(`
-( **${numberOne + 1}. ==> ${numberTwo}.** ) [${song.name}](${song.url}) - \`${song.formattedDuration}\`
-          `)
-            ]
+                .setDescription(`( **${numberOne + 1}. ==> ${numberTwo}.** ) [${song.name}](${song.url}) - \`${song.formattedDuration}\``)
+            ],
         });
 
-        queue.songs.splice(numberOne, 1)
-        return queue.addToQueue(song, numberTwo - 1)
+        queue.songs.splice(numberOne, 1);
+        return queue.addToQueue(song, numberTwo - 1);
 
-    }
+    },
 };

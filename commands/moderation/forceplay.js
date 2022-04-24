@@ -1,17 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
-const { Permissions, MessageEmbed } = require('discord.js');
-const { getVoiceConnection } = require('@discordjs/voice');
+const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** FORCE PLAY COMMAND */
 
 module.exports = {
     name: 'forceplay',
@@ -21,20 +17,20 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** ERRORS */
 
         if (!uservoice) {
             autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -43,9 +39,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription(`Jesteś na kanale AFK!`)
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -59,30 +55,28 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(color_err)
+                        .setColor(COLOR_ERR)
                         .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                    ]
+                    ],
                 }).then(msg => autoDelete(msg));
             };
 
         };
-        const name = args.join(' ');
+
+        const name = args.join(' '); // song/video title
 
         if (!name) {
             autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription(`
-Musisz jeszcze wpisać **nazwę** utworu
-albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
-          `)
-                ]
+                    .setColor(COLOR_ERR)
+                    .setDescription(`Musisz jeszcze wpisać **nazwę** utworu, albo link do: **YouTube**, **Spotify** lub **SoundCloud**!`)
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         if (!(
                 msg.content.includes('youtu.be/') ||
@@ -93,16 +87,15 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color1)
+                    .setColor(COLOR1)
                     .setDescription(`🔍 | Szukam: \`${name}\`, może to chwilę zająć...`)
-                ]
+                ],
             });
 
         };
 
         const options = { skip: true };
+        return client.distube.play(msg, name, options); // execute command
 
-        return client.distube.play(msg, name, options);
-
-    }
+    },
 };

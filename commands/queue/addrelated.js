@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** ADD RELATED COMMAND */
 
 module.exports = {
     name: 'addrelated',
@@ -19,11 +16,11 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -31,9 +28,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -43,9 +40,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -55,29 +52,29 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
 
-        queue.addRelatedSong();
+        queue.addRelatedSong(); // execute command
 
-        const song = queue.songs[0];
+        const song = queue.songs[0]; // now playing song
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(color1)
+                .setColor(COLOR1)
                 .setTitle('➕ | Dodano do kolejki podobny utwór do:')
                 .setDescription(`\`${song.name}\`.`)
                 .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
                 .setTimestamp()
-            ]
+            ],
         });
 
-    }
+    },
 };

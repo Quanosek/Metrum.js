@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR2 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** REMOVE COMMAND */
 
 module.exports = {
     name: 'remove',
@@ -20,11 +17,11 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -32,9 +29,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -44,9 +41,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -56,13 +53,15 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        if (!args[0]) args[0] = 0;
+        /** OTHER ERRORS */
+
+        if (!args[0]) args[0] = 0; // queue number
         let number = Number(args[0]);
 
         if (!args[0]) {
@@ -71,9 +70,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription('Musisz jeszcze wpisać numer, który utwór z koleji chcesz usunąć!')
-                ]
+                    .setColor(COLOR_ERR)
+                    .setDescription('Musisz jeszcze wpisać numer, który utwór z kolejki chcesz usunąć!')
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -83,29 +82,30 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
 
-        // number === 1
+        // curretly playing
 
-        if (number === 1) {
+        if (number === 1) { // skipping song
 
             if (queue.songs.length < 2) {
-                if (queue.autoplay) { client.distube.skip(msg) } else { client.distube.stop(msg) };
-            } else { client.distube.skip(msg) };
+                if (queue.autoplay) client.distube.skip(msg)
+                else client.distube.stop(msg);
+            } else client.distube.skip(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color2)
+                    .setColor(COLOR2)
                     .setDescription('🗑️ | Usunięto **obecnie odtwarzany** utwór z kolejki.')
-                ]
+                ],
             });
 
         } else {
@@ -113,21 +113,18 @@ module.exports = {
             // number > 1
 
             number = number - 1;
-            let song = queue.songs[number]
+            let song = queue.songs[number];
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color2)
+                    .setColor(COLOR2)
                     .setTitle('🗑️ | Usunięto z kolejki utworów pozycję:')
-                    .setDescription(`
-**${number + 1}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\`
-          `)
-                ]
+                    .setDescription(`**${number + 1}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``)
+                ],
             });
 
-            return queue.songs.splice(number, 1)
-
+            return queue.songs.splice(number, 1); // execute command
         };
 
-    }
+    },
 };

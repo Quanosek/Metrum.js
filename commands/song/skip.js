@@ -97,7 +97,7 @@ module.exports = {
             // translation
 
             let votes;
-            let rest = required % 10;
+            let rest = votes % 10;
             if (rest > 1 || rest < 5) votes = 'głosy'
             else if (rest < 2 || rest > 4) votes = 'głosów'
 

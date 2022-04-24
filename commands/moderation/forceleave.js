@@ -1,17 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR2 } = process.env
 
-const { Permissions, MessageEmbed } = require('discord.js');
-const { getVoiceConnection } = require('@discordjs/voice');
+const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** FORCE LEAVE COMMAND */
 
 module.exports = {
     name: 'forceleave',
@@ -21,19 +17,19 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const botvoice = msg.guild.me.voice.channel
         const uservoice = msg.member.voice.channel
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -42,24 +38,24 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         autoDelete(msg);
 
-        client.distube.voices.get(msg).leave();
+        client.distube.voices.get(msg).leave(); // execute command
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(color2)
+                .setColor(COLOR2)
                 .setDescription('🚪 | Wyszedłem z kanału głosowego!')
-            ]
+            ],
         }).then(msg => autoDelete(msg));
 
-    }
+    },
 };

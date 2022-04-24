@@ -1,14 +1,14 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, PREFIX, AUTHOR, COLOR_ERR, COLOR1 } = process.env;
+const { NAME, PREFIX, AUTHOR_NAME, COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 const schema = require('../../schemas/guilds.js');
 
-/** COMMAND */
+/** PREFIX COMMAND */
 
 module.exports = {
     name: 'prefix',
@@ -20,7 +20,7 @@ module.exports = {
 
         const db = await schema.findOne({ guildId: msg.guild.id }); // database
 
-        /** change command */
+        /** CHANGE COMMAND */
 
         if (args[0] === 'set') {
 
@@ -76,7 +76,7 @@ module.exports = {
             }).then(msg => autoDelete(msg, 15));
         };
 
-        /** reset command */
+        /** RESET COMMAND */
 
         if (args[0] === 'reset' || args[0] === 'r') {
             autoDelete(msg, 15);
@@ -92,7 +92,7 @@ module.exports = {
             }).then(msg => autoDelete(msg, 15));
         };
 
-        /** help menu */
+        /** HELP MENU */
 
         autoDelete(msg, 45);
 
@@ -110,7 +110,7 @@ Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia p
 ** ● Informacje dodatkowe:**
 Wszystkie komendy obsługują również skróty np. zamiast pisać \`${prefix}prefix\`, równie dobrze możesz wpisać: \`${prefix}px\` itp..
                 `)
-                .setFooter({ text: `Autor: ${AUTHOR}` })
+                .setFooter({ text: `Autor: ${AUTHOR_NAME}` })
                 .setTimestamp()
             ],
         }).then(msg => autoDelete(msg, 45));

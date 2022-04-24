@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** PREVIOUS COMMAND */
 
 module.exports = {
     name: 'previous',
@@ -19,11 +16,11 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -31,9 +28,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -43,11 +40,13 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
+
+        /** OTHER ERROR */
 
         if (!queue || queue.previousSongs.length < 1) {
 
@@ -60,13 +59,13 @@ module.exports = {
                     .setDescription('Nie znaleziono poprzedniego utworu!')
                 ]
             }).then(msg => autoDelete(msg));
-
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
-        client.distube.previous(msg)
 
-    }
+        client.distube.previous(msg); // execute command
+
+    },
 };

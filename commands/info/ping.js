@@ -1,11 +1,10 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** PING COMMAND */
 
 module.exports = {
     name: 'ping',
@@ -14,7 +13,7 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('🏓')
         autoDelete(msg);
@@ -23,20 +22,21 @@ module.exports = {
             embeds: [new MessageEmbed()
                 .setColor('RANDOM')
                 .setDescription('pong!')
-            ]
+            ],
         }).then(resultmsg => {
 
-            const ping = resultmsg.createdTimestamp - msg.createdTimestamp
-
-            return resultmsg.edit({
+            return resultmsg.edit({ // modify sended
                 embeds: [new MessageEmbed()
-                    .setColor('RANDOM')
-                    .setTitle('Opóźnienie:')
-                    .setDescription(`Bot: \`${ping} ms\`\n API: \`${client.ws.ping} ms\``)
-                ]
+                    .setColor(COLOR1)
+                    .setTitle('🏓 | Pong!')
+                    .setDescription(`
+    Opóźnienie bota: \`${resultmsg.createdTimestamp - msg.createdTimestamp} ms\`
+    Opóźnienie API: \`${client.ws.ping} ms\`
+                    `),
+                ],
             });
 
         }).then(msg => autoDelete(msg));
 
-    }
+    },
 };

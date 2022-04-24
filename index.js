@@ -1,9 +1,7 @@
-console.clear(); // start with clear terminal
-
 /** IMPORT */
 
 require('dotenv').config();
-const { TOKEN, COLOR_ERR, COLOR1, COLOR2, MONGO_URI } = process.env;
+const { NAME, TOKEN, COLOR_ERR, COLOR1, COLOR2, MONGO_URI } = process.env;
 
 require('colors');
 const fs = require('fs');
@@ -11,6 +9,11 @@ const mongoose = require('mongoose');
 
 const autoDelete = require('./functions/autoDelete.js')
 const realDate = require('./functions/realDate.js')
+
+/** ON RUN */
+
+console.clear(); // start with clear terminal
+console.log(realDate() + ' Bot ' + `${NAME}`.brightYellow + ' starting up...'); // log
 
 /** MAIN DEFINE */
 
@@ -38,7 +41,7 @@ const commandsFolders = fs.readdirSync('./commands');
 (async() => {
 
     for (file of handlers) {
-        require(`./handlers/${file}`)(client);
+        require(`./handlers/${ file }`)(client);
     };
 
     /** handlers run */
@@ -56,7 +59,8 @@ const commandsFolders = fs.readdirSync('./commands');
             useUnifiedTopology: true,
         }).then(() => console.log(realDate() + ' Connected to database.'));
     } catch (err) {
-        if (err) return console.error(` >>> ${err}`.brightRed);
+        if (err) return console.error(` >>> $ { err }
+`.brightRed);
     };
 
 })();
@@ -95,10 +99,7 @@ client.distube
             .setColor(COLOR1)
             .setThumbnail(playlist.thumbnail)
             .setTitle('➕ | Dodano do kolejki playlistę:')
-            .setDescription(`
-\`${playlist.name}\`
-\n**łącznie ${playlist.songs.length} ${songs}**!
-            `)
+            .setDescription(`\`$ { playlist.name }\`\n**łącznie ${playlist.songs.length} ${songs}**!`)
         ],
     });
 })

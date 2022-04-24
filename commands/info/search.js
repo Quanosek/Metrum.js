@@ -1,17 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const prefix = process.env.PREFIX;
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** SEARCH COMMAND */
 
 module.exports = {
     name: 'search',
@@ -20,9 +16,9 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
+        /** ERROR */
 
-        const name = args.join(' ');
+        const name = args.join(' '); // song/video title
 
         if (!name) {
             msg.react('❌');
@@ -30,13 +26,13 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
 
@@ -49,13 +45,13 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(color1)
+                .setColor(COLOR1)
                 .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
                 .setDescription(searchResult)
                 .setFooter({ text: `${prefix}play <nazwa/link>` })
                 .setTimestamp()
-            ]
+            ],
         });
 
-    }
+    },
 };

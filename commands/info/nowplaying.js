@@ -1,17 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const prefix = process.env.PREFIX;
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** NOW PLAYING COMMAND */
 
 module.exports = {
     name: 'nowplaying',
@@ -20,10 +16,10 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -31,7 +27,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
             }).then(msg => autoDelete(msg));
@@ -43,20 +39,20 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
 
-        const song = queue.songs[0];
+        const song = queue.songs[0]; // that song in queue
 
-        const embed = new MessageEmbed()
-            .setColor(color1)
+        const embed = new MessageEmbed() // create big embed
+            .setColor(COLOR1)
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
             .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
@@ -72,26 +68,24 @@ module.exports = {
 
         embed.addFields({ name: 'Wyświetlenia:', value: `\`${song.views}\``, inline: true }, { name: 'Łapki w górę:', value: `\`${song.likes}\``, inline: true }, );
 
-        embed.addField('Dodane przez:', `${song.user}`)
+        embed.addField('Dodane przez:', `${song.user}`);
 
         if (queue.paused || queue.autoplay || queue.repeatMode) {
-            params = ''
+            params = '';
 
             if (queue.paused) params += '\`⏸️|pauza\` \n'
             if (queue.repeatMode === 1) params += '\`🔁|zapętlanie utworu\` \n'
             if (queue.repeatMode === 2) params += '\`🔁|zapętlanie kolejki\` \n'
             if (queue.autoplay) params += '\`📻|autoodtwarzanie\` \n'
 
-            embed.addField('Włączone opcje:', params)
+            embed.addField('Włączone opcje:', params);
         };
 
         const nextSong = queue.songs[1];
 
-        if (nextSong) {
-            embed.addField('Następne w kolejce:', `[${nextSong.name}](${nextSong.url}) - \`${nextSong.formattedDuration}\``);
-        };
+        if (nextSong) embed.addField('Następne w kolejce:', `[${nextSong.name}](${nextSong.url}) - \`${nextSong.formattedDuration}\``);
 
-        return msg.channel.send({ embeds: [embed] });
+        return msg.channel.send({ embeds: [embed] }); // print message
 
-    }
+    },
 };

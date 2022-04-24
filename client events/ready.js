@@ -7,8 +7,7 @@ require('colors');
 
 const { getVoiceConnection } = require('@discordjs/voice');
 
-const realDate = require('../functions/realDate.js')
-
+const realDate = require('../functions/realDate.js');
 
 /** READY EVENT */
 
@@ -20,7 +19,7 @@ module.exports = {
 
         /** on ready */
 
-        console.log(realDate() + ' Bot ' + process.env.NAME.underline + ' is ready!'); // on ready message// on ready message
+        console.log(realDate() + ' Bot is ready!'.brightYellow); // on ready message// on ready message
 
         client.user.setActivity(`@${NAME}`, { type: 'LISTENING' }); // bot activity
 

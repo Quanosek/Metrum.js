@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
-const { Permissions, MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** FORCE SKIP COMMAND */
 
 module.exports = {
     name: 'forceskip',
@@ -20,20 +17,20 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel
         const uservoice = msg.member.voice.channel
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -42,9 +39,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -53,26 +50,27 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         if (queue.paused) client.distube.resume(msg);
 
         if (queue.songs.length < 2) {
-            if (queue.autoplay) { client.distube.skip(msg) } else { client.distube.stop(msg) };
-        } else { client.distube.skip(msg) };
+            if (queue.autoplay) client.distube.skip(msg)
+            else client.distube.stop(msg);
+        } else client.distube.skip(msg);
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(color1)
+                .setColor(COLOR1)
                 .setDescription('⏭️ | Pominięto utwór.')
-            ]
+            ],
         });
 
-    }
+    },
 };
