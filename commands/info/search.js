@@ -11,7 +11,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'search',
-    aliases: ['sr', 'find', 'f'],
+    aliases: ['sr'],
     description: 'wyszukiwanie utworów po podanym tytule',
 
     async run(client, prefix, msg, args) {

@@ -11,7 +11,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'nowplaying',
-    aliases: ['np', 'info', 'i'],
+    aliases: ['np'],
     description: 'informacje o odtwarzanym utworze',
 
     async run(client, prefix, msg, args) {

@@ -11,7 +11,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'add',
-    aliases: ['ad', 'a'],
+    aliases: ['ad'],
     description: 'dodanie podanego utworu **jako kolejny** w kolejce',
     permissions: ['MANAGE_MESSAGES'],
 

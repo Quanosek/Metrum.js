@@ -10,7 +10,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'lyrics',
-    aliases: ['ly', 'text', 't'],
+    aliases: ['l'],
     description: 'wyświetlenie tekstu do odtwarzanego utworu',
 
     async run(client, prefix, msg, args) {

@@ -11,7 +11,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'forceleave',
-    aliases: ['fl', 'leave', 'disconnect', 'dc'],
+    aliases: ['fl'],
     description: 'wymuszenie wyjścia z kanału głosowego',
     permissions: ['MANAGE_MESSAGES'],
 

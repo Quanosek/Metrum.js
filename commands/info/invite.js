@@ -11,7 +11,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'invite',
-    aliases: ['inv'],
+    aliases: ['iv'],
     description: 'zaproszenia',
 
     async run(client, prefix, msg, args) {

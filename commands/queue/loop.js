@@ -11,7 +11,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'loop',
-    aliases: ['l', 'repeat', 'rp'],
+    aliases: ['lp'],
     description: 'przełączanie zapętlenia: utworu/kolejki/wyłączone',
 
     async run(client, prefix, msg, args) {
