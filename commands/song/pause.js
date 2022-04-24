@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** PAUSE COMMAND */
 
 module.exports = {
     name: 'pause',
@@ -19,11 +16,11 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -31,9 +28,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -43,9 +40,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -55,41 +52,37 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
-
-        // playing
+        /** COMMAND */
 
         if (queue.playing) {
             msg.react('✅');
 
-            client.distube.pause(msg);
+            client.distube.pause(msg); //execute command
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color1)
+                    .setColor(COLOR1)
                     .setDescription('⏸️ | Wstrzymano odtwarzanie.')
-                ]
+                ],
             });
         };
-
-        // paused
 
         if (queue.paused) {
             msg.react('✅');
 
-            client.distube.resume(msg);
+            client.distube.resume(msg); // execute command
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color1)
+                    .setColor(COLOR1)
                     .setDescription('▶️ | Wznowiono odtwarzanie.')
-                ]
+                ],
             });
         };
 

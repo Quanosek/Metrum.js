@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** FORWARD COMMAND */
 
 module.exports = {
     name: 'forward',
@@ -19,11 +16,11 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -31,9 +28,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -43,9 +40,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -55,13 +52,15 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        const song = queue.songs[0];
+        /** OTHER ERRORS */
+
+        const song = queue.songs[0]; // now playing song
 
         if (song.isLive) {
             msg.react('❌');
@@ -69,13 +68,13 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie można przewijać transmisji na żywo!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        if (!args[0]) args[0] = 10;
+        if (!args[0]) args[0] = 10; // forward seconds
         let number = Number(args[0]);
 
         if (isNaN(number) || number > queue.songs[0].duration || number === 0) {
@@ -84,22 +83,20 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość (w sekundach)!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
 
         const seekTime = queue.currentTime + number;
-        if (seekTime >= queue.songs[0].duration) {
-            seekTime = queue.songs[0].duration - 1;
-        };
+        if (seekTime >= queue.songs[0].duration) seekTime = queue.songs[0].duration - 1;
 
-        client.distube.seek(msg, seekTime);
+        client.distube.seek(msg, seekTime); // execute command
 
         let seconds;
         let rest = number % 10;
@@ -114,9 +111,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color1)
+                    .setColor(COLOR1)
                     .setDescription(`⏩ | Przewinięto utwór o \`${number}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
-                ]
+                ],
             });
 
         } else {
@@ -131,12 +128,11 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color1)
+                    .setColor(COLOR1)
                     .setDescription(`⏪ | Przewinięto utwór o \`${fixedNumber}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
-                ]
+                ],
             });
-
         };
 
-    }
+    },
 };

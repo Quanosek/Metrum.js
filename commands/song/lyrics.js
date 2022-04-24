@@ -1,17 +1,12 @@
-/* <--- Import ---> */
+/*
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
-
-
-/* <--- Command ---> */
 
 module.exports = {
     name: 'lyrics',
@@ -19,8 +14,6 @@ module.exports = {
     description: 'wyświetlenie tekstu do odtwarzanego utworu',
 
     async run(client, prefix, msg, args) {
-
-        /* <--- errors ---> */
 
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
@@ -62,8 +55,6 @@ module.exports = {
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
-
         function substring(length, value) {
             const replaced = value.replace(/\n/g, '--');
             const regex = `.{1,${length}}`;
@@ -98,8 +89,6 @@ module.exports = {
 
         } catch (err) {
 
-            /* <--- command error ---> */
-
             msg.react('❌');
             autoDelete(msg);
 
@@ -113,3 +102,5 @@ module.exports = {
 
     }
 };
+
+*/

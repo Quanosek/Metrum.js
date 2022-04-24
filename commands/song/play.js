@@ -1,17 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const { MessageEmbed } = require('discord.js');
-const { getVoiceConnection } = require('@discordjs/voice');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** PLAY COMMAND */
 
 module.exports = {
     name: 'play',
@@ -20,11 +16,11 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** ERRORS */
 
         if (!uservoice) {
             msg.react('❌');
@@ -32,9 +28,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -44,7 +40,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription(`Jesteś na kanale AFK!`)
                 ]
             }).then(msg => autoDelete(msg));
@@ -61,7 +57,7 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(color_err)
+                        .setColor(COLOR_ERR)
                         .setDescription('Musisz być na kanale głosowym razem ze mną!')
                     ]
                 }).then(msg => autoDelete(msg));
@@ -69,7 +65,7 @@ module.exports = {
 
         };
 
-        const name = args.join(' ');
+        const name = args.join(' '); // song/video title
 
         if (!name) {
             msg.react('❌');
@@ -77,12 +73,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription(`
-Musisz jeszcze wpisać **nazwę** utworu
-albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
-          `)
-                ]
+                    .setColor(COLOR_ERR)
+                    .setDescription(`Musisz jeszcze wpisać **nazwę** utworu, albo link do: **YouTube**, **Spotify** lub **SoundCloud**!`)
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -93,9 +86,9 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`)
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -105,13 +98,13 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`)
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
 
@@ -124,18 +117,20 @@ albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color1)
+                    .setColor(COLOR1)
                     .setDescription(`🔍 | Szukam: \`${name}\`, może to chwilę zająć...`)
-                ]
+                ],
             });
 
         };
+
+        /** execute command */
 
         return client.distube.play(uservoice, args.join(/ +/), {
             msg,
             textChannel: msg.channel,
             member: msg.member,
-        })
+        });
 
-    }
+    },
 };

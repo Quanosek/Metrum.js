@@ -1,16 +1,13 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { COLOR_ERR, COLOR1 } = process.env
 
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-
-/* <--- Command ---> */
+/** SEEK COMMAND */
 
 module.exports = {
     name: 'seek',
@@ -19,11 +16,11 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /* <--- errors ---> */
-
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMN ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -31,9 +28,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -43,9 +40,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -55,13 +52,15 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        const song = queue.songs[0];
+        /** OTHER ERRORS */
+
+        const song = queue.songs[0]; // now playing song
 
         if (song.isLive) {
             msg.react('❌');
@@ -69,14 +68,14 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie można przewijać transmisji na żywo!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        if (!args[0]) args[0] = 0;
-        const number = Number(args[0])
+        if (!args[0]) args[0] = 0; // seek seconds
+        const number = Number(args[0]);
 
         if (!args[0]) {
             msg.react('❌');
@@ -84,9 +83,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription('Musisz jeszcze wpisać, do której sekundy chcesz przewinąć utwór!')
-                ]
+                    .setColor(COLOR_ERR)
+                    .setDescription('Musisz jeszcze wpisać, **do której sekundy** chcesz przewinąć utwór!')
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -96,24 +95,24 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription('Wprowadź poprawną wartość (w sekundach)!')
-                ]
+                    .setColor(COLOR_ERR)
+                    .setDescription('Wprowadź poprawną wartość *(w sekundach)*!')
+                ],
             }).then(msg => autoDelete(msg));
         };
 
-        /* <--- command ---> */
+        /** COMMAND */
 
         msg.react('✅');
 
-        client.distube.seek(msg, number);
+        client.distube.seek(msg, number); // execute command
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(color1)
+                .setColor(COLOR1)
                 .setDescription(`⏺️ | Przewinięto utwór do: \`${queue.formattedCurrentTime}\``)
-            ]
+            ],
         });
 
-    }
+    },
 };
