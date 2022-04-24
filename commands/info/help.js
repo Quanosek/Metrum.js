@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -12,15 +12,14 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'help',
     aliases: ['h'],
-    category: 'info',
     description: 'pomoc',
 
-    async run(client, msg, args) {
+    async run(client, prefix, msg, args) {
 
         /* <--- command ---> */
 
         msg.react('✅');
-        msgAutoDelete(msg, 60);
+        autoDelete(msg, 60);
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
@@ -55,7 +54,7 @@ Pełne wytłumaczenie wszystkich komend znajduje się na stronie internetowej (l
                 .setFooter({ text: `Bot stworzony przez: ${process.env.AUTHOR}` })
                 .setTimestamp()
             ]
-        }).then(msg => msgAutoDelete(msg, 60));
+        }).then(msg => autoDelete(msg, 60));
 
     }
 };

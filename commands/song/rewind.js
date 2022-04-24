@@ -7,7 +7,7 @@ const color2 = process.env.COLOR2;
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -15,10 +15,9 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'rewind',
     aliases: ['rw'],
-    category: 'song',
     description: 'przewinięcie utworu **do tyłu** o podaną liczbę sekund (domyślnie +10)',
 
-    async run(client, msg, args) {
+    async run(client, prefix, msg, args) {
 
         /* <--- errors ---> */
 
@@ -28,52 +27,52 @@ module.exports = {
 
         if (!botvoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!uservoice || botvoice != uservoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!queue) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         const song = queue.songs[0];
 
         if (song.isLive) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie można przewijać transmisji na żywo!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!args[0]) args[0] = 10;
@@ -81,14 +80,14 @@ module.exports = {
 
         if (isNaN(number) || number > queue.currentTime || number === 0) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Wprowadź poprawną wartość (w sekundach)!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         /* <--- command ---> */

@@ -8,7 +8,7 @@ const color2 = process.env.COLOR2;
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -16,10 +16,9 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'search',
     aliases: ['sr', 'find', 'f'],
-    category: 'info',
     description: 'wyszukiwanie utworów po podanym tytule',
 
-    async run(client, msg, args) {
+    async run(client, prefix, msg, args) {
 
         /* <--- errors ---> */
 
@@ -27,14 +26,14 @@ module.exports = {
 
         if (!name) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         /* <--- command ---> */

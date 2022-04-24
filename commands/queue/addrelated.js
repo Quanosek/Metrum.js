@@ -7,7 +7,7 @@ const color2 = process.env.COLOR2;
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -15,10 +15,9 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'addrelated',
     aliases: ['ar'],
-    category: 'queue',
     description: 'dodanie podobnego do obecnie granego utworu na koniec kolejki',
 
-    async run(client, msg, args) {
+    async run(client, prefix, msg, args) {
 
         /* <--- errors ---> */
 
@@ -28,38 +27,38 @@ module.exports = {
 
         if (!botvoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!uservoice || botvoice != uservoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!queue) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         /* <--- command ---> */

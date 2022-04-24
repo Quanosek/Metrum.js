@@ -7,7 +7,7 @@ const color2 = process.env.COLOR2;
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -15,26 +15,10 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'move',
     aliases: ['mv'],
-    category: 'moderation',
     description: 'przesunięcie wybranej pozycji w kolejce utworów',
+    permissions: ['MANAGE_MESSAGES'],
 
-    async run(client, msg, args) {
-
-        /* <--- moderation ---> */
-
-        if (!msg.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) ||
-            !msg.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)
-        ) {
-            msg.react('❌');
-            msgAutoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
-                ]
-            }).then(msg => msgAutoDelete(msg));
-        };
+    async run(client, prefix, msg, args) {
 
         /* <--- errors ---> */
 
@@ -43,39 +27,36 @@ module.exports = {
         const uservoice = msg.member.voice.channel;
 
         if (!botvoice) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!queue) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         // numberOne
@@ -84,39 +65,36 @@ module.exports = {
         let numberOne = Number(args[0]);
 
         if (!args[0]) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz jeszcze wpisać numer, który utwór z kolejki chcesz przesunąć!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (isNaN(numberOne) || numberOne > queue.songs.length || numberOne < 1) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Wprowadź poprawną wartość (number utworu)!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (numberOne === 1) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie można przesunąć obecnie granego utwóru! Wpisz wartość większą od 1.')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         // numberOne
@@ -125,56 +103,50 @@ module.exports = {
         let numberTwo = Number(args[1]);
 
         if (!args[1]) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz jeszcze wpisać pozycję w kolejce, na którą chcesz przesunąć wybrany utwór!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (isNaN(numberTwo) || numberTwo > queue.songs.length || numberTwo < 1) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Wprowadź poprawną wartość (pozycja po przesunięciu)!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (numberTwo === 1) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie można przesunąć przed obecnie grany utwór! Wpisz wartość większą od 1.')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (numberOne === numberTwo) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Pozycja po przesunięciu nie może być taka sama jak obecna pozycja utowru w kolejce!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         /* <--- command ---> */
-
-        msg.react('✅');
 
         numberOne = numberOne - 1;
         let song = queue.songs[numberOne]

@@ -1,94 +1,108 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const prefix = process.env.PREFIX;
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { PREFIX, AUTHOR_NAME, COLOR_ERR, COLOR1 } = process.env;
+
+require('colors');
+
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../functions/msgAutoDelete.js')
+const autoDelete = require('../functions/autoDelete.js');
+const schema = require('../schemas/guilds.js');
 
-// const Database = require('@replit/database')
-// const db = new Database()
-
+/** MESSAGE CREATE EVENT */
 
 module.exports = {
     name: 'messageCreate',
 
-    async execute(client, msg) {
+    async run(client, msg) {
 
-        if (!msg.guild) return;
+        if (!msg.channel.permissionsFor(msg.guild.me).has('SEND_MESSAGES')) return; // if no permissions to send
 
-        if (!msg.channel.permissionsFor(msg.guild.me).has('SEND_MESSAGES')) return;
+        /** manage database */
+
+        let db = await schema.findOne({ guildId: msg.guild.id });
+        if (!db) db = await schema.create({
+
+            guildId: msg.guild.id,
+            prefix: PREFIX,
+
+        });
+
+        let prefix = db.prefix; // custom prefix
+
+        /** reply on mention */
 
         const mentionRegex = new RegExp(`^<@!?(${client.user.id})>( |)$`, 'gi');
 
         if (msg.content.match(mentionRegex)) {
 
-            msg.react('✅');
-            msgAutoDelete(msg, 20);
+            autoDelete(msg);
 
-            return msg.channel.send({
+            return msg.reply({
                 embeds: [new MessageEmbed()
-                    .setColor(color1)
-                    .setThumbnail(process.env.ICON)
-                    .setTitle(`Mój prefix to : \`${prefix}\``)
+                    .setColor(COLOR1)
+                    .setTitle(`😄 | Hej, to ja!`)
                     .setDescription(`
-Jestem Metrum, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
+Jestem zaawansowanym polskim botem muzycznym, obsługującym **YouTube**, **Spotify** oraz **SoundCloud**. Posiadam takie funkcje jak kolejki, radio, pauza, przewijanie i wiele więcej!
 
-Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${prefix}help\` lub odwiedź moją [stronę internetową](${process.env.WEBSITE})!
-          `)
-                ]
-            }).then(msg => msgAutoDelete(msg, 20));
+Mój prefix to \`${prefix}\`
+Użyj komendy \`help\` po więcej inforamcji!
+                    `)
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
+                    .setTimestamp()
+                ],
+            }).then(msg => autoDelete(msg));
         };
 
+        /** avoid simple mistakes */
 
-        msg.content = msg.content.toLowerCase();
-
-        if (!msg.content.startsWith(prefix) ||
+        if (!msg.content.toLowerCase().startsWith(prefix) ||
+            !msg.guild ||
             msg.author.bot ||
             msg.channel.type === 'dm'
         ) return;
 
-        const args = msg.content
-            .slice(prefix.length)
-            .trim()
-            .split(/ +/);
-        const commandName = args.shift();
+        const [cmdName, ...args] = msg.content.slice(prefix.length).trim().split(/ +/g);
 
-        const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        /** find command or aliases */
 
-        if (!command) return;
+        const cmd = client.commands.get(cmdName.toLowerCase()) ||
+            client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdName.toLowerCase()));
 
+        /** error */
 
-        if (!msg.channel.permissionsFor(msg.guild.me).has('MANAGE_MESSAGES')) {
+        if (!cmd) return; // no command
+        if (!msg.member.permissions.has(cmd.permissions || [])) { // no permissions
 
-            msg.react('❌');
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription(`
-**Nie mam uprawnień** do zarządzania wiadomościami na tym kanale! Skontaktuj się z administracją serwera.
-          `)
-                ]
-            });
-
+                    .setColor(COLOR_ERR)
+                    .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
+                ],
+            }).then(msg => autoDelete(msg));
         };
 
+        /** finish */
 
-        command.run(client, msg, args)
-            .catch(err => {
+        try {
+            await cmd.run(client, prefix, msg, args); // run command
+        } catch (err) {
+            if (err) {
+
+                console.error(` >>> ${err}`.brightRed);
+                autoDelete(msg);
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(color_err)
-                        .setDescription(`${err}`)
-                    ]
-                }).then(msg => msgAutoDelete(msg, 20));
+                        .setColor(COLOR_ERR)
+                        .setDescription('🛑 | Pojawił się błąd podczas uruchamiania komendy!')
+                    ],
+                }).then(msg => autoDelete(msg));
+            };
+        };
 
-            });
-
-    }
+    },
 };

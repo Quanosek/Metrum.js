@@ -1,89 +1,85 @@
-/* <--- Import ---> */
+console.clear(); // start with clear terminal
+
+/** IMPORT */
 
 require('dotenv').config();
-const prefix = process.env.PREFIX;
-const color_err = process.env.COLOR_ERR;
-const color1 = process.env.COLOR1;
-const color2 = process.env.COLOR2;
+const { TOKEN, COLOR_ERR, COLOR1, COLOR2, MONGO_URI } = process.env;
 
+require('colors');
 const fs = require('fs');
-const clr = require('colors');
+const mongoose = require('mongoose');
 
-const msgAutoDelete = require('./functions/msgAutoDelete.js')
+const autoDelete = require('./functions/autoDelete.js')
 const realDate = require('./functions/realDate.js')
 
+/** MAIN DEFINE */
 
-/* <--- Start ---> */
+const { Client, Collection, MessageEmbed } = require('discord.js');
+const client = new Client({ intents: 32767 }); // define client
 
-console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Metrum starting up...`);
+/** commands collections */
 
+client.commands = new Collection();
+client.slashCommands = new Collection();
 
-/* <--- Client ---> */
+const handlers = fs
+    .readdirSync('./handlers')
+    .filter(file => file.endsWith('.js'));
 
-const { Client, Intents, Collection, MessageEmbed } = require('discord.js');
-const intents = new Intents(32767);
-const client = new Client({
-    shards: 'auto',
-    restTimeOffset: 0,
-    intents
-});
+const eventFiles = fs
+    .readdirSync('./client events')
+    .filter(file => file.endsWith('.js'));
 
+const slashCommandsFolders = fs.readdirSync('./slashCommands');
+const commandsFolders = fs.readdirSync('./commands');
 
-/* <--- Distube ---> */
+/** MAIN FUNCTION */
+
+(async() => {
+
+    for (file of handlers) {
+        require(`./handlers/${file}`)(client);
+    };
+
+    /** handlers run */
+
+    client.handleEvents(eventFiles, './client events');
+    client.handleSlashCommands(slashCommandsFolders, './slashCommands');
+    client.handleCommands(commandsFolders, './commands');
+
+    /** mongoose connection */
+
+    try {
+        if (!MONGO_URI) return;
+        await mongoose.connect(MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }).then(() => console.log(realDate() + ' Connected to database.'));
+    } catch (err) {
+        if (err) return console.error(` >>> ${err}`.brightRed);
+    };
+
+})();
+
+/** DISTUBE */
 
 const { DisTube } = require('distube');
-const { YtDlpPlugin } = require("@distube/yt-dlp");
+const { YtDlpPlugin } = require('@distube/yt-dlp');
 const { SoundCloudPlugin } = require('@distube/soundcloud');
 const { SpotifyPlugin } = require('@distube/spotify');
 
 client.distube = new DisTube(client, {
-    youtubeDL: false,
     plugins: [new YtDlpPlugin(), new SoundCloudPlugin(), new SpotifyPlugin()],
     emitNewSongOnly: true,
     leaveOnStop: false,
+    searchSongs: 10,
+    youtubeDL: false,
     nsfw: true,
 });
 
-client.distube.setMaxListeners(99);
-
-
-/* <--- Handlers ---> */
-
-// commands
-
-const commandFolders = fs.readdirSync('./commands');
-client.commands = new Collection();
-
-for (const folder of commandFolders) {
-
-    const commandFiles = fs
-        .readdirSync(`./commands/${folder}`)
-        .filter(file => file.endsWith('.js'));
-
-    for (const file of commandFiles) {
-        const command = require(`./commands/${folder}/${file}`);
-        client.commands.set(command.name, command);
-    };
-};
-
-// client events
-
-client.events = new Collection();
-
-fs
-    .readdirSync('./client events/')
-    .filter(file => file.endsWith('.js'))
-    .forEach(file => {
-        const event = require(`./client events/${file}`);
-        client.on(event.name, (...args) => event.execute(client, ...args));
-    });
-
-
-/* <--- Distube events ---> */
+/** DISTUBE EVENTS */
 
 client.distube
-
-// addList
 
     .on('addList', (queue, playlist) => {
 
@@ -96,21 +92,16 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(color1)
+            .setColor(COLOR1)
+            .setThumbnail(playlist.thumbnail)
             .setTitle('➕ | Dodano do kolejki playlistę:')
             .setDescription(`
 \`${playlist.name}\`
 \n**łącznie ${playlist.songs.length} ${songs}**!
-        `)
-            .setThumbnail(playlist.thumbnail)
-            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
-            .setTimestamp()
-        ]
+            `)
+        ],
     });
-
 })
-
-// addSong
 
 .on('addSong', (queue, song) => {
 
@@ -118,21 +109,25 @@ client.distube
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(color1)
-            .setTitle('➕ | Dodano do kolejki:')
-            .setDescription(`
-[${song.name}](${song.url}) - \`${song.formattedDuration}\`
-        `)
+            .setColor(COLOR2)
             .setThumbnail(song.thumbnail)
-            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
-            .setTimestamp()
-        ]
+            .setTitle('➕ | Dodano do kolejki:')
+            .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
+        ],
     });
-
 })
 
+.on("error", (channel, err) => {
 
-// initQueue
+    console.error(` >>> ${err}`.brightRed);
+
+    return channel.send({
+        embeds: [new MessageEmbed()
+            .setColor(COLOR_ERR)
+            .setDescription(`${err}`)
+        ],
+    }).then(msg => autoDelete(msg));
+})
 
 .on('initQueue', (queue) => {
 
@@ -143,54 +138,41 @@ client.distube
 
 })
 
-// noRelated
-
 .on('noRelated', (queue) => {
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(color_err)
+            .setColor(COLOR_ERR)
             .setDescription('Nie znaleziono podobnych utworów.')
-        ]
-    }).then(msg => msgAutoDelete(msg));
-
+        ],
+    }).then(msg => autoDelete(msg));
 })
-
-// playSong
 
 .on('playSong', (queue, song) => {
 
-    client.distube.setSelfDeaf
+    client.distube.setSelfDeaf;
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
-            .setColor(color2)
-            .setTitle('🎶 | Teraz odtwarzane:')
-            .setDescription(`
-[${song.name}](${song.url}) - \`${song.formattedDuration}\`
-        `)
+            .setColor(COLOR2)
             .setThumbnail(`${song.thumbnail}`)
-            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
-            .setTimestamp()
-        ]
+            .setTitle('🎶 | Teraz odtwarzane:')
+            .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
+        ],
     });
-
 })
-
-// searchNoResult
 
 .on('searchNoResult', (msg, query) => {
 
     return msg.channel.send({
         embeds: [new MessageEmbed()
-            .setColor(color_err)
+            .setColor(COLOR_ERR)
             .setDescription(`Nie znaleziono utworów dla: \`${query}\``)
-        ]
+        ],
     });
+})
 
-});
 
+/** TOKEN */
 
-/* <--- Token ---> */
-
-client.login(process.env.TOKEN);
+client.login(TOKEN);

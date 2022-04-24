@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -12,15 +12,14 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'invite',
     aliases: ['inv'],
-    category: 'info',
     description: 'zaproszenia',
 
-    async run(client, msg, args) {
+    async run(client, prefix, msg, args) {
 
         /* <--- command ---> */
 
         msg.react('✅');
-        msgAutoDelete(msg);
+        autoDelete(msg);
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
@@ -30,7 +29,7 @@ module.exports = {
                 .setFooter({ text: `Bot stworzony przez: ${process.env.AUTHOR}` })
                 .setTimestamp()
             ]
-        }).then(msg => msgAutoDelete(msg));
+        }).then(msg => autoDelete(msg));
 
     }
 };

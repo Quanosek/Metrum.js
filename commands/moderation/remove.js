@@ -7,7 +7,7 @@ const color2 = process.env.COLOR2;
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -15,26 +15,10 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'remove',
     aliases: ['rm', 'rv'],
-    category: 'moderation',
     description: 'usunięcie wybranej pozycji z kolejki utworów',
+    permissions: ['MANAGE_MESSAGES'],
 
-    async run(client, msg, args) {
-
-        /* <--- moderation ---> */
-
-        if (!msg.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) ||
-            !msg.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)
-        ) {
-            msg.react('❌');
-            msgAutoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
-                ]
-            }).then(msg => msgAutoDelete(msg));
-        };
+    async run(client, prefix, msg, args) {
 
         /* <--- errors ---> */
 
@@ -44,38 +28,38 @@ module.exports = {
 
         if (!botvoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!uservoice || botvoice != uservoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!queue) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!args[0]) args[0] = 0;
@@ -83,26 +67,26 @@ module.exports = {
 
         if (!args[0]) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz jeszcze wpisać numer, który utwór z koleji chcesz usunąć!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (isNaN(number) || number > queue.songs.length || number < 1) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Wprowadź poprawną wartość!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         /* <--- command ---> */

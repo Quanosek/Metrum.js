@@ -8,7 +8,7 @@ const color2 = process.env.COLOR2;
 const { Permissions, MessageEmbed } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -16,26 +16,10 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'add',
     aliases: ['ad', 'a'],
-    category: 'moderation',
     description: 'dodanie podanego utworu **jako kolejny** w kolejce',
+    permissions: ['MANAGE_MESSAGES'],
 
-    async run(client, msg, args) {
-
-        /* <--- moderation ---> */
-
-        if (!msg.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) ||
-            !msg.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)
-        ) {
-            msg.react('❌');
-            msgAutoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(color_err)
-                    .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
-                ]
-            }).then(msg => msgAutoDelete(msg));
-        };
+    async run(client, prefix, msg, args) {
 
         /* <--- errors ---> */
 
@@ -44,27 +28,25 @@ module.exports = {
         const uservoice = msg.member.voice.channel;
 
         if (!uservoice) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (uservoice.id === msg.guild.afkChannel.id) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription(`Jesteś na kanale AFK!`)
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (botvoice) {
@@ -73,15 +55,14 @@ module.exports = {
                 client.distube.voices.get(msg).leave();
 
             } else if (queue && uservoice != botvoice) {
-                msg.react('❌');
-                msgAutoDelete(msg);
+                autoDelete(msg);
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
                         .setColor(color_err)
                         .setDescription('Musisz być na kanale głosowym razem ze mną!')
                     ]
-                }).then(msg => msgAutoDelete(msg));
+                }).then(msg => autoDelete(msg));
             };
 
         };
@@ -89,8 +70,7 @@ module.exports = {
         const name = args.join(' ');
 
         if (!name) {
-            msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -100,12 +80,10 @@ Musisz jeszcze wpisać **nazwę** utworu
 albo link do: **YouTube**, **Spotify** lub **SoundCloud**!
           `)
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         /* <--- command ---> */
-
-        msg.react('✅');
 
         if (!(
                 msg.content.includes('youtu.be/') ||

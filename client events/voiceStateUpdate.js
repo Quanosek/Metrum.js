@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-const clr = require('colors');
+require('colors');
 
 const realDate = require('../functions/realDate.js')
 
@@ -12,16 +12,16 @@ const realDate = require('../functions/realDate.js')
 module.exports = {
     name: 'voiceStateUpdate',
 
-    execute(client, oldState, newState) {
+    async run(client, oldState, newState) {
 
         if (oldState.id === process.env.ID) {
             if (!oldState.channelId && newState.channelId) {
 
-                console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Guild: ${oldState.guild.name}, ${oldState.guild.id}\n>> Bot ` + clr.brightGreen(`joined`) + ` the voice channel.`);
+                console.log(realDate() + ` Guild: ${oldState.guild.name}, ${oldState.guild.id}\n > Bot ` + `joined`.brightGreen + ` the voice channel.`);
 
             } else if (!newState.channelId) {
 
-                console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Guild: ${newState.guild.name}, ${newState.guild.id}\n>> Bot ` + clr.brightRed(`left`) + ` the voice channel.`);
+                console.log(realDate() + ` Guild: ${newState.guild.name}, ${newState.guild.id}\n > Bot ` + `left`.brightRed + ` the voice channel.`);
 
             };
         };

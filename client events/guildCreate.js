@@ -1,24 +1,33 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
-const clr = require('colors');
+const { PREFIX, ICON, WEBSITE, AUTHOR_NAME, COLOR1 } = process.env;
+
+require('colors');
+
 const { MessageEmbed } = require('discord.js');
 
-const realDate = require('../functions/realDate.js')
+const realDate = require('../functions/realDate.js');
+const schema = require('../schemas/guilds.js');
 
-
-/* <--- Event ---> */
+/** GUILD CREATE EVENT */
 
 module.exports = {
     name: 'guildCreate',
 
-    async execute(client, guild) {
+    async run(client, guild) {
 
-        /* <--- create log ---> */
+        /** database */
 
-        console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Guild: ${guild.name}, ${guild.id}\n>> Bot ` + clr.brightGreen(`joined`) + ` to the server!`);
+        await schema.create({
+            guildName: guild.name,
+            guildId: guild.id,
+            prefix: PREFIX,
+        });
 
-        /* <--- welcome message ---> */
+        console.log(realDate() + ` Guild: ${guild.name}, ${guild.id}\n >>> Bot ` + `joined`.brightGreen + ` to the server!`); // log
+
+        /** welcome message */
 
         let channelToSend;
 
@@ -31,25 +40,29 @@ module.exports = {
 
         if (channelToSend) {
 
-            return channelToSend.send({
-                embeds: [new MessageEmbed()
-                    .setColor(process.env.COLOR1)
-                    .setThumbnail(process.env.ICON)
-                    .setTitle('😄 | Cieszę się, że tu jestem!')
-                    .setDescription(`
+            try {
+
+                return channelToSend.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR1)
+                        .setThumbnail(ICON)
+                        .setTitle('😄 | Cieszę się, że tu jestem!')
+                        .setDescription(`
 Dziękuję za dodanie mnie na serwer!!! Jestem Metrum, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
 
-Moim domyślnym prefixem jest: \`${process.env.PREFIX}\`
+Moim domyślnym prefixem jest: \`${PREFIX}\`
 
-Aby zobaczyć listę wszystkich dostępnych komend wpisz \`${process.env.PREFIX}help\` lub odwiedź moją [stronę internetową](${process.env.WEBSITE})!
-        `)
-                    .setTimestamp()
-                ]
-            }).catch(err => {
-                console.error(`> ` + clr.brightCyan(`[${realDate()}]`) + ` On guildCreate: ` + clr.Red(`Failed to create welcome-message (code ${err.code})`) + `.`);
-            });
+Aby dowiedzieć się więcej użyj komendy \`help\` lub odwiedź moją [stronę internetową](${WEBSITE})!
+                        `)
+                        .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
+                        .setTimestamp()
+                    ],
+                });
+
+            } catch (err) {
+                if (err) console.error(` >>> ${err}`.brightRed);
+            };
 
         };
-
-    }
+    },
 };

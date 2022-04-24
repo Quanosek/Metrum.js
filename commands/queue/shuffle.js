@@ -7,7 +7,7 @@ const color2 = process.env.COLOR2;
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -17,10 +17,9 @@ let shuffleVotes = [];
 module.exports = {
     name: 'shuffle',
     aliases: ['sh'],
-    category: 'queue',
     description: 'jednorazowe wymieszanie kolejki utworów (głosowanie)',
 
-    async run(client, msg, args) {
+    async run(client, prefix, msg, args) {
 
         /* <--- errors ---> */
 
@@ -30,38 +29,38 @@ module.exports = {
 
         if (!botvoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!uservoice || botvoice != uservoice) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         if (!queue) {
             msg.react('❌');
-            msgAutoDelete(msg);
+            autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany *żaden utwór!')
                 ]
-            }).then(msg => msgAutoDelete(msg));
+            }).then(msg => autoDelete(msg));
         };
 
         /* <--- voting system ---> */
@@ -82,14 +81,14 @@ module.exports = {
 
         if (shuffleVotes.some((x) => x === msg.author.id)) {
             msg.react('❌');
-            msgAutoDelete(msg, 5);
+            autoDelete(msg, 5);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription(`🗳️ | Już zagłosowałeś/aś!`)
                 ]
-            }).then(msg => msgAutoDelete(msg, 5));
+            }).then(msg => autoDelete(msg, 5));
         };
 
         // command

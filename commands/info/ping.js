@@ -2,7 +2,7 @@
 
 const { MessageEmbed } = require('discord.js');
 
-const msgAutoDelete = require('../../functions/msgAutoDelete.js');
+const autoDelete = require('../../functions/autoDelete.js');
 
 
 /* <--- Command ---> */
@@ -10,15 +10,14 @@ const msgAutoDelete = require('../../functions/msgAutoDelete.js');
 module.exports = {
     name: 'ping',
     aliases: [],
-    category: 'info',
     description: 'ping',
 
-    async run(client, msg, args) {
+    async run(client, prefix, msg, args) {
 
         /* <--- command ---> */
 
         msg.react('🏓')
-        msgAutoDelete(msg);
+        autoDelete(msg);
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
@@ -37,7 +36,7 @@ module.exports = {
                 ]
             });
 
-        }).then(msg => msgAutoDelete(msg));
+        }).then(msg => autoDelete(msg));
 
     }
 };

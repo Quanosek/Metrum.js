@@ -1,39 +1,43 @@
-/* <--- Import ---> */
+/** IMPORT */
 
-const ms = require('ms');
-const clr = require('colors');
+require('dotenv').config();
+const { NAME } = process.env;
+
+require('colors');
+
 const { getVoiceConnection } = require('@discordjs/voice');
 
 const realDate = require('../functions/realDate.js')
 
 
-/* <--- Event ---> */
+/** READY EVENT */
 
 module.exports = {
     name: 'ready',
+    once: true, // only once
 
-    execute(client) {
+    async run(client) {
 
-        /* <--- on-ready ---> */
+        /** on ready */
 
-        console.log(`> ` + clr.brightCyan(`[${realDate()}]`) + ` Bot logged in successfully.\n`);
-        client.user.setActivity(`@Metrum`, { type: 'LISTENING' });
+        console.log(realDate() + ' Bot ' + process.env.NAME.underline + ' is ready!'); // on ready message// on ready message
 
-        /* <--- auto-leave voice channels ---> */
+        client.user.setActivity(`@${NAME}`, { type: 'LISTENING' }); // bot activity
+
+        /* auto-leave voice channels */
 
         const guildsID = client.guilds.cache.map(guild => guild.id);
 
         setInterval(() => {
 
             guildsID.forEach(id => {
-
                 const connection = getVoiceConnection(id)
                 const queue = client.distube.getQueue(id);
 
                 if (connection && !queue) { connection.destroy() };
+            });
 
-            })
-        }, ms('10min'));
+        }, 600000); // 10 minuts interval
 
-    }
+    },
 };
