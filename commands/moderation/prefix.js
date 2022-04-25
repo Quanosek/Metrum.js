@@ -29,6 +29,7 @@ module.exports = {
             /** errors */
 
             if (!newPrefix) {
+                msg.react('❌');
                 autoDelete(msg);
 
                 return msg.channel.send({
@@ -40,6 +41,7 @@ module.exports = {
             };
 
             if (newPrefix.length > 8) {
+                msg.react('❌');
                 msgAutoDelete(msg);
 
                 return msg.channel.send({
@@ -51,6 +53,7 @@ module.exports = {
             };
 
             if (args[2]) {
+                msg.react('❌');
                 autoDelete(msg);
 
                 return msg.channel.send({
@@ -62,6 +65,8 @@ module.exports = {
             };
 
             /** command */
+
+            msg.react('✅');
 
             autoDelete(msg, 15);
 
@@ -79,6 +84,7 @@ module.exports = {
         /** RESET COMMAND */
 
         if (args[0] === 'reset' || args[0] === 'r') {
+            msg.react('✅');
             autoDelete(msg, 15);
 
             db.prefix = PREFIX;
@@ -93,6 +99,8 @@ module.exports = {
         };
 
         /** HELP MENU */
+
+        msg.react('❓');
 
         autoDelete(msg, 45);
 
@@ -110,7 +118,7 @@ Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia p
 ** ● Informacje dodatkowe:**
 Wszystkie komendy obsługują również skróty np. zamiast pisać \`${prefix}prefix\`, równie dobrze możesz wpisać: \`${prefix}px\` itp..
                 `)
-                .setFooter({ text: `Autor: ${AUTHOR_NAME}` })
+                .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
                 .setTimestamp()
             ],
         }).then(msg => autoDelete(msg, 45));

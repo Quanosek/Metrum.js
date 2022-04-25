@@ -1,5 +1,8 @@
 /** IMPORT */
 
+require('dotenv').config();
+const { AUTHOR_NAME } = process.env;
+
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
@@ -27,12 +30,14 @@ module.exports = {
 
             return resultmsg.edit({ // modify sended
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
+                    .setColor('RANDOM')
                     .setTitle('🏓 | Pong!')
                     .setDescription(`
     Opóźnienie bota: \`${resultmsg.createdTimestamp - msg.createdTimestamp} ms\`
     Opóźnienie API: \`${client.ws.ping} ms\`
-                    `),
+                    `)
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
+                    .setTimestamp()
                 ],
             });
 

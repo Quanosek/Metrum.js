@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -71,8 +71,6 @@ module.exports = {
                 .setColor(COLOR1)
                 .setTitle('➕ | Dodano do kolejki podobny utwór do:')
                 .setDescription(`\`${song.name}\`.`)
-                .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
-                .setTimestamp()
             ],
         });
 

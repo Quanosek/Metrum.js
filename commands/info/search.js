@@ -1,9 +1,9 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
@@ -16,9 +16,9 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /** ERROR */
+        let name = args.join(' '); // song/video title
 
-        const name = args.join(' '); // song/video title
+        /** ERROR */
 
         if (!name) {
             msg.react('❌');
@@ -43,15 +43,26 @@ module.exports = {
             searchResult += `**${i + 1}.** [${result[i].name}](${result[i].url}) - \`${result[i].formattedDuration}\`\n`
         };
 
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
-                .setDescription(searchResult)
-                .setFooter({ text: `${prefix}play <nazwa/link>` })
-                .setTimestamp()
-            ],
-        });
+        /** message */
 
+        const embed = new MessageEmbed()
+            .setColor(COLOR1)
+            .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
+            .setDescription(searchResult + '\nmożesz szybko wybrać, który utwór chcesz odtworzyć:')
+
+        /** buttons */
+
+        let buttons = new MessageActionRow()
+
+        for (let i = 0; i < 5; i++) {
+            buttons.addComponents(
+                new MessageButton()
+                .setCustomId(`search-${name}-${i+1}`)
+                .setStyle('SECONDARY')
+                .setLabel(`${i+1}`)
+            );
+        };
+
+        return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
     },
 };

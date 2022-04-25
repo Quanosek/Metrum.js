@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR2 } = process.env
+const { COLOR_ERR, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -17,12 +17,13 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        const botvoice = msg.guild.me.voice.channel
-        const uservoice = msg.member.voice.channel
+        const botvoice = msg.guild.me.voice.channel;
+        const uservoice = msg.member.voice.channel;
 
         /** COMMON ERRORS */
 
         if (!botvoice) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -34,6 +35,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -45,6 +47,8 @@ module.exports = {
         };
 
         /** COMMAND */
+
+        msg.react('✅');
 
         autoDelete(msg);
 

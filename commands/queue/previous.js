@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR } = process.env
+const { COLOR_ERR } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -55,9 +55,9 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie znaleziono poprzedniego utworu!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 

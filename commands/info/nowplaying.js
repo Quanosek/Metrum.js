@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -55,8 +55,6 @@ module.exports = {
             .setColor(COLOR1)
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
-            .setFooter({ text: `${prefix}queue wyświetla obecną kolejkę` })
-            .setTimestamp()
 
         embed.addFields({ name: 'Tytuł:', value: `[${song.name}](${song.url})` }, { name: 'Autor:', value: `[${song.uploader.name}](${song.uploader.url})` }, )
 

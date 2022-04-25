@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, ICON, WEBSITE, INVITE, COLOR1, AUTHOR_NAME } = process.env
+const { NAME, ICON, WEBSITE, INVITE, COLOR1, AUTHOR_NAME } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -18,7 +18,7 @@ module.exports = {
 
         /** COMMAND */
 
-        msg.react('✅');
+        msg.react('❓');
         autoDelete(msg, 60);
 
         return msg.channel.send({
@@ -27,10 +27,10 @@ module.exports = {
                 .setThumbnail(ICON)
                 .setTitle(`Hej, jestem ${NAME}!`)
                 .setDescription(`
-Zaawansowany, darmowy bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist, auto odtwarzania, zapętlania i dużo dużo więcej!
+Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłch lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
 ** ● Dostępne Komendy:** (28)
-Pełne wytłumaczenie wszystkich komend znajduje się na stronie internetowej (link poniżej)!
+Pełne wytłumaczenie wszystkich dostępnych komend znajdziesz na mojej [stronie internetowej](${WEBSITE})!
 
 ** - Utwór:** (7)
 \`forward\`, \`pause\`, \`play\`, \`resume\`, \`rewind\`, \`seek\`, \`skip\`
@@ -44,9 +44,8 @@ Pełne wytłumaczenie wszystkich komend znajduje się na stronie internetowej (l
 ** - Moderacja:** (9)
 \`add\`, \`clear\`, \`forceleave\`, \`forceplay\`, \`forceskip\`, \`jump\`, \`move\`, \`prefix\`, \`remove\`
 
-** ● Linki:**
---->> [strona internetowa](${WEBSITE}) <<---
---->> [zaproś mnie](${INVITE}) <<---
+** ● Zaproszenie:**
+Jeśli spodobało ci się moje działaie i funkcje jakie oferuję, możesz zaprosić mnie na swój własny serwer korzystając z [tego linku](${INVITE})!
                 `)
                 .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
                 .setTimestamp()

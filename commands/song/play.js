@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -42,7 +42,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription(`Jesteś na kanale AFK!`)
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -59,7 +59,7 @@ module.exports = {
                     embeds: [new MessageEmbed()
                         .setColor(COLOR_ERR)
                         .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                    ]
+                    ],
                 }).then(msg => autoDelete(msg));
             };
 

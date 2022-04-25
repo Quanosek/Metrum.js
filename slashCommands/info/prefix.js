@@ -1,9 +1,11 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { PREFIX, COLOR1, AUTHOR } = process.env;
+const { PREFIX, COLOR1, AUTHOR_NAME } = process.env;
 
 const { MessageEmbed } = require('discord.js');
+
+const schema = require('../../schemas/guilds.js');
 
 /** COMMAND */
 
@@ -13,12 +15,26 @@ module.exports = {
 
     async run(client, interaction) {
 
+        /** MANAGE DATABASE */
+
+        let db = await schema.findOne({ guildId: interaction.guild.id });
+        if (!db) db = await schema.create({
+
+            guildId: interaction.guild.id,
+            prefix: PREFIX,
+
+        });
+
+        let prefix = db.prefix; // custom prefix
+
+        /** MESSAGE */
+
         interaction.reply({ // send
 
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setDescription(`⚙️ | Mój prefix to: \`${PREFIX}\``)
-                .setFooter({ text: `Autor bota: ${AUTHOR}` })
+                .setDescription(`⚙️ | Mój prefix to: \`${prefix}\``)
+                .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
                 .setTimestamp()
             ],
             ephemeral: true,

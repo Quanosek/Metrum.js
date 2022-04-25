@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -24,6 +24,7 @@ module.exports = {
         /** ERRORS */
 
         if (!uservoice) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -35,6 +36,7 @@ module.exports = {
         };
 
         if (uservoice.id === msg.guild.afkChannel.id) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -51,6 +53,7 @@ module.exports = {
                 client.distube.voices.get(msg).leave();
 
             } else if (queue && uservoice != botvoice) {
+                msg.react('❌');
                 autoDelete(msg);
 
                 return msg.channel.send({
@@ -66,6 +69,7 @@ module.exports = {
         const name = args.join(' '); // song/video title
 
         if (!name) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -77,6 +81,8 @@ module.exports = {
         };
 
         /** COMMAND */
+
+        msg.react('✅');
 
         if (!(
                 msg.content.includes('youtu.be/') ||

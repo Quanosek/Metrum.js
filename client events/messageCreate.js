@@ -89,6 +89,7 @@ Użyj komendy \`help\` po więcej inforamcji!
 
         try {
             await cmd.run(client, prefix, msg, args); // run command
+
         } catch (err) {
             if (err) {
 

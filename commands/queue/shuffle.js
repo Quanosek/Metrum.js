@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env
+const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -82,7 +82,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription(`🗳️ | Już zagłosowałeś/aś!`)
-                ]
+                ],
             }).then(msg => autoDelete(msg, 5));
         };
 
@@ -107,7 +107,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
                     .setDescription(`🗳️ | Głosujesz za **wymieszaniem kolejki utworów** (**${shuffleVotes.length}**/${required} ${votes}).`)
-                ]
+                ],
             });
         };
 
@@ -134,7 +134,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setDescription(`🔀 | Wymieszano kolejkę zawierającą **${queue.songs.length}** ${songs}.`)
-                ]
+                ],
             });
 
             return shuffleVotes = [];

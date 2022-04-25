@@ -1,7 +1,7 @@
 /*
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
@@ -27,7 +27,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -39,7 +39,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -51,7 +51,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -96,11 +96,11 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(color_err)
                     .setDescription('Nie znaleziono tekstu dla tego utworu!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
-        }
+        };
 
-    }
+    },
 };
 
 */

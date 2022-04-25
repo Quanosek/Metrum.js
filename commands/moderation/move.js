@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR2 } = process.env
+const { COLOR_ERR, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -24,6 +24,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -35,6 +36,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -46,6 +48,7 @@ module.exports = {
         };
 
         if (!queue) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -62,6 +65,7 @@ module.exports = {
         let numberOne = Number(args[0]);
 
         if (!args[0]) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -73,6 +77,7 @@ module.exports = {
         };
 
         if (isNaN(numberOne) || numberOne > queue.songs.length || numberOne < 1) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -84,6 +89,7 @@ module.exports = {
         };
 
         if (numberOne === 1) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -100,6 +106,7 @@ module.exports = {
         let numberTwo = Number(args[1]);
 
         if (!args[1]) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -111,6 +118,7 @@ module.exports = {
         };
 
         if (isNaN(numberTwo) || numberTwo > queue.songs.length || numberTwo < 1) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -122,6 +130,7 @@ module.exports = {
         };
 
         if (numberTwo === 1) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -133,6 +142,7 @@ module.exports = {
         };
 
         if (numberOne === numberTwo) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -144,6 +154,8 @@ module.exports = {
         };
 
         /** COMMAND */
+
+        msg.react('✅');
 
         numberOne = numberOne - 1;
         let song = queue.songs[numberOne];

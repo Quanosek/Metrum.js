@@ -22,8 +22,9 @@ const client = new Client({ intents: 32767 }); // define client
 
 /** commands collections */
 
-client.commands = new Collection();
+client.buttons = new Collection();
 client.slashCommands = new Collection();
+client.commands = new Collection();
 
 const handlers = fs
     .readdirSync('./handlers')
@@ -31,6 +32,10 @@ const handlers = fs
 
 const eventFiles = fs
     .readdirSync('./client events')
+    .filter(file => file.endsWith('.js'));
+
+const buttonFiles = fs
+    .readdirSync('./buttons')
     .filter(file => file.endsWith('.js'));
 
 const slashCommandsFolders = fs.readdirSync('./slashCommands');
@@ -47,6 +52,7 @@ const commandsFolders = fs.readdirSync('./commands');
     /** handlers run */
 
     client.handleEvents(eventFiles, './client events');
+    client.handleButtons(buttonFiles, './buttons');
     client.handleSlashCommands(slashCommandsFolders, './slashCommands');
     client.handleCommands(commandsFolders, './commands');
 
@@ -59,8 +65,7 @@ const commandsFolders = fs.readdirSync('./commands');
             useUnifiedTopology: true,
         }).then(() => console.log(realDate() + ' Connected to database.'));
     } catch (err) {
-        if (err) return console.error(` >>> $ { err }
-`.brightRed);
+        if (err) return console.error(` >>> $ { err }`.brightRed);
     };
 
 })();
@@ -80,6 +85,8 @@ client.distube = new DisTube(client, {
     youtubeDL: false,
     nsfw: true,
 });
+
+client.distube.setMaxListeners(99);
 
 /** DISTUBE EVENTS */
 
@@ -172,7 +179,6 @@ client.distube
         ],
     });
 })
-
 
 /** TOKEN */
 

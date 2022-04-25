@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -24,6 +24,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -35,6 +36,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -46,6 +48,7 @@ module.exports = {
         };
 
         if (!queue) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -63,6 +66,7 @@ module.exports = {
         let number = Number(args[0]);
 
         if (isNaN(number) || number > queue.songs.length || number === 0) {
+            msg.react('❌');
             autoDelete(msg);
 
             return msg.channel.send({
@@ -74,6 +78,8 @@ module.exports = {
         };
 
         /** COMMAND */
+
+        msg.react('✅');
 
         if (queue.songs.length <= 2) {
             if (queue.autoplay === true) client.distube.skip(msg)
@@ -117,5 +123,5 @@ module.exports = {
 
         };
 
-    }
+    },
 };

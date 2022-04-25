@@ -1,7 +1,7 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -59,18 +59,6 @@ module.exports = {
                 .slice(0, 30)
                 .join('\n')
             );
-
-        if (queue.songs.length < 2) {
-            embed
-                .setFooter({ text: `${prefix}nowplaying wyświetla więcej szczegółów` })
-                .setTimestamp()
-        };
-
-        if (queue.songs.length > 1) {
-            embed
-                .setFooter({ text: `Łącza długość kolejki - ${queue.formattedDuration}` })
-                .setTimestamp()
-        };
 
         let songs;
         let rest = queue.songs.length % 10;

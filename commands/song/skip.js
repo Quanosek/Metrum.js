@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env
+const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
