@@ -1,5 +1,3 @@
-/*
-
 require('dotenv').config();
 const { COLOR_ERR, COLOR1 } = process.env;
 
@@ -10,7 +8,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'lyrics',
-    aliases: ['l'],
+    aliases: ['ly'],
     description: 'wyświetlenie tekstu do odtwarzanego utworu',
 
     async run(client, prefix, msg, args) {
@@ -25,7 +23,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ],
             }).then(msg => autoDelete(msg));
@@ -37,7 +35,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ],
             }).then(msg => autoDelete(msg));
@@ -49,7 +47,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ],
             }).then(msg => autoDelete(msg));
@@ -77,7 +75,7 @@ module.exports = {
                 const isFirst = index === 0;
 
                 return new MessageEmbed()
-                    .setColor(color1)
+                    .setColor(COLOR1)
                     .setTitle(isFirst ? `${data.title} - ${data.author}` : '')
                     .setURL(isFirst ? `${data.links.genius}` : '')
                     .setThumbnail(isFirst ? `${data.thumbnail.genius}` : '')
@@ -94,7 +92,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(color_err)
+                    .setColor(COLOR_ERR)
                     .setDescription('Nie znaleziono tekstu dla tego utworu!')
                 ],
             }).then(msg => autoDelete(msg));
@@ -102,5 +100,3 @@ module.exports = {
 
     },
 };
-
-*/
