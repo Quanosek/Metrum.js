@@ -31,7 +31,7 @@ const handlers = fs
     .filter(file => file.endsWith('.js'));
 
 const eventFiles = fs
-    .readdirSync('./client events')
+    .readdirSync('./clientEvents')
     .filter(file => file.endsWith('.js'));
 
 const buttonFiles = fs
@@ -51,7 +51,7 @@ const commandsFolders = fs.readdirSync('./commands');
 
     /** handlers run */
 
-    client.handleEvents(eventFiles, './client events');
+    client.handleEvents(eventFiles, './clientEvents');
     client.handleButtons(buttonFiles, './buttons');
     client.handleSlashCommands(slashCommandsFolders, './slashCommands');
     client.handleCommands(commandsFolders, './commands');

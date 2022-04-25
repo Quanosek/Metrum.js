@@ -14,7 +14,7 @@ module.exports = {
 
         await schema.deleteOne({ guildId: guild.id }); // delete db
 
-        console.log(realDate() + ` Guild: ${guild.name}, ${guild.id}\n >>> Bot ` + `left`.brightRed + ` the server!`); // log
+        console.log(realDate() + ` Guild: ${guild.name}, ${guild.id}`.grey + `\n >>> Bot ` + `left`.brightRed + ` the server!`); // log
 
     },
 };

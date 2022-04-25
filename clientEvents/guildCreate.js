@@ -25,7 +25,7 @@ module.exports = {
             prefix: PREFIX,
         });
 
-        console.log(realDate() + ` Guild: ${guild.name}, ${guild.id}\n >>> Bot ` + `joined`.brightGreen + ` to the server!`); // log
+        console.log(realDate() + ` Guild: ${guild.name}, ${guild.id}`.grey + `\n >>> Bot ` + `joined`.brightGreen + ` to the server!`); // log
 
         /** welcome message */
 

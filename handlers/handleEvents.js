@@ -5,7 +5,7 @@ module.exports = (client) => {
 
         for (const file of eventFiles) {
 
-            const event = require(`../client events/${file}`);
+            const event = require(`../clientEvents/${file}`);
 
             if (event.once) { // once event
                 client.once(event.name, (...args) => event.run(client, ...args));
