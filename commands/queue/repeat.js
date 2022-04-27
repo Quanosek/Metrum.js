@@ -7,11 +7,11 @@ const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-/** LOOP COMMAND */
+/** REPEAT COMMAND */
 
 module.exports = {
-    name: 'loop',
-    aliases: ['lp'],
+    name: 'repeat',
+    aliases: ['rp'],
     description: 'przełączanie zapętlenia: utworu/kolejki/wyłączone',
 
     async run(client, prefix, msg, args) {
@@ -62,13 +62,14 @@ module.exports = {
 
         msg.react('✅');
 
+
         let mode = client.distube.setRepeatMode(msg);
-        mode = mode ? mode === 2 ? 'Włączono zapętlanie **kolejki**' : 'Włączono zapętlanie **utworu**' : '**Wyłączono** zapętlanie';
+        mode = mode ? mode === 2 ? '🔁 | Włączono zapętlanie **kolejki**.' : '🔂 | Włączono zapętlanie **utworu**.' : '🔁 | **Wyłączono** zapętlanie.';
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setDescription('🔁 | ' + mode + '.')
+                .setDescription(mode)
             ],
         });
 

@@ -5,8 +5,6 @@ const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-const autoDelete = require('../functions/autoDelete.js');
-
 /** SERACH COMMAND BUTTON */
 
 module.exports = {

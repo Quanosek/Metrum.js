@@ -18,7 +18,12 @@ console.log(realDate() + ' Bot ' + `${NAME}`.brightYellow + ' starting up...'); 
 /** MAIN DEFINE */
 
 const { Client, Collection, MessageEmbed } = require('discord.js');
-const client = new Client({ intents: 32767 }); // define client
+
+const client = new Client({
+    intents: 32767,
+    restTimeOffset: 0,
+    shards: 'auto',
+});
 
 /** commands collections */
 
@@ -101,12 +106,20 @@ client.distube
     else if (rest < 2 || rest > 4) songs = 'utworów'
     else if (rest > 1 || rest < 5) songs = 'utwory'
 
+    let request = playlist.member.user;
+
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
             .setColor(COLOR1)
             .setThumbnail(playlist.thumbnail)
             .setTitle('➕ | Dodano do kolejki playlistę:')
-            .setDescription(`\`$ { playlist.name }\`\n**łącznie ${playlist.songs.length} ${songs}**!`)
+            .setDescription(`
+\`${playlist.name}\`
+
+**łącznie ${playlist.songs.length} ${songs}**!
+            `)
+            .setFooter({ text: `dodał(a): ${request.username}`, iconURL: `${request.displayAvatarURL()}` })
+            .setTimestamp()
         ],
     });
 })
@@ -115,12 +128,16 @@ client.distube
 
     if (queue.songs.length < 2) return;
 
+    let request = song.member.user;
+
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
             .setColor(COLOR2)
             .setThumbnail(song.thumbnail)
             .setTitle('➕ | Dodano do kolejki:')
             .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
+            .setFooter({ text: `dodał(a): ${request.username}`, iconURL: `${request.displayAvatarURL()}` })
+            .setTimestamp()
         ],
     });
 })
@@ -160,22 +177,16 @@ client.distube
 
     client.distube.setSelfDeaf;
 
+    let request = song.member.user;
+
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
             .setColor(COLOR2)
             .setThumbnail(`${song.thumbnail}`)
             .setTitle('🎶 | Teraz odtwarzane:')
             .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-        ],
-    });
-})
-
-.on('searchNoResult', (msg, query) => {
-
-    return msg.channel.send({
-        embeds: [new MessageEmbed()
-            .setColor(COLOR_ERR)
-            .setDescription(`Nie znaleziono utworów dla: \`${query}\``)
+            .setFooter({ text: `dodał(a): ${request.username}`, iconURL: `${request.displayAvatarURL()}` })
+            .setTimestamp()
         ],
     });
 })

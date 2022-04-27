@@ -44,6 +44,7 @@ module.exports = (client) => {
 
                 if (REGISTER === 'globally') { // globaly
 
+                    // const guild = client.guilds.cache.get(GUILD_ID);
                     // await guild.commands.set([]);
                     // console.log(realDate() + ' Deleted'.brightRed + ' all local slash commands.');
 
@@ -54,33 +55,6 @@ module.exports = (client) => {
 
                     // await client.application.commands.set([]);
                     // console.log(realDate() + ' Deleted'.brightRed + ' all global slash commands.');
-
-                    const guild = client.guilds.cache.get(GUILD_ID);
-
-                    await guild.commands.set(slashCommandsArray).then((cmd) => {
-
-                        /** permissions check */
-
-                        const getRoles = (commandName) => {
-                            const permissions = slashCommandsArray.find(x => x.name === commandName).userPermissions;
-
-                            if (!permissions) return null;
-                            return guild.roles.cache.filter(x => x.permissions.has(permissions) && !x.managed);
-                        };
-
-                        const fullPermissions = cmd.reduce((accumulator, role) => {
-                            const roles = getRoles(role.name);
-                            if (!roles) return accumulator;
-
-                            const permissions = roles.reduce((a, r) => {
-                                return [...a, { id: r.id, type: 'ROLE', permission: true }];
-                            }, []);
-
-                            return [...accumulator, { id: role.id, permissions }];
-                        }, []);
-
-                        guild.commands.permissions.set({ fullPermissions });
-                    });
 
                     console.log(realDate() + ' Registered all slash commands ' + 'locally'.brightYellow + '.');
 

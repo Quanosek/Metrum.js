@@ -3,7 +3,7 @@
 require('dotenv').config();
 const { COLOR_ERR, COLOR1 } = process.env;
 
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
@@ -72,7 +72,7 @@ module.exports = {
             params = '';
 
             if (queue.paused) params += '\`⏸️|pauza\` \n'
-            if (queue.repeatMode === 1) params += '\`🔁|zapętlanie utworu\` \n'
+            if (queue.repeatMode === 1) params += '\`🔂|zapętlanie utworu\` \n'
             if (queue.repeatMode === 2) params += '\`🔁|zapętlanie kolejki\` \n'
             if (queue.autoplay) params += '\`📻|autoodtwarzanie\` \n'
 
@@ -83,7 +83,37 @@ module.exports = {
 
         if (nextSong) embed.addField('Następne w kolejce:', `[${nextSong.name}](${nextSong.url}) - \`${nextSong.formattedDuration}\``);
 
-        return msg.channel.send({ embeds: [embed] }); // print message
+        /** buttons */
+
+        let buttons = new MessageActionRow();
+
+        buttons
+            .addComponents(
+                new MessageButton()
+                .setCustomId(`nowplaying-pause`)
+                .setStyle('SUCCESS')
+                .setLabel(`⏸️`)
+            )
+            .addComponents(
+                new MessageButton()
+                .setCustomId(`nowplaying-repeat1`)
+                .setStyle('PRIMARY')
+                .setLabel(`🔂`)
+            )
+            .addComponents(
+                new MessageButton()
+                .setCustomId(`nowplaying-repeat2`)
+                .setStyle('PRIMARY')
+                .setLabel(`🔁`)
+            )
+            .addComponents(
+                new MessageButton()
+                .setCustomId(`nowplaying-radio`)
+                .setStyle('PRIMARY')
+                .setLabel(`📻`)
+            )
+
+        return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
 
     },
 };

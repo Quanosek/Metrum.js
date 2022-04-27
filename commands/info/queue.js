@@ -1,7 +1,7 @@
 /* <--- Import ---> */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env;
+const { COLOR_ERR, COLOR1, AUTHOR_NAME } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -58,7 +58,9 @@ module.exports = {
                 )
                 .slice(0, 30)
                 .join('\n')
-            );
+            )
+            .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
+            .setTimestamp()
 
         let songs;
         let rest = queue.songs.length % 10;
