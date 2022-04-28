@@ -70,16 +70,15 @@ module.exports = {
             const [name, ...params] = interaction.customId.split('-');
             const button = client.buttons.get(name);
 
-            /** error */
-
             if (!button) return; // no button
+
+            /** command */
 
             try {
                 await button.run(client, interaction, params); // run button command
 
-            } catch (err) {
+            } catch (err) { // error
                 if (err) {
-
                     console.error(` >>> ${err}`.brightRed);
 
                     return interaction.reply({

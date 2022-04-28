@@ -1,3 +1,5 @@
+/** IMPORT */
+
 require('dotenv').config();
 const { COLOR_ERR, COLOR1 } = process.env;
 
@@ -5,6 +7,8 @@ const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
+
+/** PAUSE COMMAND */
 
 module.exports = {
     name: 'lyrics',
@@ -16,6 +20,8 @@ module.exports = {
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
+
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');
@@ -53,6 +59,8 @@ module.exports = {
             }).then(msg => autoDelete(msg));
         };
 
+        /** CREATING URL ADDRESS */
+
         function substring(length, value) {
             const replaced = value.replace(/\n/g, '--');
             const regex = `.{1,${length}}`;
@@ -67,6 +75,8 @@ module.exports = {
 
         const url = new URL('https://some-random-api.ml/lyrics');
         url.searchParams.append('title', songTitle)
+
+        /** COMMAND */
 
         try {
 
@@ -85,7 +95,7 @@ module.exports = {
             msg.react('✅');
             return msg.channel.send({ embeds })
 
-        } catch (err) {
+        } catch (err) { // no song error
 
             msg.react('❌');
             autoDelete(msg);

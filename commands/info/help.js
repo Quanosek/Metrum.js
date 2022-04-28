@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, ICON, WEBSITE, INVITE, COLOR1, AUTHOR_NAME } = process.env;
+const { NAME, ICON, WEBSITE, INVITE, COLOR1, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
 
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
@@ -48,8 +48,7 @@ Pełne wytłumaczenie wszystkich dostępnych komend znajdziesz na mojej [stronie
 ** ● Zaproszenie:**
 Jeśli spodobało ci się moje działaie i funkcje jakie oferuję, możesz zaprosić mnie na swój własny serwer korzystając z [tego linku](${INVITE})!
                 `)
-            .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
-            .setTimestamp()
+            .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
         /** buttons */
 

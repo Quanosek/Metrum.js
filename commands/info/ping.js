@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { AUTHOR_NAME } = process.env;
+const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -36,8 +36,7 @@ module.exports = {
     Opóźnienie bota: \`${resultmsg.createdTimestamp - msg.createdTimestamp} ms\`
     Opóźnienie API: \`${client.ws.ping} ms\`
                     `)
-                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
-                    .setTimestamp()
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
                 ],
             });
 

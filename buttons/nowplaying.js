@@ -20,6 +20,8 @@ module.exports = {
 
         const name = params[0];
 
+        let requester = interaction.member.user;
+
         /** COMMON ERRORS */
 
         if (!botvoice) {
@@ -65,7 +67,7 @@ module.exports = {
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription('▶️ | Wznowiono odtwarzanie.')
+                        .setDescription(`▶️ | ${requester} wznowioł(a) odtwarzanie.`)
                     ],
                 });
 
@@ -75,7 +77,7 @@ module.exports = {
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription('⏸️ | Wstrzymano odtwarzanie.')
+                        .setDescription(`⏸️ | ${requester} wstrzymał(a) odtwarzanie.`)
                     ],
                 });
             };
@@ -86,10 +88,13 @@ module.exports = {
 
         if (name === 'repeat1') {
             if (queue.repeatMode === 1) {
+
+                queue.repeatMode = 0;
+
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription('🔁 | **Wyłączono** zapętlanie.')
+                        .setDescription(`🔂 | ${requester} **wyłączył(a)** zapętlanie.`)
                     ],
                 });
 
@@ -99,7 +104,7 @@ module.exports = {
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription('🔁 | Włączono zapętlanie **utworu**.')
+                        .setDescription(`🔂 | ${requester} włączył(a) zapętlanie **utworu**.`)
                     ],
                 });
             };
@@ -109,10 +114,13 @@ module.exports = {
 
         if (name === 'repeat2') {
             if (queue.repeatMode === 2) {
+
+                queue.repeatMode = 0;
+
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription('🔁 | **Wyłączono** zapętlanie.')
+                        .setDescription(`🔁 | ${requester} **wyłączył(a)** zapętlanie.`)
                     ],
                 });
 
@@ -122,7 +130,7 @@ module.exports = {
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription('🔁 | Włączono zapętlanie ** kolejki ** .')
+                        .setDescription(`🔁 | ${requester} włączył(a) zapętlanie ** kolejki ** .`)
                     ],
                 });
             };
@@ -136,7 +144,7 @@ module.exports = {
             return interaction.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription('📻 | ' + (mode ? '**Włączono**' : '**Wyłączono**') + ' autoodtwarzanie (radio utworu).')
+                    .setDescription(`📻 | ${requester} ` + (mode ? '**włączył(a)**' : '**wyłączył(a)**') + ' autoodtwarzanie (radio utworu).')
                 ],
             });
         };

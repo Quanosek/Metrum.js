@@ -42,9 +42,10 @@ module.exports = (client) => {
             try {
                 console.log(realDate() + ' Started refreshing slash commands.');
 
+                const guild = client.guilds.cache.get(GUILD_ID);
+
                 if (REGISTER === 'globally') { // globaly
 
-                    // const guild = client.guilds.cache.get(GUILD_ID);
                     // await guild.commands.set([]);
                     // console.log(realDate() + ' Deleted'.brightRed + ' all local slash commands.');
 
@@ -56,6 +57,7 @@ module.exports = (client) => {
                     // await client.application.commands.set([]);
                     // console.log(realDate() + ' Deleted'.brightRed + ' all global slash commands.');
 
+                    await guild.commands.set(slashCommandsArray);
                     console.log(realDate() + ' Registered all slash commands ' + 'locally'.brightYellow + '.');
 
                 } else {

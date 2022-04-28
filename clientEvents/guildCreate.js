@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { PREFIX, ICON, WEBSITE, AUTHOR_NAME, COLOR1 } = process.env;
+const { PREFIX, ICON, WEBSITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
 
 require('colors');
 
@@ -17,9 +17,7 @@ module.exports = {
 
     async run(client, guild) {
 
-        /** database */
-
-        await schema.create({
+        await schema.create({ // create db
             guildName: guild.name,
             guildId: guild.id,
             prefix: PREFIX,
@@ -54,8 +52,7 @@ Moim domyślnym prefixem jest: \`${PREFIX}\`
 
 Aby dowiedzieć się więcej użyj komendy \`help\` lub odwiedź moją [stronę internetową](${WEBSITE})!
                         `)
-                        .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
-                        .setTimestamp()
+                        .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
                     ],
                 });
 

@@ -19,7 +19,7 @@ console.log(realDate() + ' Bot ' + `${NAME}`.brightYellow + ' starting up...'); 
 
 const { Client, Collection, MessageEmbed } = require('discord.js');
 
-const client = new Client({
+const client = new Client({ // define client
     intents: 32767,
     restTimeOffset: 0,
     shards: 'auto',
@@ -106,7 +106,7 @@ client.distube
     else if (rest < 2 || rest > 4) songs = 'utworów'
     else if (rest > 1 || rest < 5) songs = 'utwory'
 
-    let request = playlist.member.user;
+    let requester = playlist.member.user;
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
@@ -118,8 +118,7 @@ client.distube
 
 **łącznie ${playlist.songs.length} ${songs}**!
             `)
-            .setFooter({ text: `dodał(a): ${request.username}`, iconURL: `${request.displayAvatarURL()}` })
-            .setTimestamp()
+            .setFooter({ text: `dodał(a): ${requester.username}`, iconURL: `${requester.displayAvatarURL()}` })
         ],
     });
 })
@@ -128,7 +127,7 @@ client.distube
 
     if (queue.songs.length < 2) return;
 
-    let request = song.member.user;
+    let requester = song.member.user;
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
@@ -136,8 +135,7 @@ client.distube
             .setThumbnail(song.thumbnail)
             .setTitle('➕ | Dodano do kolejki:')
             .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-            .setFooter({ text: `dodał(a): ${request.username}`, iconURL: `${request.displayAvatarURL()}` })
-            .setTimestamp()
+            .setFooter({ text: `dodał(a): ${requester.username}`, iconURL: `${requester.displayAvatarURL()}` })
         ],
     });
 })
@@ -177,7 +175,7 @@ client.distube
 
     client.distube.setSelfDeaf;
 
-    let request = song.member.user;
+    let requester = song.member.user;
 
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
@@ -185,8 +183,7 @@ client.distube
             .setThumbnail(`${song.thumbnail}`)
             .setTitle('🎶 | Teraz odtwarzane:')
             .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-            .setFooter({ text: `dodał(a): ${request.username}`, iconURL: `${request.displayAvatarURL()}` })
-            .setTimestamp()
+            .setFooter({ text: `dodał(a): ${requester.username}`, iconURL: `${requester.displayAvatarURL()}` })
         ],
     });
 })

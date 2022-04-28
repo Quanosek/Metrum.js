@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { PREFIX, COLOR1, AUTHOR_NAME } = process.env;
+const { PREFIX, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -34,8 +34,7 @@ module.exports = {
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
                 .setDescription(`⚙️ | Mój prefix to: \`${prefix}\``)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
-                .setTimestamp()
+                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
             ],
             ephemeral: true,
 

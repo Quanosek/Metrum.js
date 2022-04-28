@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { INVITE, COLOR1, AUTHOR_NAME } = process.env;
+const { INVITE, COLOR1, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -26,8 +26,7 @@ module.exports = {
                 .setColor(COLOR1)
                 .setTitle('**📧 | Zaproś mnie na swój serwer!**')
                 .setURL(INVITE)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
-                .setTimestamp()
+                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
             ],
         }).then(msg => autoDelete(msg, 20));
 

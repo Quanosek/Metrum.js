@@ -21,7 +21,7 @@ module.exports = {
 
         console.log(realDate() + ' Bot is ready!'.brightYellow); // on ready message// on ready message
 
-        client.user.setActivity(`@${NAME}`, { type: 'LISTENING' }); // bot activity
+        // client.user.setActivity(`@${NAME}`, { type: 'LISTENING' }); // bot activity
 
         /* auto-leave voice channels */
 
@@ -36,7 +36,7 @@ module.exports = {
                 if (connection && !queue) { connection.destroy() };
             });
 
-        }, 600000); // 10 minuts interval
+        }, 600000); // 10 minutes interval
 
     },
 };

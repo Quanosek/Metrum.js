@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, PREFIX, AUTHOR_NAME, COLOR_ERR, COLOR1 } = process.env;
+const { NAME, PREFIX, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -118,8 +118,7 @@ Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia p
 ** ● Informacje dodatkowe:**
 Wszystkie komendy obsługują również skróty np. zamiast pisać \`${prefix}prefix\`, równie dobrze możesz wpisać: \`${prefix}px\` itp..
                 `)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
-                .setTimestamp()
+                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
             ],
         }).then(msg => autoDelete(msg, 45));
 

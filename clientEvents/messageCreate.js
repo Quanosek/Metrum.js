@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { PREFIX, AUTHOR_NAME, COLOR_ERR, COLOR1 } = process.env;
+const { PREFIX, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1 } = process.env;
 
 require('colors');
 
@@ -49,8 +49,7 @@ Jestem zaawansowanym polskim botem muzycznym, obsługującym **YouTube**, **Spot
 Mój prefix to \`${prefix}\`
 Użyj komendy \`help\` po więcej inforamcji!
                     `)
-                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME}` })
-                    .setTimestamp()
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
                 ],
             }).then(msg => autoDelete(msg));
         };
