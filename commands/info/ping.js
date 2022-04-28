@@ -11,8 +11,8 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'ping',
-    aliases: [],
-    description: 'ping',
+    aliases: ['pg'],
+    description: 'ping-pong',
 
     async run(client, prefix, msg, args) {
 

@@ -70,7 +70,7 @@ const commandsFolders = fs.readdirSync('./commands');
             useUnifiedTopology: true,
         }).then(() => console.log(realDate() + ' Connected to database.'));
     } catch (err) {
-        if (err) return console.error(` >>> $ { err }`.brightRed);
+        if (err) return console.error(` >>> ${err}`.brightRed);
     };
 
 })();

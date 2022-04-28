@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, ICON, WEBSITE, INVITE, COLOR1, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
+const { NAME, ICON, WEBSITE, INVITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
 
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'help',
     aliases: ['h'],
-    description: 'pomoc',
+    description: 'pomoc wszelaka!',
 
     async run(client, prefix, msg, args) {
 
@@ -47,7 +47,7 @@ Pełne wytłumaczenie wszystkich dostępnych komend znajdziesz na mojej [stronie
 
 ** ● Zaproszenie:**
 Jeśli spodobało ci się moje działaie i funkcje jakie oferuję, możesz zaprosić mnie na swój własny serwer korzystając z [tego linku](${INVITE})!
-                `)
+            `)
             .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
         /** buttons */

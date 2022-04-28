@@ -5,7 +5,7 @@ const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** COMMAND */
+/** PING COMMAND */
 
 module.exports = {
     name: 'ping',

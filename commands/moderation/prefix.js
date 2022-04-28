@@ -13,14 +13,14 @@ const schema = require('../../schemas/guilds.js');
 module.exports = {
     name: 'prefix',
     aliases: ['px'],
-    description: 'Zmiana prefixu bota.',
+    description: 'zmiana prefixu bota.',
     permissions: ['ADMINISTRATOR'],
 
     async run(client, prefix, msg, args) {
 
         const db = await schema.findOne({ guildId: msg.guild.id }); // database
 
-        /** CHANGE COMMAND */
+        /** SET COMMAND */
 
         if (args[0] === 'set') {
 

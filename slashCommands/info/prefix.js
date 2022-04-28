@@ -7,7 +7,7 @@ const { MessageEmbed } = require('discord.js');
 
 const schema = require('../../schemas/guilds.js');
 
-/** COMMAND */
+/** PREFIX COMMAND */
 
 module.exports = {
     name: 'prefix',

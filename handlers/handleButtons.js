@@ -1,7 +1,6 @@
 /** IMPORT */
 
 require('colors');
-const fs = require('fs');
 
 /** BUTTONS HANDLER */
 
