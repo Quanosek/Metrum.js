@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'queue',
     aliases: ['q'],
-    description: 'informacje o kolejce utworów',
+    description: 'Informacje o kolejce utworów',
 
     async run(client, prefix, msg, args) {
 

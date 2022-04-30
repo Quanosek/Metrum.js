@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'rewind',
     aliases: ['rw'],
-    description: 'przewinięcie utworu **do tyłu** o podaną liczbę sekund (domyślnie +10)',
+    description: 'Przewinięcie utworu do tyłu o podaną liczbę sekund (domyślnie: 10)',
 
     async run(client, prefix, msg, args) {
 

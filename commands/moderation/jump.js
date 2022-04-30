@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'jump',
     aliases: ['j'],
-    description: 'pominięcie podanej liczby utworów w kolejce (domyślnie +1)',
+    description: 'Pominięcie określonej liczby utworów w kolejce (domyślnie: 1)',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {

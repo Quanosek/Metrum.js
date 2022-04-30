@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'seek',
     aliases: ['sk'],
-    description: 'przewinięcie utworu do podanego czasu (w sekundach)',
+    description: 'Przewinięcie utworu do podanego czasu (w sekundach)',
 
     async run(client, prefix, msg, args) {
 
@@ -20,7 +20,7 @@ module.exports = {
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
 
-        /** COMMN ERRORS */
+        /** COMMON ERRORS */
 
         if (!botvoice) {
             msg.react('❌');

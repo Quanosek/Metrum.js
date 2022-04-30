@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'previous',
     aliases: ['pr'],
-    description: 'odtworzenie poprzednio granego utworu w kolejce',
+    description: 'Odtworzenie poprzednio granego utworu w kolejce',
 
     async run(client, prefix, msg, args) {
 

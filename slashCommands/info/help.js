@@ -7,21 +7,15 @@ const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-/** HELP COMMAND */
+/** HELP SLASH COMMAND */
 
 module.exports = {
     name: 'help',
-    aliases: ['h'],
     description: 'Wiadomość informacyjna',
 
-    async run(client, prefix, msg, args) {
+    async run(client, msgInt) {
 
         /** COMMAND */
-
-        msg.react('❓');
-        autoDelete(msg, 60);
-
-        /** message */
 
         const embed = new MessageEmbed() // main message
             .setColor(COLOR1)
@@ -68,8 +62,9 @@ Jeśli spodobało ci się moje działaie i funkcje jakie oferuję, możesz zapro
                 .setLabel(`Zaproś mnie na serwer!`)
             )
 
-        return msg.channel.send({ embeds: [embed], components: [buttons] })
-            .then(msg => autoDelete(msg, 60)); // print message
+        return msgInt.reply({ embeds: [embed], components: [buttons] })
+            .then(autoDelete(msgInt, 60)); // print message
+
 
     },
 };

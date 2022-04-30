@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'add',
     aliases: ['ad'],
-    description: 'dodanie podanego utworu **jako kolejny** w kolejce',
+    description: 'Dodanie podanego utworu **jako kolejny** w kolejce',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {
@@ -100,8 +100,14 @@ module.exports = {
 
         };
 
-        const options = { unshift: true };
-        return client.distube.play(msg, name, options); // execute command
+        /** execute command */
+
+        return client.distube.play(uservoice, name, {
+            msg,
+            textChannel: msg.channel,
+            member: msg.member,
+            position: 1,
+        });
 
     },
 };

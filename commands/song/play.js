@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'play',
     aliases: ['p'],
-    description: 'odtwarzanie muzyki (obsługuje: wyszukiwanie haseł, oraz linki YouTube, Spotify, SoundCloud)',
+    description: 'Odtwarzanie muzyki (podaj tytuł utworu lub link Youtube, Spotify albo SoundCloud!)',
 
     async run(client, prefix, msg, args) {
 
@@ -79,8 +79,7 @@ module.exports = {
             }).then(msg => autoDelete(msg));
         };
 
-        if (!(uservoice.permissionsFor(msg.guild.me).has('VIEW_CHANNEL') ||
-                uservoice.permissionsFor(msg.guild.me).has('CONNECT'))) {
+        if (!(uservoice.permissionsFor(msg.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msg.guild.me).has('CONNECT'))) {
             msg.react('❌');
             autoDelete(msg);
 
@@ -126,7 +125,7 @@ module.exports = {
 
         /** execute command */
 
-        return client.distube.play(uservoice, args.join(/ +/), {
+        return client.distube.play(uservoice, name, {
             msg,
             textChannel: msg.channel,
             member: msg.member,

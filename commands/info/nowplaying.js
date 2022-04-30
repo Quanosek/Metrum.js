@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'nowplaying',
     aliases: ['np'],
-    description: 'informacje o odtwarzanym utworze',
+    description: 'Informacje o odtwarzanym utworze',
 
     async run(client, prefix, msg, args) {
 

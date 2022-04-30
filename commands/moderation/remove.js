@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'remove',
     aliases: ['rm'],
-    description: 'usunięcie wybranej pozycji z kolejki utworów',
+    description: 'Usunięcie wybranej pozycji z kolejki utworów',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {

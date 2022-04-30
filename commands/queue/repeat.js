@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'repeat',
     aliases: ['rp'],
-    description: 'przełączanie zapętlenia: utworu/kolejki/wyłączone',
+    description: 'Przełączanie zapętlenia: utworu/kolejki/wyłączone',
 
     async run(client, prefix, msg, args) {
 

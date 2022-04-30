@@ -62,7 +62,7 @@ Użyj komendy \`help\` po więcej inforamcji!
             msg.channel.type === 'dm'
         ) return;
 
-        const [cmdName, ...args] = msg.content.slice(prefix.length).trim().split(/ +/g);
+        const [cmdName, ...args] = msg.content.slice(prefix.length).trim().split(' ');
 
         /** find command or aliases */
 

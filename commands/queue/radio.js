@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'radio',
     aliases: ['r'],
-    description: 'autoodtwarzanie podobnych utworów (radio utowru)',
+    description: 'Autoodtwarzanie podobnych utworów (radio utowru)',
 
     async run(client, prefix, msg, args) {
 

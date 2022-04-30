@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'forceplay',
     aliases: ['fp'],
-    description: 'wymuszenie puszczenia podanego utworu',
+    description: 'Wymuszenie puszczenia podanego utworu',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {
@@ -100,8 +100,14 @@ module.exports = {
 
         };
 
-        const options = { skip: true };
-        return client.distube.play(msg, name, options); // execute command
+        /** execute command */
+
+        return client.distube.play(uservoice, name, {
+            msg,
+            textChannel: msg.channel,
+            member: msg.member,
+            skip: true,
+        });
 
     },
 };

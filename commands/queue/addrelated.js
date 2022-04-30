@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'addrelated',
     aliases: ['ar'],
-    description: 'dodanie podobnego do obecnie granego utworu na koniec kolejki',
+    description: 'Dodanie podobnego do obecnie granego utworu na koniec kolejki',
 
     async run(client, prefix, msg, args) {
 

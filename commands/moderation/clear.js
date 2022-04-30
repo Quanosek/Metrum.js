@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'clear',
     aliases: ['c'],
-    description: 'wyczyszczenie kolejki (łącznie z obecnie granym utworem)',
+    description: 'Wyczyszczenie całej kolejki (łącznie z obecnie granym utworem)',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {

@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'move',
     aliases: ['mv'],
-    description: 'przesunięcie wybranej pozycji w kolejce utworów',
+    description: 'Przesunięcie wybranej pozycji w kolejce utworów',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {

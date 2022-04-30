@@ -7,20 +7,20 @@ const { MessageEmbed } = require('discord.js');
 
 const schema = require('../../schemas/guilds.js');
 
-/** PREFIX COMMAND */
+/** PREFIX SLASH COMMAND */
 
 module.exports = {
     name: 'prefix',
-    description: 'Pokazuje prefix bota.',
+    description: 'Pokazuje prefix bota',
 
-    async run(client, interaction) {
+    async run(client, msgInt) {
 
         /** MANAGE DATABASE */
 
-        let db = await schema.findOne({ guildId: interaction.guild.id });
+        let db = await schema.findOne({ guildId: msgInt.guild.id });
         if (!db) db = await schema.create({
 
-            guildId: interaction.guild.id,
+            guildId: msgInt.guild.id,
             prefix: PREFIX,
 
         });
@@ -29,7 +29,7 @@ module.exports = {
 
         /** MESSAGE */
 
-        interaction.reply({ // send
+        msgInt.reply({ // send
 
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)

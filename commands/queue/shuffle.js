@@ -14,7 +14,7 @@ let shuffleVotes = []; //votes
 module.exports = {
     name: 'shuffle',
     aliases: ['sh'],
-    description: 'jednorazowe wymieszanie kolejki utworów (głosowanie)',
+    description: 'Jednorazowe wymieszanie kolejki utworów (głosowanie)',
 
     async run(client, prefix, msg, args) {
 

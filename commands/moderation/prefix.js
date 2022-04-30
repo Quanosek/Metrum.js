@@ -13,7 +13,7 @@ const schema = require('../../schemas/guilds.js');
 module.exports = {
     name: 'prefix',
     aliases: ['px'],
-    description: 'zmiana prefixu bota.',
+    description: 'Zmiana prefixu bota',
     permissions: ['ADMINISTRATOR'],
 
     async run(client, prefix, msg, args) {

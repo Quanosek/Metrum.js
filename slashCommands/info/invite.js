@@ -7,28 +7,25 @@ const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-/** INVITE COMMAND */
+/** INVITE SLASH COMMAND */
 
 module.exports = {
     name: 'invite',
-    aliases: ['iv'],
     description: 'Zaproś mnie na swój serwer',
 
-    async run(client, prefix, msg, args) {
+    async run(client, msgInt) {
 
         /** COMMAND */
 
-        msg.react('✅');
-        autoDelete(msg, 20);
-
-        return msg.channel.send({
+        return msgInt.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
                 .setTitle('**📧 | Zaproś mnie na swój serwer!**')
                 .setURL(INVITE)
                 .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
             ],
-        }).then(msg => autoDelete(msg, 20));
+        }).then(autoDelete(msgInt, 20));
+
 
     },
 };

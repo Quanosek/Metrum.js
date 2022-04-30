@@ -5,15 +5,15 @@ const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** PING COMMAND */
+/** PING SLASH COMMAND */
 
 module.exports = {
     name: 'ping',
-    description: 'Ping-Pong!',
+    description: 'Ping-pong',
 
-    async run(client, interaction) {
+    async run(client, msgInt) {
 
-        interaction.reply({ // send
+        msgInt.reply({ // send
 
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
@@ -24,12 +24,12 @@ module.exports = {
 
         }).then(resultmsg => { // modify sended
 
-            interaction.editReply({
+            msgInt.editReply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setTitle('🏓 | Pong!')
                     .setDescription(`
-Opóźnienie bota: \`${resultmsg.createdTimestamp - interaction.createdTimestamp} ms\`
+Opóźnienie bota: \`${resultmsg.createdTimestamp - msgInt.createdTimestamp} ms\`
 Opóźnienie API: \`${client.ws.ping} ms\`
                     `)
                     .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })

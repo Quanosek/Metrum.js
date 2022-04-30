@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'forceskip',
     aliases: ['fs'],
-    description: 'wymuszenie pominięcia utworu',
+    description: 'Wymuszenie pominięcia utworu',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {

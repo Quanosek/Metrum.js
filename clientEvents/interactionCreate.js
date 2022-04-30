@@ -12,24 +12,24 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
     name: 'interactionCreate',
 
-    async run(client, interaction) {
+    async run(client, msgInt) {
 
         /** COMMANDS */
 
-        if (interaction.isCommand()) {
+        if (msgInt.isCommand()) {
 
             /** define */
 
-            const cmd = client.slashCommands.get(interaction.commandName);
-            interaction.member = interaction.guild.members.cache.get(interaction.user.id);
+            const cmd = client.slashCommands.get(msgInt.commandName);
+            msgInt.member = msgInt.guild.members.cache.get(msgInt.user.id);
 
             /** error */
 
             if (!cmd) return; // no command
 
-            if (!interaction.member.permissions.has(cmd.permissions || [])) { // no permissions
+            if (!msgInt.member.permissions.has(cmd.permissions || [])) { // no permissions
 
-                return interaction.reply({
+                return msgInt.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR_ERR)
                         .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
@@ -41,14 +41,14 @@ module.exports = {
             /** finish */
 
             try {
-                await cmd.run(client, interaction); // run slash command
+                await cmd.run(client, msgInt); // run slash command
 
             } catch (err) {
                 if (err) {
 
                     console.error(` >>> ${err}`.brightRed);
 
-                    return interaction.reply({
+                    return msgInt.reply({
                         embeds: [new MessageEmbed()
                             .setColor(COLOR_ERR)
                             .setDescription('🛑 | Pojawił się błąd podczas uruchamiania komendy!')
@@ -63,11 +63,11 @@ module.exports = {
 
         /** BUTTONS */
 
-        if (interaction.isButton()) {
+        if (msgInt.isButton()) {
 
             /** define */
 
-            const [name, ...params] = interaction.customId.split('-');
+            const [name, ...params] = msgInt.customId.split('-');
             const button = client.buttons.get(name);
 
             if (!button) return; // no button
@@ -75,13 +75,13 @@ module.exports = {
             /** command */
 
             try {
-                await button.run(client, interaction, params); // run button command
+                await button.run(client, msgInt, params); // run button command
 
             } catch (err) { // error
                 if (err) {
                     console.error(` >>> ${err}`.brightRed);
 
-                    return interaction.reply({
+                    return msgInt.reply({
                         embeds: [new MessageEmbed()
                             .setColor(COLOR_ERR)
                             .setDescription('🛑 | Pojawił się błąd podczas uruchamiania komendy!')
