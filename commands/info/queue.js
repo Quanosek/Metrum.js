@@ -69,11 +69,11 @@ module.exports = {
         else if (rest > 1 || rest < 5) songs = 'utwory'
 
         if (queue.songs.length > 30) {
-            embed.addField('Łącznie w kolejce:', `**${queue.songs.length} ${songs}!**`, true)
+            embed.addField('Łącznie w kolejce:', `**${queue.songs.length} ${songs}!**`, true);
         };
 
         if (queue.paused || queue.autoplay || queue.repeatMode) {
-            params = '';
+            let params = '';
 
             if (queue.paused) params += '\`⏸️|pauza\` \n'
             if (queue.repeatMode === 1) params += '\`🔁|zapętlanie utworu\` \n'

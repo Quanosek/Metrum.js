@@ -16,6 +16,8 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        const song = args.join(' ');
+
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
@@ -62,12 +64,9 @@ module.exports = {
                     ],
                 }).then(msg => autoDelete(msg));
             };
-
         };
 
-        const name = args.join(' '); // song/video title
-
-        if (!name) {
+        if (!song) {
             msg.react('❌');
             autoDelete(msg);
 
@@ -108,24 +107,23 @@ module.exports = {
         msg.react('✅');
 
         if (!(
-                msg.content.includes('youtu.be/') ||
-                msg.content.includes('youtube.com/') ||
-                msg.content.includes('open.spotify.com/') ||
-                msg.content.includes('soundcloud.com/')
+                song.includes('youtu.be/') ||
+                song.includes('youtube.com/') ||
+                song.includes('open.spotify.com/') ||
+                song.includes('soundcloud.com/')
             )) {
 
             msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription(`🔍 | Szukam: \`${name}\`, może to chwilę zająć...`)
+                    .setDescription(`🔍 | Szukam: \`${song}\`, może to chwilę zająć...`)
                 ],
             });
-
         };
 
         /** execute command */
 
-        return client.distube.play(uservoice, name, {
+        return client.distube.play(uservoice, song, {
             msg,
             textChannel: msg.channel,
             member: msg.member,

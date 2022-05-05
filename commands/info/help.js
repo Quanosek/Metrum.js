@@ -30,7 +30,7 @@ module.exports = {
             .setDescription(`
 Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłch lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-** ● Dostępne Komendy:** (${client.commands.size})
+** ● Dostępne Komendy:** (${client.commands.size}/${client.slashCommands.size})
 Pełne wytłumaczenie wszystkich dostępnych komend znajdziesz na mojej [stronie internetowej](${WEBSITE})!
 
 ** - Utwór:** (8)

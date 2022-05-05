@@ -29,7 +29,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -56,12 +56,12 @@ module.exports = {
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
 
-        embed.addFields({ name: 'Tytuł:', value: `[${song.name}](${song.url})` }, { name: 'Autor:', value: `[${song.uploader.name}](${song.uploader.url})` }, )
+        embed.addFields({ name: 'Tytuł:', value: `[${song.name}](${song.url})` }, { name: 'Autor:', value: `[${song.uploader.name}](${song.uploader.url})` }, );
 
         if (song.isLive) {
-            embed.addField('Czas trwania:', `\`Live\``)
+            embed.addField('Czas trwania:', `\`Live\``);
         } else {
-            embed.addField('Czas trwania:', `\`${queue.formattedCurrentTime}\` / \`${song.formattedDuration}\``)
+            embed.addField('Czas trwania:', `\`${queue.formattedCurrentTime}\` / \`${song.formattedDuration}\``);
         };
 
         embed.addFields({ name: 'Wyświetlenia:', value: `\`${song.views}\``, inline: true }, { name: 'Łapki w górę:', value: `\`${song.likes}\``, inline: true }, );
@@ -69,7 +69,7 @@ module.exports = {
         embed.addField('Dodane przez:', `${song.user}`);
 
         if (queue.paused || queue.autoplay || queue.repeatMode) {
-            params = '';
+            let params = '';
 
             if (queue.paused) params += '\`⏸️|pauza\` \n'
             if (queue.repeatMode === 1) params += '\`🔂|zapętlanie utworu\` \n'

@@ -16,7 +16,7 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        let name = args.join(' '); // song/video title
+        const name = args.join(' ');
 
         /** ERROR */
 
@@ -79,5 +79,6 @@ module.exports = {
                 ],
             }).then(msg => autoDelete(msg));
         };
+
     },
 };

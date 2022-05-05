@@ -118,7 +118,7 @@ module.exports = {
             if (queue.paused) client.distube.resume(msg);
 
             if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msg)
+                if (queue.autoplay) client.distube.skip(msg);
                 else client.distube.stop(msg);
             } else client.distube.skip(msg);
 

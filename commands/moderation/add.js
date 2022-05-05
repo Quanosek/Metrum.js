@@ -63,7 +63,6 @@ module.exports = {
                     ],
                 }).then(msg => autoDelete(msg));
             };
-
         };
 
         const name = args.join(' '); // song/video title
@@ -97,7 +96,6 @@ module.exports = {
                     .setDescription(`🔍 | Szukam: \`${name}\`, może to chwilę zająć...`)
                 ],
             });
-
         };
 
         /** execute command */

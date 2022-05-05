@@ -1,15 +1,15 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR2 } = process.env;
+const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** CLEAR SLASH COMMAND */
+/** FORCE SLASH COMMAND */
 
 module.exports = {
-    name: 'clear',
-    description: 'Wyczyszczenie całej kolejki (łącznie z obecnie granym utworem)',
+    name: 'forceskip',
+    description: 'Wymuszenie pominięcia utworu',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, msgInt) {
@@ -20,7 +20,18 @@ module.exports = {
 
         /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
+        if (!botvoice) {
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                ],
+                ephemeral: true,
+            });
+        };
+
+        if (!uservoice || botvoice != uservoice) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -44,12 +55,17 @@ module.exports = {
 
         /** COMMAND */
 
-        client.distube.stop(msgInt); // execute command
+        if (queue.paused) client.distube.resume(msgInt);
+
+        if (queue.songs.length < 2) {
+            if (queue.autoplay) client.distube.skip(msgInt);
+            else client.distube.stop(msgInt);
+        } else client.distube.skip(msgInt);
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription('🧹 | Wyczyszczono kolejkę bota.')
+                .setColor(COLOR1)
+                .setDescription('⏭️ | Pominięto utwór.')
             ],
         });
 

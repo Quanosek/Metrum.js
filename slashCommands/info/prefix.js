@@ -17,19 +17,12 @@ module.exports = {
 
         /** MANAGE DATABASE */
 
-        let db = await schema.findOne({ guildId: msgInt.guild.id });
-        if (!db) db = await schema.create({
-
-            guildId: msgInt.guild.id,
-            prefix: PREFIX,
-
-        });
-
+        const db = await schema.findOne({ guildId: msgInt.guild.id }); // database
         let prefix = db.prefix; // custom prefix
 
         /** MESSAGE */
 
-        msgInt.reply({ // send
+        msgInt.reply({
 
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
@@ -37,7 +30,7 @@ module.exports = {
                 .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
             ],
             ephemeral: true,
-
         });
+
     },
 };

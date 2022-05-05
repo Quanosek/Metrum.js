@@ -26,6 +26,5 @@ module.exports = {
             ],
         }).then(autoDelete(msgInt, 20));
 
-
     },
 };

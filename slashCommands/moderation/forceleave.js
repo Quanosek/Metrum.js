@@ -5,22 +5,32 @@ const { COLOR_ERR, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** CLEAR SLASH COMMAND */
+/** FORCE SLASH COMMAND */
 
 module.exports = {
-    name: 'clear',
-    description: 'Wyczyszczenie całej kolejki (łącznie z obecnie granym utworem)',
+    name: 'forceleave',
+    description: 'Wymuszenie wyjścia z kanału głosowego',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, msgInt) {
 
-        const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
         const uservoice = msgInt.member.voice.channel;
 
         /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
+        if (!botvoice) {
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                ],
+                ephemeral: true,
+            });
+        };
+
+        if (!uservoice || botvoice != uservoice) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -31,27 +41,18 @@ module.exports = {
             });
         };
 
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
-
         /** COMMAND */
 
-        client.distube.stop(msgInt); // execute command
+        autoDelete(msgInt);
+
+        client.distube.voices.get(msgInt).leave(); // execute command
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR2)
-                .setDescription('🧹 | Wyczyszczono kolejkę bota.')
+                .setDescription('🚪 | Wyszedłem z kanału głosowego!')
             ],
-        });
+        }).then(autoDelete(msgInt));
 
     },
 };

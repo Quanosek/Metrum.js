@@ -5,11 +5,12 @@ const { COLOR_ERR, COLOR1 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** PLAY SLASH COMMAND */
+/** FORCE SLASH COMMAND */
 
 module.exports = {
-    name: 'play',
-    description: 'Odtwarzanie muzyki',
+    name: 'forceplay',
+    description: 'Wymuszenie puszczenia podanego utworu',
+    permissions: ['MANAGE_MESSAGES'],
 
     options: [{
         name: 'song',
@@ -39,7 +40,7 @@ module.exports = {
             });
         };
 
-        if (msgInt.guild.afkChannel && uservoice.id === msgInt.guild.afkChannel.id) {
+        if (uservoice.id === msgInt.guild.afkChannel.id) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -67,31 +68,10 @@ module.exports = {
             };
         };
 
-        if (!(uservoice.permissionsFor(msgInt.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msgInt.guild.me).has('CONNECT'))) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`)
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!(uservoice.permissionsFor(msgInt.guild.me).has('SPEAK'))) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`)
-                ],
-                ephemeral: true,
-            });
-        };
-
         /** COMMAND */
 
-        if (song.includes('youtu.be/') ||
+        if (
+            song.includes('youtu.be/') ||
             song.includes('youtube.com/') ||
             song.includes('open.spotify.com/') ||
             song.includes('soundcloud.com/')
@@ -114,6 +94,7 @@ module.exports = {
             msgInt,
             textChannel: msgInt.channel,
             member: msgInt.member,
+            skip: true,
         });
 
     },

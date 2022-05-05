@@ -108,7 +108,7 @@ module.exports = {
             if (queue.paused) client.distube.resume(msgInt);
 
             if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msgInt)
+                if (queue.autoplay) client.distube.skip(msgInt);
                 else client.distube.stop(msgInt);
             } else client.distube.skip(msgInt);
 
@@ -127,5 +127,6 @@ module.exports = {
         client.distube.on('playSong', (queue, song) => {
             return skipVotes = [];
         });
+
     },
 };

@@ -17,6 +17,8 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        let number = Number(args[0]);
+
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
@@ -31,7 +33,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -57,13 +59,11 @@ module.exports = {
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ],
             }).then(msg => autoDelete(msg));
-
         };
 
         /** OTHER ERROR */
 
         if (!args[0]) args[0] = 1; // jump number
-        let number = Number(args[0]);
 
         if (isNaN(number) || number > queue.songs.length || number === 0) {
             msg.react('❌');
@@ -120,7 +120,6 @@ module.exports = {
                     .setDescription(`⏮️ | Cofnięto się o **${fixedNumber}** ${songs}.`)
                 ],
             });
-
         };
 
     },
