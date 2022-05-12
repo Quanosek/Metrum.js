@@ -13,45 +13,49 @@ module.exports = {
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, msgInt) {
+        try {
 
-        const queue = client.distube.getQueue(msgInt);
-        const botvoice = msgInt.guild.me.voice.channel;
-        const uservoice = msgInt.member.voice.channel;
+            const queue = client.distube.getQueue(msgInt);
+            const botvoice = msgInt.guild.me.voice.channel;
+            const uservoice = msgInt.member.voice.channel;
 
-        /** COMMON ERRORS */
+            /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
+            if (botvoice && (!uservoice || botvoice != uservoice)) {
+
+                return msgInt.reply({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Musisz być na kanale głosowym razem ze mną!')
+                    ],
+                    ephemeral: true,
+                });
+            };
+
+            if (!queue) {
+
+                return msgInt.reply({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
+                    ],
+                    ephemeral: true,
+                });
+            };
+
+            /** COMMAND */
+
+            client.distube.stop(msgInt); // execute command
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
+                    .setColor(COLOR2)
+                    .setDescription('🧹 | Wyczyszczono kolejkę bota.')
                 ],
-                ephemeral: true,
             });
+
+        } catch (err) {
+            console.error(err);
         };
-
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        /** COMMAND */
-
-        client.distube.stop(msgInt); // execute command
-
-        return msgInt.reply({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription('🧹 | Wyczyszczono kolejkę bota.')
-            ],
-        });
-
     },
 };

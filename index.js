@@ -17,7 +17,7 @@ console.log(realDate() + ' Bot ' + `${NAME}`.brightYellow + ' starting up...'); 
 
 /** MAIN DEFINE */
 
-const { Client, Collection, MessageEmbed } = require('discord.js');
+const { Client, MessageEmbed } = require('discord.js');
 
 const client = new Client({ // define client
     intents: 32767,
@@ -25,41 +25,26 @@ const client = new Client({ // define client
     shards: 'auto',
 });
 
-/** commands collections */
-
-client.buttons = new Collection();
-client.slashCommands = new Collection();
-client.commands = new Collection();
+/** handlers define */
 
 const handlers = fs
     .readdirSync('./handlers')
     .filter(file => file.endsWith('.js'));
 
-const eventFiles = fs
-    .readdirSync('./clientEvents')
-    .filter(file => file.endsWith('.js'));
-
-const buttonFiles = fs
-    .readdirSync('./buttons')
-    .filter(file => file.endsWith('.js'));
-
-const slashCommandsFolders = fs.readdirSync('./slashCommands');
-const commandsFolders = fs.readdirSync('./commands');
-
 /** MAIN FUNCTION */
 
 (async() => {
+
+    /** handlers run*/
 
     for (file of handlers) {
         require(`./handlers/${ file }`)(client);
     };
 
-    /** handlers run */
-
-    client.handleEvents(eventFiles, './clientEvents');
-    client.handleButtons(buttonFiles, './buttons');
-    client.handleSlashCommands(slashCommandsFolders, './slashCommands');
-    client.handleCommands(commandsFolders, './commands');
+    client.handleEvents('clientEvents');
+    client.handleButtons('buttons');
+    client.handleSlashCommands('slashCommands');
+    client.handleCommands('commands');
 
     /** mongoose connection */
 
@@ -75,7 +60,7 @@ const commandsFolders = fs.readdirSync('./commands');
 
 })();
 
-/** DISTUBE */
+/** DISTUBE DEFINE */
 
 const { DisTube } = require('distube');
 const { YtDlpPlugin } = require('@distube/yt-dlp');

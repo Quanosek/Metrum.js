@@ -2,25 +2,26 @@
 
 const fs = require('fs');
 
+const { Collection } = require('discord.js');
+
 /** COMMANDS HANDLER */
 
 module.exports = (client) => {
-    client.handleCommands = async(commandFolders, path) => {
+    client.handleCommands = async(path) => {
 
-        for (folder of commandFolders) {
+        client.commands = new Collection();
+        const allFolders = fs.readdirSync(`./${path}`);
 
-            /** search for commands files */
+        for (folder of allFolders) {
+            const allFiles = fs
+                .readdirSync(`./${path}/${folder}`)
+                .filter(file => file.endsWith('.js'))
 
-            const commandFiles = fs
-                .readdirSync(`${path}/${folder}`)
-                .filter(file => file.endsWith('.js'));
-
-            for (const file of commandFiles) {
-                const cmd = require(`../commands/${folder}/${file}`);
-
-                client.commands.set((cmd.name), cmd); // run command
+            for (file of allFiles) {
+                const cmd = require(`../${path}/${folder}/${file}`);
+                client.commands.set((cmd.name), cmd);
             };
-
         };
+
     };
 };

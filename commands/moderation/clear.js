@@ -16,49 +16,53 @@ module.exports = {
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {
+        try {
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+            const queue = client.distube.getQueue(msg);
+            const botvoice = msg.guild.me.voice.channel;
+            const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+            /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
-            msg.react('❌');
-            autoDelete(msg);
+            if (botvoice && (!uservoice || botvoice != uservoice)) {
+                msg.react('❌');
+                autoDelete(msg);
+
+                return msg.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Musisz być na kanale głosowym razem ze mną!')
+                    ],
+                }).then(msg => autoDelete(msg));
+            };
+
+            if (!queue) {
+                msg.react('❌');
+                autoDelete(msg);
+
+                return msg.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
+                    ],
+                }).then(msg => autoDelete(msg));
+            };
+
+            /** COMMAND */
+
+            msg.react('✅');
+
+            client.distube.stop(msg); // execute command
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
+                    .setColor(COLOR2)
+                    .setDescription('🧹 | Wyczyszczono kolejkę bota.')
                 ],
-            }).then(msg => autoDelete(msg));
+            });
+
+        } catch (err) {
+            console.error(err);
         };
-
-        if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        /** COMMAND */
-
-        msg.react('✅');
-
-        client.distube.stop(msg); // execute command
-
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription('🧹 | Wyczyszczono kolejkę bota.')
-            ],
-        });
-
     },
 };

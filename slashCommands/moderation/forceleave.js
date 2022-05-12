@@ -13,46 +13,50 @@ module.exports = {
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, msgInt) {
+        try {
 
-        const botvoice = msgInt.guild.me.voice.channel;
-        const uservoice = msgInt.member.voice.channel;
+            const botvoice = msgInt.guild.me.voice.channel;
+            const uservoice = msgInt.member.voice.channel;
 
-        /** COMMON ERRORS */
+            /** COMMON ERRORS */
 
-        if (!botvoice) {
+            if (!botvoice) {
+
+                return msgInt.reply({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Nie jestem na żadnym kanale głosowym!')
+                    ],
+                    ephemeral: true,
+                });
+            };
+
+            if (!uservoice || botvoice != uservoice) {
+
+                return msgInt.reply({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Musisz być na kanale głosowym razem ze mną!')
+                    ],
+                    ephemeral: true,
+                });
+            };
+
+            /** COMMAND */
+
+            autoDelete(msgInt);
+
+            client.distube.voices.get(msgInt).leave(); // execute command
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                    .setColor(COLOR2)
+                    .setDescription('🚪 | Wyszedłem z kanału głosowego!')
                 ],
-                ephemeral: true,
-            });
+            }).then(autoDelete(msgInt));
+
+        } catch (err) {
+            console.error(err);
         };
-
-        if (!uservoice || botvoice != uservoice) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        /** COMMAND */
-
-        autoDelete(msgInt);
-
-        client.distube.voices.get(msgInt).leave(); // execute command
-
-        return msgInt.reply({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription('🚪 | Wyszedłem z kanału głosowego!')
-            ],
-        }).then(autoDelete(msgInt));
-
     },
 };

@@ -6,32 +6,33 @@ const { REGISTER, GUILD_ID } = process.env;
 require('colors');
 const fs = require('fs');
 
+const { Collection } = require('discord.js');
 const realDate = require('../functions/realDate.js');
 
 /** SLASH COMMANDS HANDLER */
 
 module.exports = (client) => {
-    client.handleSlashCommands = async(slashCommandsFolders, path) => {
+    client.handleSlashCommands = async(path) => {
 
+        client.slashCommands = new Collection();
+        const allFolders = fs.readdirSync(`./${path}`);
         const slashCommandsArray = [];
 
-        /** search for commands files */
+        for (folder of allFolders) {
+            const allFiles = fs
+                .readdirSync(`./${path}/${folder}`)
+                .filter(file => file.endsWith('.js'))
 
-        for (folder of slashCommandsFolders) {
-            const commandFiles = fs
-                .readdirSync(`${path}/${folder}`)
-                .filter(file => file.endsWith('.js'));
-
-            for (const file of commandFiles) {
-
-                const cmd = require(`../slashCommands/${folder}/${file}`);
+            for (file of allFiles) {
+                const cmd = require(`../${path}/${folder}/${file}`);
 
                 if (!cmd.name) return;
+
                 client.slashCommands.set((cmd.name), cmd); // run command
 
                 if (cmd.userPermissions) cmd.defaultPermission = false; // permissions
-                slashCommandsArray.push(cmd); // save command
 
+                slashCommandsArray.push(cmd); // save command
             };
         };
 

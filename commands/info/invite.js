@@ -15,20 +15,24 @@ module.exports = {
     description: 'Zaproś mnie na swój serwer',
 
     async run(client, prefix, msg, args) {
+        try {
 
-        /** COMMAND */
+            /** COMMAND */
 
-        msg.react('✅');
-        autoDelete(msg, 20);
+            msg.react('✅');
+            autoDelete(msg, 20);
 
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle('**📧 | Zaproś mnie na swój serwer!**')
-                .setURL(INVITE)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-            ],
-        }).then(msg => autoDelete(msg, 20));
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR1)
+                    .setTitle('**📧 | Zaproś mnie na swój serwer!**')
+                    .setURL(INVITE)
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+                ],
+            }).then(msg => autoDelete(msg, 20));
 
+        } catch (err) {
+            console.error(err);
+        };
     },
 };

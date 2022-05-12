@@ -1,17 +1,25 @@
 /** IMPORT */
 
 require('colors');
+const fs = require('fs');
+
+const { Collection } = require('discord.js');
 
 /** BUTTONS HANDLER */
 
 module.exports = (client) => {
-    client.handleButtons = async(buttonFiles, path) => {
+    client.handleButtons = async(path) => {
 
-        for (const file of buttonFiles) {
+        client.buttons = new Collection();
 
-            const button = require(`../buttons/${file}`);
+        const buttonFiles = fs
+            .readdirSync(`./${path}`)
+            .filter(file => file.endsWith('.js'))
+
+        for (file of buttonFiles) {
+            const button = require(`../${path}/${file}`);
             client.buttons.set(button.name, button);
-
         };
+
     };
 };

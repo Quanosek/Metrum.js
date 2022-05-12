@@ -1,18 +1,25 @@
+/** IMPORT */
+
+const fs = require('fs');
+
 /** EVENTS HANDLER */
 
 module.exports = (client) => {
-    client.handleEvents = async(eventFiles, path) => {
+    client.handleEvents = async(path) => {
 
-        for (const file of eventFiles) {
+        const allFiles = fs
+            .readdirSync(`./${path}`)
+            .filter(file => file.endsWith('.js'))
 
-            const event = require(`../clientEvents/${file}`);
+        for (file of allFiles) {
+            const event = require(`../${path}/${file}`);
 
             if (event.once) { // once event
                 client.once(event.name, (...args) => event.run(client, ...args));
             } else { // on event
                 client.on(event.name, (...args) => event.run(client, ...args));
             };
-
         };
+
     };
 };

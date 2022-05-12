@@ -17,98 +17,99 @@ module.exports = {
     permissions: ['ADMINISTRATOR'],
 
     async run(client, prefix, msg, args) {
+        try {
 
-        const db = await schema.findOne({ guildId: msg.guild.id }); // database
+            const db = await schema.findOne({ guildId: msg.guild.id }); // database
 
-        /** SET COMMAND */
+            /** SET COMMAND */
 
-        if (args[0] === 'set') {
+            if (args[0] === 'set') {
 
-            const newPrefix = args[1];
+                const newPrefix = args[1];
 
-            /** errors */
+                /** errors */
 
-            if (!newPrefix) {
-                msg.react('❌');
-                autoDelete(msg);
+                if (!newPrefix) {
+                    msg.react('❌');
+                    autoDelete(msg);
+
+                    return msg.channel.send({
+                        embeds: [new MessageEmbed()
+                            .setColor(COLOR_ERR)
+                            .setDescription('⚙️ | Musisz jeszcze wpisać nowy prefix!')
+                        ],
+                    }).then(msg => autoDelete(msg));
+                };
+
+                if (newPrefix.length > 8) {
+                    msg.react('❌');
+                    msgAutoDelete(msg);
+
+                    return msg.channel.send({
+                        embeds: [new MessageEmbed()
+                            .setColor(COLOR_ERR)
+                            .setDescription('⚙️ | Wybrany prefix jest zbyt długi *(max. 8 znaków)*!')
+                        ],
+                    }).then(msg => autoDelete(msg));
+                };
+
+                if (args[2]) {
+                    msg.react('❌');
+                    autoDelete(msg);
+
+                    return msg.channel.send({
+                        embeds: [new MessageEmbed()
+                            .setColor(COLOR_ERR)
+                            .setDescription('⚙️ | W prefixie nie może być spacji!')
+                        ],
+                    }).then(msg => autoDelete(msg));
+                };
+
+                /** command */
+
+                msg.react('✅');
+
+                autoDelete(msg, 15);
+
+                db.prefix = newPrefix;
+                await db.save();
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('⚙️ | Musisz jeszcze wpisać nowy prefix!')
+                        .setColor(COLOR1)
+                        .setDescription(`⚙️ | Ustawiono nowy prefix: \`${newPrefix}\``)
                     ],
-                }).then(msg => autoDelete(msg));
+                }).then(msg => autoDelete(msg, 15));
             };
 
-            if (newPrefix.length > 8) {
-                msg.react('❌');
-                msgAutoDelete(msg);
+            /** RESET COMMAND */
+
+            if (args[0] === 'reset' || args[0] === 'r') {
+                msg.react('✅');
+                autoDelete(msg, 15);
+
+                db.prefix = PREFIX;
+                await db.save();
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('⚙️ | Wybrany prefix jest zbyt długi *(max. 8 znaków)*!')
+                        .setColor(COLOR1)
+                        .setDescription(`⚙️ | Przywrócono domyślny prefix: \`${PREFIX}\``)
                     ],
-                }).then(msg => autoDelete(msg));
+                }).then(msg => autoDelete(msg, 15));
             };
 
-            if (args[2]) {
-                msg.react('❌');
-                autoDelete(msg);
+            /** HELP MENU */
 
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('⚙️ | W prefixie nie może być spacji!')
-                    ],
-                }).then(msg => autoDelete(msg));
-            };
+            msg.react('❓');
 
-            /** command */
-
-            msg.react('✅');
-
-            autoDelete(msg, 15);
-
-            db.prefix = newPrefix;
-            await db.save();
+            autoDelete(msg, 45);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription(`⚙️ | Ustawiono nowy prefix: \`${newPrefix}\``)
-                ],
-            }).then(msg => autoDelete(msg, 15));
-        };
-
-        /** RESET COMMAND */
-
-        if (args[0] === 'reset' || args[0] === 'r') {
-            msg.react('✅');
-            autoDelete(msg, 15);
-
-            db.prefix = PREFIX;
-            await db.save();
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`⚙️ | Przywrócono domyślny prefix: \`${PREFIX}\``)
-                ],
-            }).then(msg => autoDelete(msg, 15));
-        };
-
-        /** HELP MENU */
-
-        msg.react('❓');
-
-        autoDelete(msg, 45);
-
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle(`⚙️ | Menu zmiany prefixu`)
-                .setDescription(`
+                    .setTitle(`⚙️ | Menu zmiany prefixu`)
+                    .setDescription(`
 Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia prefixu zawsze można wspomnieć bota, tzn. wpisać @${NAME}.
 
 ** ● Komendy:**
@@ -118,9 +119,12 @@ Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia p
 ** ● Informacje dodatkowe:**
 Wszystkie komendy obsługują również skróty np. zamiast pisać \`${prefix}prefix\`, równie dobrze możesz wpisać: \`${prefix}px\` itp..
                 `)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-            ],
-        }).then(msg => autoDelete(msg, 45));
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+                ],
+            }).then(msg => autoDelete(msg, 45));
 
+        } catch (err) {
+            console.error(err);
+        };
     },
 };

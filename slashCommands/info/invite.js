@@ -14,17 +14,21 @@ module.exports = {
     description: 'Zaproś mnie na swój serwer',
 
     async run(client, msgInt) {
+        try {
 
-        /** COMMAND */
+            /** COMMAND */
 
-        return msgInt.reply({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle('**📧 | Zaproś mnie na swój serwer!**')
-                .setURL(INVITE)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-            ],
-        }).then(autoDelete(msgInt, 20));
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR1)
+                    .setTitle('**📧 | Zaproś mnie na swój serwer!**')
+                    .setURL(INVITE)
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+                ],
+            }).then(autoDelete(msgInt, 20));
 
+        } catch (err) {
+            console.error(err);
+        };
     },
 };
