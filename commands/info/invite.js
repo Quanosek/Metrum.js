@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { INVITE, COLOR1, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
+const { INVITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -15,24 +15,20 @@ module.exports = {
     description: 'Zaproś mnie na swój serwer',
 
     async run(client, prefix, msg, args) {
-        try {
 
-            /** COMMAND */
+        /** COMMAND */
 
-            msg.react('✅');
-            autoDelete(msg, 20);
+        msg.react('✅');
+        autoDelete(msg, 20);
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setTitle('**📧 | Zaproś mnie na swój serwer!**')
-                    .setURL(INVITE)
-                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-                ],
-            }).then(msg => autoDelete(msg, 20));
+        return msg.channel.send({
+            embeds: [new MessageEmbed()
+                .setColor(COLOR1)
+                .setTitle('**📧 | Zaproś mnie na swój serwer!**')
+                .setURL(INVITE)
+                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+            ],
+        }).then(msg => autoDelete(msg, 20));
 
-        } catch (err) {
-            console.error(err);
-        };
     },
 };

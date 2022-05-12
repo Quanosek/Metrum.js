@@ -5,79 +5,77 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-const autoDelete = require('../../functions/autoDelete.js');
-
-/** REMOVE COMMAND */
+/** CLEAR SLASH COMMAND */
 
 module.exports = {
     name: 'remove',
-    aliases: ['rm'],
-    description: 'Usunięcie wybranej pozycji z kolejki utworów (domyślnie obecnie grany)',
+    description: 'usunięcie wybranej pozycji z kolejki utworów',
     permissions: ['MANAGE_MESSAGES'],
 
-    async run(client, prefix, msg, args) {
+    options: [{
+        name: 'number',
+        description: 'Podaj numer wybranego utworu w obecnej kolejce (domyślnie obecnie grany)',
+        type: 'NUMBER',
+        required: true,
+    }],
 
-        let number = Number(args[0]);
+    async run(client, msgInt) {
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+        let number = msgInt.options.getNumber('number');
+
+        const queue = client.distube.getQueue(msgInt);
+        const botvoice = msgInt.guild.me.voice.channel;
+        const uservoice = msgInt.member.voice.channel;
 
         /** COMMON ERRORS */
 
         if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
 
-            return msg.channel.send({
+            return msg.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
                 ],
-            }).then(msg => autoDelete(msg));
+                ephemeral: true,
+            });
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
 
-            return msg.channel.send({
+            return msg.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
                 ],
-            }).then(msg => autoDelete(msg));
+                ephemeral: true,
+            });
         };
 
         if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
 
-            return msg.channel.send({
+            return msg.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
                 ],
-            }).then(msg => autoDelete(msg));
+                ephemeral: true,
+            });
         };
 
-        /** OTHER ERROR */
+        /** OTHER ERRORS */
 
-        if (isNaN(number) || number > queue.songs.length || number < 1) {
-            msg.react('❌');
-            autoDelete(msg);
+        if (number > queue.songs.length || number < 1) {
 
-            return msg.channel.send({
+            return msg.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość!')
                 ],
-            }).then(msg => autoDelete(msg));
+                ephemeral: true,
+            });
         };
 
         /** COMMAND */
-
-        msg.react('✅');
 
         // curretly playing
 
@@ -88,7 +86,7 @@ module.exports = {
                 else client.distube.stop(msg);
             } else client.distube.skip(msg);
 
-            return msg.channel.send({
+            return msg.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
                     .setDescription('🗑️ | Usunięto **obecnie odtwarzany** utwór z kolejki.')
@@ -102,7 +100,7 @@ module.exports = {
             number = number - 1;
             const song = queue.songs[number];
 
-            msg.channel.send({
+            msg.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
                     .setTitle('🗑️ | Usunięto z kolejki utworów pozycję:')

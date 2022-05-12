@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env;
+const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
@@ -15,74 +15,70 @@ module.exports = {
     description: 'Wyszukiwanie utworów po podanym tytule',
 
     async run(client, prefix, msg, args) {
+
+        const name = args.join(' ');
+
+        /** ERROR */
+
+        if (!name) {
+            msg.react('❌');
+            autoDelete(msg);
+
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
+                ],
+            }).then(msg => autoDelete(msg));
+        };
+
+        /** COMMAND */
+
         try {
 
-            const name = args.join(' ');
+            let result = await client.distube.search(name);
+            let searchResult = '';
 
-            /** ERROR */
-
-            if (!name) {
-                msg.react('❌');
-                autoDelete(msg);
-
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
-                    ],
-                }).then(msg => autoDelete(msg));
+            for (let i = 0; i < 10; i++) {
+                searchResult += `**${i + 1}.** [${result[i].name}](${result[i].url}) - \`${result[i].formattedDuration}\`\n`
             };
 
-            /** COMMAND */
+            msg.react('✅');
 
-            try {
+            /** message */
 
-                let result = await client.distube.search(name);
-                let searchResult = '';
+            const embed = new MessageEmbed()
+                .setColor(COLOR1)
+                .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
+                .setDescription(searchResult)
+                .setFooter({ text: 'możesz szybko wybrać, który utwór chcesz odtworzyć:' })
 
-                for (let i = 0; i < 10; i++) {
-                    searchResult += `**${i + 1}.** [${result[i].name}](${result[i].url}) - \`${result[i].formattedDuration}\`\n`
-                };
+            /** buttons */
 
-                msg.react('✅');
+            let buttons = new MessageActionRow()
 
-                /** message */
-
-                const embed = new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
-                    .setDescription(searchResult)
-                    .setFooter({ text: 'możesz szybko wybrać, który utwór chcesz odtworzyć:' })
-
-                /** buttons */
-
-                let buttons = new MessageActionRow()
-
-                for (let i = 0; i < 5; i++) {
-                    buttons.addComponents(
-                        new MessageButton()
-                        .setCustomId(`search-${name}-${i+1}`)
-                        .setStyle('SECONDARY')
-                        .setLabel(`${i+1}`)
-                    );
-                };
-
-                return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
-
-            } catch (err) {
-                msg.react('❌');
-                autoDelete(msg);
-
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Nie znaleziono żadnych wyników wyszukiwania!')
-                    ],
-                }).then(msg => autoDelete(msg));
+            for (let i = 0; i < 5; i++) {
+                buttons.addComponents(
+                    new MessageButton()
+                    .setCustomId(`search-${name}-${i+1}`)
+                    .setStyle('SECONDARY')
+                    .setLabel(`${i+1}`)
+                );
             };
+
+            return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
 
         } catch (err) {
-            console.error(err);
+            msg.react('❌');
+            autoDelete(msg);
+
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Nie znaleziono żadnych wyników wyszukiwania!')
+                ],
+            }).then(msg => autoDelete(msg));
         };
+
     },
 };

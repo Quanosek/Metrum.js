@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, ICON, WEBSITE, INVITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
+const { NAME, ICON, WEBSITE, INVITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
@@ -14,60 +14,56 @@ module.exports = {
     description: 'Wiadomość informacyjna',
 
     async run(client, msgInt) {
-        try {
 
-            /** COMMAND */
+        /** COMMAND */
 
-            const embed = new MessageEmbed() // main message
-                .setColor(COLOR1)
-                .setThumbnail(ICON)
-                .setTitle(`Hej, jestem ${NAME}!`)
-                .setDescription(`
+        const embed = new MessageEmbed() // main message
+            .setColor(COLOR1)
+            .setThumbnail(ICON)
+            .setTitle(`Hej, jestem ${NAME}!`)
+            .setDescription(`
 Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłch lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-** ● Dostępne Komendy:** (${client.commands.size}/${client.slashCommands.size})
+** ● Dostępne komendy po ukośniku:** (${client.slashCommands.size})
 Pełne wytłumaczenie wszystkich dostępnych komend znajdziesz na mojej [stronie internetowej](${WEBSITE})!
 
-** - Utwór:** (8)
-\`forward\`, \`lyrics\`, \`pause\`, \`play\`, \`resume\`, \`rewind\`, \`seek\`, \`skip\`
+** - Utwór:** (4)
+\`pause\`, \`play\`, \`resume\`, \`skip\`
 
-** - Kolejka:** (6)
-\`addend\`, \`addrelated\`, \`previous\`, \`radio\`, \`repeat\`, \`shuffle\`
+** - Kolejka:** (1)
+\`radio\`
 
-** - Informacje:** (6)
-\`help\`, \`invite\`, \`nowplaying\`, \`ping\`, \`queue\`, \`search\`
+** - Informacje:** (7)
+\`help\`, \`invite\`, \`nowplaying\`, \`ping\`, \`prefix\`, \`queue\`, \`search\`
 
-** - Moderacja:** (9)
-\`add\`, \`clear\`, \`forceleave\`, \`forceplay\`, \`forceskip\`, \`jump\`, \`move\`, \`prefix\`, \`remove\`
+** - Moderacja:** (8)
+\`add\`, \`clear\`, \`forceleave\`, \`forceplay\`, \`forceskip\`, \`jump\`, \`move\`, \`remove\`
 
 ** ● Zaproszenie:**
 Jeśli spodobało ci się moje działaie i funkcje jakie oferuję, możesz zaprosić mnie na swój własny serwer korzystając z [tego linku](${INVITE})!
             `)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+            .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
-            /** buttons */
+        /** buttons */
 
-            let buttons = new MessageActionRow();
+        let buttons = new MessageActionRow();
 
-            buttons
-                .addComponents(
-                    new MessageButton()
-                    .setStyle('LINK')
-                    .setURL(WEBSITE)
-                    .setLabel(`Wbijaj na stronę!`)
-                )
-                .addComponents(
-                    new MessageButton()
-                    .setStyle('LINK')
-                    .setURL(INVITE)
-                    .setLabel(`Zaproś mnie na serwer!`)
-                )
+        buttons
+            .addComponents(
+                new MessageButton()
+                .setStyle('LINK')
+                .setURL(WEBSITE)
+                .setLabel(`Wbijaj na stronę!`)
+            )
+            .addComponents(
+                new MessageButton()
+                .setStyle('LINK')
+                .setURL(INVITE)
+                .setLabel(`Zaproś mnie na serwer!`)
+            )
 
-            return msgInt.reply({ embeds: [embed], components: [buttons] })
-                .then(autoDelete(msgInt, 60)); // print message
+        return msgInt.reply({ embeds: [embed], components: [buttons] })
+            .then(autoDelete(msgInt, 60)); // print message
 
-        } catch (err) {
-            console.error(err);
-        };
     },
 };

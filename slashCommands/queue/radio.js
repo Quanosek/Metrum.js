@@ -5,12 +5,11 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** CLEAR SLASH COMMAND */
+/** PAUSE SLASH COMMAND */
 
 module.exports = {
-    name: 'clear',
-    description: 'Wyczyszczenie całej kolejki (łącznie z obecnie granym utworem)',
-    permissions: ['MANAGE_MESSAGES'],
+    name: 'radio',
+    description: 'autoodtwarzanie podobnych utworów (radio utworu)',
 
     async run(client, msgInt) {
 
@@ -20,7 +19,18 @@ module.exports = {
 
         /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
+        if (!botvoice) {
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                ],
+                ephemeral: true,
+            });
+        };
+
+        if (!uservoice || botvoice != uservoice) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -44,12 +54,12 @@ module.exports = {
 
         /** COMMAND */
 
-        client.distube.stop(msgInt); // execute command
+        const mode = client.distube.toggleAutoplay(msgInt); // execute command
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription('🧹 | Wyczyszczono kolejkę bota.')
+                .setColor(COLOR1)
+                .setDescription('📻 | ' + (mode ? '**Włączono**' : '**Wyłączono**') + ' autoodtwarzanie (radio utworu).')
             ],
         });
 

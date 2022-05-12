@@ -5,92 +5,93 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-const autoDelete = require('../../functions/autoDelete.js');
-
-/** ADD COMMAND */
+/** CLEAR SLASH COMMAND */
 
 module.exports = {
     name: 'add',
-    aliases: ['ad'],
-    description: 'Dodanie podanego utworu jako następny w kolejce',
+    description: 'dodanie podanego utworu jako następny w kolejce',
     permissions: ['MANAGE_MESSAGES'],
 
-    async run(client, prefix, msg, args) {
+    options: [{
+        name: 'song',
+        description: 'Podaj tytuł utworu lub link Youtube, Spotify albo SoundCloud',
+        type: 'STRING',
+        required: true,
+    }],
 
-        const song = args.join(' ');
+    async run(client, msgInt) {
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+        const song = msgInt.options.getString('song');
+
+        const queue = client.distube.getQueue(msgInt);
+        const botvoice = msgInt.guild.me.voice.channel;
+        const uservoice = msgInt.member.voice.channel;
 
         /** ERRORS */
 
         if (!uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
 
-            return msg.channel.send({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
                 ],
-            }).then(msg => autoDelete(msg));
+                ephemeral: true,
+            });
         };
 
-        if (uservoice.id === msg.guild.afkChannel.id) {
-            msg.react('❌');
-            autoDelete(msg);
+        if (uservoice.id === msgInt.guild.afkChannel.id) {
 
-            return msg.channel.send({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription(`Jesteś na kanale AFK!`)
                 ],
-            }).then(msg => autoDelete(msg));
+                ephemeral: true,
+            });
         };
 
         if (botvoice) {
 
             if (botvoice.members.size === 1) {
-                client.distube.voices.get(msg).leave();
+                client.distube.voices.get(msgInt).leave();
 
             } else if (queue && uservoice != botvoice) {
-                msg.react('❌');
-                autoDelete(msg);
 
-                return msg.channel.send({
+                return msgInt.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR_ERR)
                         .setDescription('Musisz być na kanale głosowym razem ze mną!')
                     ],
-                }).then(msg => autoDelete(msg));
+                    ephemeral: true,
+                });
             };
         };
 
         if (!song) {
-            msg.react('❌');
-            autoDelete(msg);
 
-            return msg.channel.send({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription(`Musisz jeszcze wpisać **nazwę** utworu, albo link do: **YouTube**, **Spotify** lub **SoundCloud**!`)
                 ],
-            }).then(msg => autoDelete(msg));
+                ephemeral: true,
+            });
         };
 
         /** COMMAND */
 
-        msg.react('✅');
+        if (
+            song.includes('youtu.be/') ||
+            song.includes('youtube.com/') ||
+            song.includes('open.spotify.com/') ||
+            song.includes('soundcloud.com/')
+        ) {
+            msgInt.reply(song);
 
-        if (!(
-                msg.content.includes('youtu.be/') ||
-                msg.content.includes('youtube.com/') ||
-                msg.content.includes('open.spotify.com/') ||
-                msg.content.includes('soundcloud.com/')
-            )) {
+        } else {
 
-            msg.channel.send({
+            msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setDescription(`🔍 | Szukam: \`${song}\`, może to chwilę zająć...`)
@@ -101,9 +102,9 @@ module.exports = {
         /** execute command */
 
         return client.distube.play(uservoice, song, {
-            msg,
-            textChannel: msg.channel,
-            member: msg.member,
+            msgInt,
+            textChannel: msgInt.channel,
+            member: msgInt.member,
             position: 1,
         });
 
