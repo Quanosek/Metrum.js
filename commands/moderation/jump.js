@@ -63,7 +63,7 @@ module.exports = {
 
         /** OTHER ERROR */
 
-        if (!args[0]) args[0] = 1; // jump number
+        if (!args[0]) number = 1; // default jump number
 
         if (isNaN(number) || number > queue.songs.length || number === 0) {
             msg.react('❌');
@@ -120,6 +120,7 @@ module.exports = {
                     .setDescription(`⏮️ | Cofnięto się o **${fixedNumber}** ${songs}.`)
                 ],
             });
+
         };
 
     },

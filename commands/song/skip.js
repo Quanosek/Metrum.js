@@ -79,7 +79,7 @@ module.exports = {
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Już zagłosował*ś!`)
+                    .setDescription(`🗳️ | Już oddał*ś swój głos!`)
                 ],
             }).then(msg => autoDelete(msg, 5));
         };

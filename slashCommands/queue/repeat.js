@@ -5,19 +5,23 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** RADIO SLASH COMMAND */
+/** REPEAT SLASH COMMAND */
 
 module.exports = {
-    name: 'radio',
-    description: 'auto-odtwarzanie podobnych utworów (radio utworu)',
+    name: 'repeat',
+    description: 'przełączanie trybów zapętlenia: utworu/kolejki/wyłączone',
 
     options: [{
         name: 'mode',
-        description: 'Wybierz tryb działania radia',
+        description: 'Wybierz tryb działania zapętlenia',
         type: 'NUMBER',
         choices: [{
-                name: 'enable',
+                name: 'song',
                 value: 1,
+            },
+            {
+                name: 'queue',
+                value: 2,
             },
             {
                 name: 'disable',
@@ -71,21 +75,22 @@ module.exports = {
 
         /** COMMAND */
 
-        let mode = client.distube.toggleAutoplay(msgInt);
+        let mode = client.distube.setRepeatMode(msgInt);
 
         if (!choice) {
-            mode = mode ? '**Włączono**' : '**Wyłączono**';
+            mode = mode ? mode === 2 ? '🔁 | Włączono zapętlanie **kolejki**.' : '🔂 | Włączono zapętlanie **utworu**.' : '🔁 | **Wyłączono** zapętlanie.';
 
         } else {
-            queue.autoplay = choice;
-            if (choice === 0) mode = '**Wyłączono**';
-            if (choice === 1) mode = '**Włączono**';
+            queue.repeatMode = choice;
+            if (choice === 0) mode = '🔁 | **Wyłączono** zapętlanie.';
+            if (choice === 1) mode = '🔂 | Włączono zapętlanie **utworu**.';
+            if (choice === 2) mode = '🔁 | Włączono zapętlanie **kolejki**.';
         };
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setDescription('📻 | ' + mode + ' auto-odtwarzanie (radio utworu).')
+                .setDescription(mode)
             ],
         });
 

@@ -67,7 +67,7 @@ module.exports = {
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription(`▶️ | ${requester} wznowioł(a) odtwarzanie.`)
+                        .setDescription(`▶️ | ${requester} wznowił(a) odtwarzanie.`)
                     ],
                 });
 
@@ -130,7 +130,7 @@ module.exports = {
                 return interaction.reply({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
-                        .setDescription(`🔁 | ${requester} włączył(a) zapętlanie ** kolejki ** .`)
+                        .setDescription(`🔁 | ${requester} włączył(a) zapętlanie **kolejki**.`)
                     ],
                 });
             };
@@ -144,7 +144,7 @@ module.exports = {
             return interaction.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription(`📻 | ${requester} ` + (mode ? '**włączył(a)**' : '**wyłączył(a)**') + ' autoodtwarzanie (radio utworu).')
+                    .setDescription(`📻 | ${requester} ` + (mode ? '**włączył(a)**' : '**wyłączył(a)**') + ' auto-odtwarzanie (radio utworu).')
                 ],
             });
         };

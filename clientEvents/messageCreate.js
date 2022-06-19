@@ -47,7 +47,7 @@ module.exports = {
 Jestem zaawansowanym polskim botem muzycznym, obsługującym **YouTube**, **Spotify** oraz **SoundCloud**. Posiadam takie funkcje jak kolejki, radio, pauza, przewijanie i wiele więcej!
 
 Mój prefix to \`${prefix}\`
-Użyj komendy \`help\` po więcej inforamcji!
+Użyj komendy \`help\` po więcej informacji!
                     `)
                     .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
                 ],

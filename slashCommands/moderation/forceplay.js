@@ -5,11 +5,11 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** FORCE SLASH COMMAND */
+/** FORCE PLAY SLASH COMMAND */
 
 module.exports = {
     name: 'forceplay',
-    description: 'Wymuszenie puszczenia podanego utworu',
+    description: 'wymuszenie puszczenia podanego utworu',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{

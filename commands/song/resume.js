@@ -12,7 +12,7 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'resume',
     aliases: ['rs'],
-    description: 'Wznownienie odtwarzania utworu',
+    description: 'Wznowienie odtwarzania utworu',
 
     async run(client, prefix, msg, args) {
 

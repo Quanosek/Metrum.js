@@ -5,7 +5,7 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** FORCE SLASH COMMAND */
+/** FORCE LEAVE SLASH COMMAND */
 
 module.exports = {
     name: 'forceleave',

@@ -5,15 +5,21 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** SKIP SLASH COMMAND */
-
-let skipVotes = []; // votes
+/** SEEK SLASH COMMAND */
 
 module.exports = {
-    name: 'skip',
-    description: 'Pominięcie obecnie granego utworu (głosowanie)',
+    name: 'seek',
+    description: 'przewinięcie utworu do podanego czasu (w sekundach)',
+
+    options: [{
+        name: 'value',
+        description: 'Podaj liczbę sekund, do którego momentu chcesz przewinąć utwór',
+        type: 'NUMBER',
+    }],
 
     async run(client, msgInt) {
+
+        const value = msgInt.options.getNumber('value');
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -54,78 +60,55 @@ module.exports = {
             });
         };
 
-        /** VOTING SYSTEM */
+        /** OTHER ERRORS */
 
-        let users = uservoice.members.size;
+        const song = queue.songs[0]; // now playing song
 
-        uservoice.members.forEach(member => {
-            if (member.user.bot) users = users - 1;
-        });
-
-        const required = Math.ceil(users / 2);
-
-        /** error */
-
-        if (skipVotes.some((x) => x === msgInt.member.user.id)) {
+        if (song.isLive) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Już oddał*ś swój głos!`)
+                    .setDescription('Nie można przewijać transmisji na żywo!')
                 ],
                 ephemeral: true,
             });
         };
 
-        /** voting */
+        if (!value) value = 0; // seek seconds
+        const number = Number(value);
 
-        skipVotes.push(msgInt.member.user.id);
-        process.setMaxListeners(Infinity);
+        if (!value) {
 
-        if (required > 1) {
-
-            // translation
-
-            let votes;
-            let rest = votes % 10;
-            if (rest > 1 || rest < 5) votes = 'głosy'
-            else if (rest < 2 || rest > 4) votes = 'głosów'
-
-            // message
-
-            msgInt.reply({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription(`🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`)
+                    .setColor(COLOR_ERR)
+                    .setDescription('Musisz jeszcze wpisać, **do której sekundy** chcesz przewinąć utwór!')
                 ],
+                ephemeral: true,
+            });
+        };
+
+        if (isNaN(number) || number > queue.songs[0].duration || number === 0) {
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Wprowadź poprawną wartość *(w sekundach)*!')
+                ],
+                ephemeral: true,
             });
         };
 
         /** COMMAND */
 
-        if (skipVotes.length >= required) {
+        client.distube.seek(msgInt, number); // execute command
 
-            if (queue.paused) client.distube.resume(msgInt);
-
-            if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msgInt);
-                else client.distube.stop(msgInt);
-            } else client.distube.skip(msgInt);
-
-            msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription('⏭️ | Pominięto utwór.')
-                ],
-            });
-
-            return skipVotes = [];
-        };
-
-        /** EVENT */
-
-        client.distube.on('playSong', (queue, song) => {
-            return skipVotes = [];
+        return msgInt.reply({
+            embeds: [new MessageEmbed()
+                .setColor(COLOR1)
+                .setDescription(`⏺️ | Przewinięto utwór do: \`${queue.formattedCurrentTime}\``)
+            ],
         });
 
     },

@@ -65,9 +65,7 @@ module.exports = {
         let users = uservoice.members.size;
 
         uservoice.members.forEach(member => {
-            if (member.user.bot) {
-                users = users - 1;
-            };
+            if (member.user.bot) users = users - 1;
         });
 
         const required = Math.ceil(users / 2);
@@ -81,7 +79,7 @@ module.exports = {
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Już zagłosowałeś/aś!`)
+                    .setDescription(`🗳️ | Już oddał*ś swój głos!`)
                 ],
             }).then(msg => autoDelete(msg, 5));
         };

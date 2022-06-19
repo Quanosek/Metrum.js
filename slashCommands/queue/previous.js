@@ -5,12 +5,11 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** CLEAR SLASH COMMAND */
+/** PREVIOUS SLASH COMMAND */
 
 module.exports = {
-    name: 'clear',
-    description: 'Wyczyszczenie całej kolejki (łącznie z obecnie granym utworem)',
-    permissions: ['MANAGE_MESSAGES'],
+    name: 'previous',
+    description: 'Odtworzenie poprzednio granego utworu w kolejce',
 
     async run(client, msgInt) {
 
@@ -20,7 +19,18 @@ module.exports = {
 
         /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
+        if (!botvoice) {
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                ],
+                ephemeral: true,
+            });
+        };
+
+        if (!uservoice || botvoice != uservoice) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -31,12 +41,14 @@ module.exports = {
             });
         };
 
-        if (!queue) {
+        /** OTHER ERROR */
+
+        if (!queue || queue.previousSongs.length < 1) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
+                    .setDescription('Nie znaleziono poprzedniego utworu!')
                 ],
                 ephemeral: true,
             });
@@ -44,14 +56,7 @@ module.exports = {
 
         /** COMMAND */
 
-        client.distube.stop(msgInt); // execute command
-
-        return msgInt.reply({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription('🧹 | Wyczyszczono kolejkę odtwarzania.')
-            ],
-        });
+        client.distube.previous(msgInt); // execute command
 
     },
 };

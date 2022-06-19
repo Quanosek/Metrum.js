@@ -21,14 +21,15 @@ module.exports = {
         msg.react('🏓')
         autoDelete(msg);
 
-        return msg.channel.send({
+        msg.channel.send({
             embeds: [new MessageEmbed()
                 .setColor('RANDOM')
                 .setDescription('pong!')
             ],
+
         }).then(resultmsg => {
 
-            return resultmsg.edit({ // modify sended
+            resultmsg.edit({ // modify sended
                 embeds: [new MessageEmbed()
                     .setColor('RANDOM')
                     .setTitle('🏓 | Pong!')

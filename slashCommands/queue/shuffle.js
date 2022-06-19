@@ -5,13 +5,13 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** SKIP SLASH COMMAND */
+/** SHUFFLE SLASH COMMAND */
 
-let skipVotes = []; // votes
+let shuffleVotes = []; //votes
 
 module.exports = {
-    name: 'skip',
-    description: 'Pominięcie obecnie granego utworu (głosowanie)',
+    name: 'shuffle',
+    description: 'Jednorazowe wymieszanie kolejki utworów (głosowanie)',
 
     async run(client, msgInt) {
 
@@ -48,7 +48,7 @@ module.exports = {
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
+                    .setDescription('Obecnie nie jest odtwarzany *żaden utwór!')
                 ],
                 ephemeral: true,
             });
@@ -66,7 +66,7 @@ module.exports = {
 
         /** error */
 
-        if (skipVotes.some((x) => x === msgInt.member.user.id)) {
+        if (shuffleVotes.some((x) => x === msgInt.author.id)) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -79,7 +79,7 @@ module.exports = {
 
         /** voting */
 
-        skipVotes.push(msgInt.member.user.id);
+        shuffleVotes.push(msgInt.author.id);
         process.setMaxListeners(Infinity);
 
         if (required > 1) {
@@ -96,36 +96,42 @@ module.exports = {
             msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
-                    .setDescription(`🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`)
+                    .setDescription(`🗳️ | Głosujesz za **wymieszaniem kolejki utworów** (**${shuffleVotes.length}**/${required} ${votes}).`)
                 ],
             });
         };
 
         /** COMMAND */
 
-        if (skipVotes.length >= required) {
+        if (shuffleVotes.length >= required) {
 
-            if (queue.paused) client.distube.resume(msgInt);
+            client.distube.shuffle(msgInt)
 
-            if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msgInt);
-                else client.distube.stop(msgInt);
-            } else client.distube.skip(msgInt);
+            // translation
+
+            let songs;
+            let rest = queue.songs.length % 10;
+
+            if (queue.songs.length === 1) songs = 'utwór'
+            else if (rest > 1 || rest < 5) songs = 'utwory'
+            else if (rest < 2 || rest > 4) songs = 'utworów'
+
+            // message
 
             msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription('⏭️ | Pominięto utwór.')
+                    .setDescription(`🔀 | Wymieszano kolejkę zawierającą **${queue.songs.length}** ${songs}.`)
                 ],
             });
 
-            return skipVotes = [];
+            return shuffleVotes = [];
         };
 
         /** EVENT */
 
         client.distube.on('playSong', (queue, song) => {
-            return skipVotes = [];
+            return shuffleVotes = [];
         });
 
     },

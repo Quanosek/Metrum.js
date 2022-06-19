@@ -45,7 +45,7 @@ module.exports = (client) => {
 
                 const guild = client.guilds.cache.get(GUILD_ID);
 
-                if (REGISTER === 'globally') { // globaly
+                if (REGISTER === 'globally') { // globally
 
                     // await guild.commands.set([]);
                     // console.log(realDate() + ' Deleted'.brightRed + ' all local slash commands.');

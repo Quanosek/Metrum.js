@@ -1,4 +1,4 @@
-/* <--- Import ---> */
+/** IMPORT */
 
 require('dotenv').config();
 const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
@@ -7,7 +7,7 @@ const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-/** COMMAND */
+/** QUEUE COMMAND */
 
 module.exports = {
     name: 'queue',
@@ -78,7 +78,7 @@ module.exports = {
             if (queue.paused) params += '\`⏸️|pauza\` \n'
             if (queue.repeatMode === 1) params += '\`🔁|zapętlanie utworu\` \n'
             if (queue.repeatMode === 2) params += '\`🔁|zapętlanie kolejki\` \n'
-            if (queue.autoplay) params += '\`📻|autoodtwarzanie\` \n'
+            if (queue.autoplay) params += '\`📻|auto-odtwarzanie\` \n'
 
             embed.addField('Włączone opcje:', params);
         };

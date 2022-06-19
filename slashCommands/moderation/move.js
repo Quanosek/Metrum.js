@@ -88,7 +88,7 @@ module.exports = {
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription('Nie można przesunąć obecnie granego utwóru!\nWpisz wartość większą od \`1\`')
+                    .setDescription('Nie można przesunąć obecnie granego utworu!\nWpisz wartość większą od \`1\`')
                 ],
                 ephemeral: true,
             });
@@ -144,5 +144,6 @@ module.exports = {
 
         queue.songs.splice(before, 1);
         return queue.addToQueue(song, after - 1);
+
     },
 };

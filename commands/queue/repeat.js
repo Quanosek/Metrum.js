@@ -11,10 +11,15 @@ const autoDelete = require('../../functions/autoDelete.js');
 
 module.exports = {
     name: 'repeat',
-    aliases: ['rp'],
-    description: 'Przełączanie zapętlenia: utworu/kolejki/wyłączone',
+    aliases: ['rp', 'loop', 'lp'],
+    description: 'Przełączanie trybów zapętlenia: utworu/kolejki/wyłączone',
 
     async run(client, prefix, msg, args) {
+
+        let choice;
+        if (args[0] === 'song' || args[0] === 's') choice = 1;
+        if (args[0] === 'queue' || args[0] === 'q') choice = 2;
+        if (args[0] === 'disable' || args[0] === 'd') choice = 0;
 
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
@@ -61,10 +66,17 @@ module.exports = {
         /** COMMAND */
 
         msg.react('✅');
-
-
         let mode = client.distube.setRepeatMode(msg);
-        mode = mode ? mode === 2 ? '🔁 | Włączono zapętlanie **kolejki**.' : '🔂 | Włączono zapętlanie **utworu**.' : '🔁 | **Wyłączono** zapętlanie.';
+
+        if (isNaN(choice)) {
+            mode = mode ? mode === 2 ? '🔁 | Włączono zapętlanie **kolejki**.' : '🔂 | Włączono zapętlanie **utworu**.' : '🔁 | **Wyłączono** zapętlanie.';
+
+        } else {
+            queue.repeatMode = choice;
+            if (choice === 0) mode = '🔁 | **Wyłączono** zapętlanie.';
+            if (choice === 1) mode = '🔂 | Włączono zapętlanie **utworu**.';
+            if (choice === 2) mode = '🔁 | Włączono zapętlanie **kolejki**.';
+        };
 
         return msg.channel.send({
             embeds: [new MessageEmbed()

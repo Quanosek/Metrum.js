@@ -12,9 +12,13 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'radio',
     aliases: ['r'],
-    description: 'Autoodtwarzanie podobnych utworów (radio utworu)',
+    description: 'Auto-odtwarzanie podobnych utworów (radio utworu)',
 
     async run(client, prefix, msg, args) {
+
+        let choice;
+        if (args[0] === 'enable' || args[0] === 'e') choice = 1;
+        if (args[0] === 'disable' || args[0] === 'd') choice = 0;
 
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
@@ -61,13 +65,21 @@ module.exports = {
         /** COMMAND */
 
         msg.react('✅');
+        let mode = client.distube.toggleAutoplay(msg);
 
-        const mode = client.distube.toggleAutoplay(msg); // execute command
+        if (isNaN(choice)) {
+            mode = mode ? '**Włączono**' : '**Wyłączono**';
+
+        } else {
+            queue.autoplay = choice;
+            if (choice === 0) mode = '**Wyłączono**';
+            if (choice === 1) mode = '**Włączono**';
+        };
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setDescription('📻 | ' + (mode ? '**Włączono**' : '**Wyłączono**') + ' autoodtwarzanie (radio utworu).')
+                .setDescription('📻 | ' + mode + ' auto-odtwarzanie (radio utworu).')
             ],
         });
 

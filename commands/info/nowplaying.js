@@ -74,7 +74,7 @@ module.exports = {
             if (queue.paused) params += '\`⏸️|pauza\` \n'
             if (queue.repeatMode === 1) params += '\`🔂|zapętlanie utworu\` \n'
             if (queue.repeatMode === 2) params += '\`🔁|zapętlanie kolejki\` \n'
-            if (queue.autoplay) params += '\`📻|autoodtwarzanie\` \n'
+            if (queue.autoplay) params += '\`📻|auto-odtwarzanie\` \n'
 
             embed.addField('Włączone opcje:', params);
         };

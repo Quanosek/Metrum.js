@@ -63,6 +63,8 @@ module.exports = {
 
         /** OTHER ERROR */
 
+        if (!args[0]) number = 1; // default remove number
+
         if (isNaN(number) || number > queue.songs.length || number < 1) {
             msg.react('❌');
             autoDelete(msg);
@@ -79,9 +81,9 @@ module.exports = {
 
         msg.react('✅');
 
-        // curretly playing
+        // currently playing
 
-        if (!number || number === 1) { // skipping song
+        if (number === 1) { // skipping song
 
             if (queue.songs.length < 2) {
                 if (queue.autoplay) client.distube.skip(msg);

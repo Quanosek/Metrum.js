@@ -56,7 +56,7 @@ module.exports = {
         return msg.channel.send({
             embeds: [new MessageEmbed()
                 .setColor(COLOR2)
-                .setDescription('🧹 | Wyczyszczono kolejkę bota.')
+                .setDescription('🧹 | Wyczyszczono kolejkę odtwarzania.')
             ],
         });
 

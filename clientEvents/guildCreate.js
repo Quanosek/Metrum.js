@@ -46,7 +46,7 @@ module.exports = {
                         .setThumbnail(ICON)
                         .setTitle('😄 | Cieszę się, że tu jestem!')
                         .setDescription(`
-Dziękuję za dodanie mnie na serwer!!! Jestem Metrum, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i autoodtwarzania i dużo więcej.
+Dziękuję za dodanie mnie na serwer!!! Jestem Metrum, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i auto-odtwarzania i dużo więcej.
 
 Moim domyślnym prefixem jest: \`${PREFIX}\`
 

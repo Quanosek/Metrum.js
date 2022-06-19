@@ -70,7 +70,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Nie można przewijać transmisji na żywo!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 
@@ -85,7 +85,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość (w sekundach)!')
-                ]
+                ],
             }).then(msg => autoDelete(msg));
         };
 

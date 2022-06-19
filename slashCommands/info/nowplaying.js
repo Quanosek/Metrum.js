@@ -5,7 +5,7 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
-/** NOWPLAYING SLASH COMMAND */
+/** NOW PLAYING SLASH COMMAND */
 
 module.exports = {
     name: 'nowplaying',
@@ -67,7 +67,7 @@ module.exports = {
             if (queue.paused) params += '\`⏸️|pauza\` \n'
             if (queue.repeatMode === 1) params += '\`🔂|zapętlanie utworu\` \n'
             if (queue.repeatMode === 2) params += '\`🔁|zapętlanie kolejki\` \n'
-            if (queue.autoplay) params += '\`📻|autoodtwarzanie\` \n'
+            if (queue.autoplay) params += '\`📻|auto-odtwarzanie\` \n'
 
             embed.addField('Włączone opcje:', params);
         };

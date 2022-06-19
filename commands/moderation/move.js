@@ -62,7 +62,7 @@ module.exports = {
             }).then(msg => autoDelete(msg));
         };
 
-        // WHAT
+        // before
 
         if (!args[0]) {
             msg.react('❌');
@@ -95,7 +95,7 @@ module.exports = {
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription('Nie można przesunąć obecnie granego utwóru!\nWpisz wartość większą od \`1\`')
+                    .setDescription('Nie można przesunąć obecnie granego utworu!\nWpisz wartość większą od \`1\`')
                 ],
             }).then(msg => autoDelete(msg));
         };

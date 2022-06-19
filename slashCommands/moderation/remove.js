@@ -14,9 +14,8 @@ module.exports = {
 
     options: [{
         name: 'number',
-        description: 'Podaj numer wybranego utworu w obecnej kolejce (domyślnie obecnie grany)',
+        description: 'Podaj numer utworu w kolejce (domyślnie obecnie grany)',
         type: 'NUMBER',
-        required: true,
     }],
 
     async run(client, msgInt) {
@@ -31,7 +30,7 @@ module.exports = {
 
         if (!botvoice) {
 
-            return msg.reply({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Nie jestem na żadnym kanale głosowym!')
@@ -42,7 +41,7 @@ module.exports = {
 
         if (!uservoice || botvoice != uservoice) {
 
-            return msg.reply({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Musisz być na kanale głosowym razem ze mną!')
@@ -53,7 +52,7 @@ module.exports = {
 
         if (!queue) {
 
-            return msg.reply({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
@@ -62,11 +61,13 @@ module.exports = {
             });
         };
 
-        /** OTHER ERRORS */
+        /** OTHER ERROR */
+
+        if (!number) number = 1; // default remove number
 
         if (number > queue.songs.length || number < 1) {
 
-            return msg.reply({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Wprowadź poprawną wartość!')
@@ -77,16 +78,16 @@ module.exports = {
 
         /** COMMAND */
 
-        // curretly playing
+        // currently playing
 
         if (!number || number === 1) { // skipping song
 
             if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msg);
-                else client.distube.stop(msg);
-            } else client.distube.skip(msg);
+                if (queue.autoplay) client.distube.skip(msgInt);
+                else client.distube.stop(msgInt);
+            } else client.distube.skip(msgInt);
 
-            return msg.reply({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
                     .setDescription('🗑️ | Usunięto **obecnie odtwarzany** utwór z kolejki.')
@@ -100,7 +101,7 @@ module.exports = {
             number = number - 1;
             const song = queue.songs[number];
 
-            msg.reply({
+            msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
                     .setTitle('🗑️ | Usunięto z kolejki utworów pozycję:')
