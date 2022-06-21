@@ -67,7 +67,6 @@ module.exports = {
             /** command */
 
             msg.react('✅');
-
             autoDelete(msg, 15);
 
             db.prefix = newPrefix;
@@ -101,7 +100,6 @@ module.exports = {
         /** HELP MENU */
 
         msg.react('❓');
-
         autoDelete(msg, 45);
 
         return msg.channel.send({

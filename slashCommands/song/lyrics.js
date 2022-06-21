@@ -10,9 +10,18 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'lyrics',
-    description: 'Wyświetlenie tekstu do odtwarzanego utworu',
+    description: 'wyświetlenie tekstu do odtwarzanego utworu',
+
+    options: [{
+        name: 'name',
+        description: 'Podaj tytuł utworu, który chcesz wyszukać',
+        type: 'STRING',
+    }],
 
     async run(client, msgInt) {
+
+        let name = msgInt.options.getString('name');
+        if (!name) name = queue.songs[0].name;
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -65,10 +74,8 @@ module.exports = {
             return lines;
         };
 
-        const songTitle = queue.songs[0].name;
-
         const url = new URL('https://some-random-api.ml/lyrics');
-        url.searchParams.append('title', songTitle)
+        url.searchParams.append('title', name)
 
         /** COMMAND */
 

@@ -16,6 +16,8 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        const number = Number(args[0]);
+
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
@@ -74,9 +76,6 @@ module.exports = {
             }).then(msg => autoDelete(msg));
         };
 
-        if (!args[0]) args[0] = 0; // seek seconds
-        const number = Number(args[0]);
-
         if (!args[0]) {
             msg.react('❌');
             autoDelete(msg);
@@ -89,7 +88,7 @@ module.exports = {
             }).then(msg => autoDelete(msg));
         };
 
-        if (isNaN(number) || number > queue.songs[0].duration || number === 0) {
+        if (isNaN(number) || number > queue.songs[0].duration || number < 0) {
             msg.react('❌');
             autoDelete(msg);
 

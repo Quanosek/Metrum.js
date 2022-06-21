@@ -61,8 +61,7 @@ module.exports = {
             )
             .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
-        let songs;
-        let rest = queue.songs.length % 10;
+        let songs, rest = queue.songs.length % 10;
 
         if (queue.songs.length === 1) songs = 'utwór'
         else if (rest < 2 || rest > 4) songs = 'utworów'

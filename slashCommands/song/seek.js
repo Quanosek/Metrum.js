@@ -12,14 +12,15 @@ module.exports = {
     description: 'przewinięcie utworu do podanego czasu (w sekundach)',
 
     options: [{
-        name: 'value',
+        name: 'number',
         description: 'Podaj liczbę sekund, do którego momentu chcesz przewinąć utwór',
         type: 'NUMBER',
+        required: true,
     }],
 
     async run(client, msgInt) {
 
-        const value = msgInt.options.getNumber('value');
+        const number = msgInt.options.getNumber('number');
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -75,21 +76,7 @@ module.exports = {
             });
         };
 
-        if (!value) value = 0; // seek seconds
-        const number = Number(value);
-
-        if (!value) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz jeszcze wpisać, **do której sekundy** chcesz przewinąć utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (isNaN(number) || number > queue.songs[0].duration || number === 0) {
+        if (isNaN(number) || number > queue.songs[0].duration || number < 0) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()

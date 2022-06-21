@@ -12,12 +12,13 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'remove',
     aliases: ['rm'],
-    description: 'Usunięcie wybranej pozycji z kolejki utworów (domyślnie obecnie grany)',
+    description: 'Usunięcie wybranej pozycji z kolejki utworów (domyślnie: obecnie grany)',
     permissions: ['MANAGE_MESSAGES'],
 
     async run(client, prefix, msg, args) {
 
         let number = Number(args[0]);
+        if (!args[0]) number = 1; // default value
 
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
@@ -63,8 +64,6 @@ module.exports = {
 
         /** OTHER ERROR */
 
-        if (!args[0]) number = 1; // default remove number
-
         if (isNaN(number) || number > queue.songs.length || number < 1) {
             msg.react('❌');
             autoDelete(msg);
@@ -81,9 +80,7 @@ module.exports = {
 
         msg.react('✅');
 
-        // currently playing
-
-        if (number === 1) { // skipping song
+        if (number === 1) { // currently playing
 
             if (queue.songs.length < 2) {
                 if (queue.autoplay) client.distube.skip(msg);
@@ -97,9 +94,7 @@ module.exports = {
                 ],
             });
 
-        } else {
-
-            // number > 1
+        } else { // song number > 1
 
             number = number - 1;
             const song = queue.songs[number];

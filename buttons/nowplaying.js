@@ -19,7 +19,6 @@ module.exports = {
         const uservoice = interaction.member.voice.channel;
 
         const name = params[0];
-
         let requester = interaction.member.user;
 
         /** COMMON ERRORS */

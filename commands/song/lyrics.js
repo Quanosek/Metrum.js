@@ -17,6 +17,9 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        let name = args.join(' ');
+        if (!name) name = queue.songs[0].name; // default value
+
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
@@ -71,10 +74,8 @@ module.exports = {
             return lines;
         };
 
-        const songTitle = queue.songs[0].name;
-
         const url = new URL('https://some-random-api.ml/lyrics');
-        url.searchParams.append('title', songTitle)
+        url.searchParams.append('title', name)
 
         /** COMMAND */
 

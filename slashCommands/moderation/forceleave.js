@@ -5,6 +5,8 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
+const autoDelete = require('../../functions/autoDelete.js');
+
 /** FORCE LEAVE SLASH COMMAND */
 
 module.exports = {

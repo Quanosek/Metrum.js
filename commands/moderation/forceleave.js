@@ -49,7 +49,6 @@ module.exports = {
         /** COMMAND */
 
         msg.react('✅');
-
         autoDelete(msg);
 
         client.distube.voices.get(msg).leave(); // execute command

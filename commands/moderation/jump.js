@@ -18,6 +18,7 @@ module.exports = {
     async run(client, prefix, msg, args) {
 
         let number = Number(args[0]);
+        if (!args[0]) number = 1; // default value
 
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
@@ -63,8 +64,6 @@ module.exports = {
 
         /** OTHER ERROR */
 
-        if (!args[0]) number = 1; // default jump number
-
         if (isNaN(number) || number > queue.songs.length || number === 0) {
             msg.react('❌');
             autoDelete(msg);
@@ -86,42 +85,22 @@ module.exports = {
             else client.distube.stop(msg);
         } else client.distube.jump(msg, number);
 
-        let songs;
-        let rest = number % 10;
+        let songs, rest = number % 10;
+        const abs = Math.abs(number);
 
-        // number is < 0
+        if (abs === 1) songs = 'utwór'
+        else if (rest < 2 || rest > 4) songs = 'utworów'
+        else if (rest > 1 || rest < 5) songs = 'utwory'
 
-        if (number > 0) {
+        if (number > 0) text = `⏭️ | Pominięto **${number}** ${songs}.`;
+        else text = `⏮️ | Cofnięto się o **${abs}** ${songs}.`;
 
-            if (number === 1) songs = 'utwór'
-            else if (rest < 2 || rest > 4) songs = 'utworów'
-            else if (rest > 1 || rest < 5) songs = 'utwory'
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`⏭️ | Pominięto **${number}** ${songs}.`)
-                ],
-            });
-
-        } else {
-
-            // number is > 0
-
-            fixedNumber = -number
-
-            if (fixedNumber === 1) songs = 'utwór'
-            else if (rest < 2 || rest > 4) songs = 'utworów'
-            else if (rest > 1 || rest < 5) songs = 'utwory'
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`⏮️ | Cofnięto się o **${fixedNumber}** ${songs}.`)
-                ],
-            });
-
-        };
+        return msg.channel.send({
+            embeds: [new MessageEmbed()
+                .setColor(COLOR1)
+                .setDescription(text)
+            ],
+        });
 
     },
 };

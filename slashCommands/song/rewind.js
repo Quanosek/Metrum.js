@@ -12,14 +12,15 @@ module.exports = {
     description: 'przewinięcie utworu do tyłu o podaną liczbę sekund (domyślnie: 10)',
 
     options: [{
-        name: 'value',
+        name: 'number',
         description: 'Podaj liczbę sekund, o ile chcesz przewinąć do tyłu',
         type: 'NUMBER',
     }],
 
     async run(client, msgInt) {
 
-        const value = msgInt.options.getNumber('value');
+        let number = msgInt.options.getNumber('number');
+        if (!number) number = 10; // default value
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -75,10 +76,9 @@ module.exports = {
             });
         };
 
-        if (!value) value = 10; // rewind seconds
-        let number = Number(value);
+        let seekTime = queue.currentTime - number;
 
-        if (isNaN(number) || number > queue.currentTime || number === 0) {
+        if (isNaN(number) || number === 0) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -91,49 +91,27 @@ module.exports = {
 
         /** COMMAND */
 
-        const seekTime = queue.currentTime - number;
-
         if (seekTime < 0) seekTime = 0;
-        if (seekTime >= queue.songs[0].duration - queue.currentTime) seekTime = 0;
+        else if (seekTime >= song.duration) seekTime = song.duration - 1;
 
         client.distube.seek(msgInt, seekTime); // execute command
 
-        let seconds;
-        let rest = number % 10;
+        let seconds, rest = number % 10;
+        const abs = Math.abs(number);
 
-        // number is < 0
+        if (abs === 1) seconds = 'sekundę'
+        else if (rest < 2 || rest > 4) seconds = 'sekund'
+        else if (rest > 1 || rest < 5) seconds = 'sekundy'
 
-        if (number > 0) {
+        if (number > 0) text = `⏪ | Przewinięto utwór o \`${number}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${song.formattedDuration}\`).`;
+        else text = `⏩ | Przewinięto utwór o \`${abs}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${song.formattedDuration}\`).`;
 
-            if (number === 1) seconds = 'sekundę'
-            else if (rest < 2 || rest > 4) seconds = 'sekund'
-            else if (rest > 1 || rest < 5) seconds = 'sekundy'
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`⏪ | Przewinięto utwór o \`${number}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
-                ],
-            });
-
-        } else {
-
-            // number is > 0
-
-            fixedNumber = -number
-
-            if (fixedNumber === 1) seconds = 'sekundę'
-            else if (rest < 2 || rest > 4) seconds = 'sekund'
-            else if (rest > 1 || rest < 5) seconds = 'sekundy'
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`⏩ | Przewinięto utwór o \`${fixedNumber}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
-                ],
-            });
-
-        };
+        return msgInt.reply({
+            embeds: [new MessageEmbed()
+                .setColor(COLOR1)
+                .setDescription(text)
+            ],
+        });
 
     },
 };

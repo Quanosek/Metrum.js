@@ -14,13 +14,14 @@ module.exports = {
 
     options: [{
         name: 'number',
-        description: 'Podaj numer utworu w kolejce (domyślnie obecnie grany)',
+        description: 'Podaj numer utworu w kolejce (domyślnie: obecnie grany)',
         type: 'NUMBER',
     }],
 
     async run(client, msgInt) {
 
         let number = msgInt.options.getNumber('number');
+        if (!number) number = 1; // default value
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -63,9 +64,7 @@ module.exports = {
 
         /** OTHER ERROR */
 
-        if (!number) number = 1; // default remove number
-
-        if (number > queue.songs.length || number < 1) {
+        if (isNaN(number) || number > queue.songs.length || number < 1) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -78,9 +77,7 @@ module.exports = {
 
         /** COMMAND */
 
-        // currently playing
-
-        if (!number || number === 1) { // skipping song
+        if (!number || number === 1) { // currently playing
 
             if (queue.songs.length < 2) {
                 if (queue.autoplay) client.distube.skip(msgInt);
@@ -94,9 +91,7 @@ module.exports = {
                 ],
             });
 
-        } else {
-
-            // number > 1
+        } else { // song number > 1
 
             number = number - 1;
             const song = queue.songs[number];

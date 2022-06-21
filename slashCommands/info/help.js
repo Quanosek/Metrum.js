@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, ICON, WEBSITE, INVITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
+const { NAME, ICON, WEBSITE, INVITE, OPINION, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
@@ -24,14 +24,13 @@ module.exports = {
             .setDescription(`
 Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-** ● Dostępne komendy po ukośniku:** (${client.slashCommands.size})
-Pełne wytłumaczenie wszystkich dostępnych komend znajdziesz na mojej [stronie internetowej](${WEBSITE})!
+** ● Lista dostępnych komend po ukośniku:** (${client.slashCommands.size})
 
-** - Utwór:** (4)
-\`pause\`, \`play\`, \`resume\`, \`skip\`
+** - Utwór:** (8)
+\`forward\`, \`lyrics\`, \`pause\`, \`play\`, \`resume\`, \`rewind\`, \`seek\`, \`skip\`
 
-** - Kolejka:** (1)
-\`radio\`
+** - Kolejka:** (6)
+\`addend\`, \`addrelated\`, \`previous\`, \`radio\`, \`repeat\`, \`shuffle\`
 
 ** - Informacje:** (7)
 \`help\`, \`invite\`, \`nowplaying\`, \`ping\`, \`prefix\`, \`queue\`, \`search\`
@@ -39,16 +38,12 @@ Pełne wytłumaczenie wszystkich dostępnych komend znajdziesz na mojej [stronie
 ** - Moderacja:** (8)
 \`add\`, \`clear\`, \`forceleave\`, \`forceplay\`, \`forceskip\`, \`jump\`, \`move\`, \`remove\`
 
-** ● Zaproszenie:**
-Jeśli spodobało ci się moje działanie i funkcje jakie oferuję, możesz zaprosić mnie na swój własny serwer korzystając z [tego linku](${INVITE})!
+** ● Więcej:**
+Aby dowiedzieć się o dokładnym działaniu komend odwiedź [stronę internetową](${WEBSITE}), możesz także mnie [zaprosić](${INVITE}) na swój własny serwer lub [zostawić opinię](${OPINION})!
             `)
             .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
-        /** buttons */
-
-        let buttons = new MessageActionRow();
-
-        buttons
+        const buttons = new MessageActionRow() // buttons
             .addComponents(
                 new MessageButton()
                 .setStyle('LINK')
@@ -60,6 +55,12 @@ Jeśli spodobało ci się moje działanie i funkcje jakie oferuję, możesz zapr
                 .setStyle('LINK')
                 .setURL(INVITE)
                 .setLabel(`Zaproś mnie na serwer!`)
+            )
+            .addComponents(
+                new MessageButton()
+                .setStyle('LINK')
+                .setURL(OPINION)
+                .setLabel(`Zostaw opinię!`)
             )
 
         return msgInt.reply({ embeds: [embed], components: [buttons] })

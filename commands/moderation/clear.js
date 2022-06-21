@@ -23,7 +23,19 @@ module.exports = {
 
         /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
+        if (!botvoice) {
+            msg.react('❌');
+            autoDelete(msg);
+
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                ],
+            }).then(msg => autoDelete(msg));
+        };
+
+        if (!uservoice || botvoice != uservoice) {
             msg.react('❌');
             autoDelete(msg);
 

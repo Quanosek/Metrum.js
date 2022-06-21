@@ -73,14 +73,9 @@ module.exports = {
         };
 
         const nextSong = queue.songs[1];
-
         if (nextSong) embed.addField('Następne w kolejce:', `[${nextSong.name}](${nextSong.url}) - \`${nextSong.formattedDuration}\``);
 
-        /** buttons */
-
-        let buttons = new MessageActionRow();
-
-        buttons
+        const buttons = new MessageActionRow() // buttons
             .addComponents(
                 new MessageButton()
                 .setCustomId(`nowplaying-pause`)

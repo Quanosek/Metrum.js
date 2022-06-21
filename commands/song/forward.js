@@ -16,6 +16,9 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        let number = Number(args[0]);
+        if (!args[0]) number = 10; // default value
+
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
@@ -74,10 +77,9 @@ module.exports = {
             }).then(msg => autoDelete(msg));
         };
 
-        if (!args[0]) args[0] = 10; // forward seconds
-        let number = Number(args[0]);
+        let seekTime = queue.currentTime + number;
 
-        if (isNaN(number) || number > queue.songs[0].duration || number === 0) {
+        if (isNaN(number) || number === 0) {
             msg.react('❌');
             autoDelete(msg);
 
@@ -93,46 +95,27 @@ module.exports = {
 
         msg.react('✅');
 
-        const seekTime = queue.currentTime + number;
-        if (seekTime >= queue.songs[0].duration) seekTime = queue.songs[0].duration - 1;
+        if (seekTime < 0) seekTime = 0;
+        else if (seekTime >= song.duration) seekTime = song.duration - 1;
 
         client.distube.seek(msg, seekTime); // execute command
 
-        let seconds;
-        let rest = number % 10;
+        let seconds, rest = number % 10;
+        const abs = Math.abs(number);
 
-        // number is < 0
+        if (abs === 1) seconds = 'sekundę'
+        else if (rest < 2 || rest > 4) seconds = 'sekund'
+        else if (rest > 1 || rest < 5) seconds = 'sekundy'
 
-        if (number > 0) {
+        if (number > 0) text = `⏩ | Przewinięto utwór o \`${number}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${song.formattedDuration}\`).`;
+        else text = `⏪ | Przewinięto utwór o \`${abs}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${song.formattedDuration}\`).`;
 
-            if (number === 1) seconds = 'sekundę'
-            else if (rest < 2 || rest > 4) seconds = 'sekund'
-            else if (rest > 1 || rest < 5) seconds = 'sekundy'
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`⏩ | Przewinięto utwór o \`${number}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
-                ],
-            });
-
-        } else {
-
-            // number is > 0
-
-            fixedNumber = -number
-
-            if (fixedNumber === 1) seconds = 'sekundę'
-            else if (rest < 2 || rest > 4) seconds = 'sekund'
-            else if (rest > 1 || rest < 5) seconds = 'sekundy'
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`⏪ | Przewinięto utwór o \`${fixedNumber}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${queue.songs[0].formattedDuration}\`).`)
-                ],
-            });
-        };
+        return msg.channel.send({
+            embeds: [new MessageEmbed()
+                .setColor(COLOR1)
+                .setDescription(text)
+            ],
+        });
 
     },
 };
