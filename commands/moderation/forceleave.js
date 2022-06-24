@@ -23,8 +23,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -35,8 +34,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -48,8 +46,7 @@ module.exports = {
 
         /** COMMAND */
 
-        msg.react('✅');
-        autoDelete(msg);
+        msg.react('✅'), autoDelete(msg);
 
         client.distube.voices.get(msg).leave(); // execute command
 

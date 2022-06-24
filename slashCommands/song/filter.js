@@ -5,22 +5,40 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** SEEK SLASH COMMAND */
+/** FILTER SLASH COMMAND */
 
 module.exports = {
-    name: 'seek',
-    description: 'Przewinięcie utworu do podanego czasu (w sekundach)',
+    name: 'filter',
+    description: 'Ustaw filtr na odtwarzaną muzykę (ponowne wybranie danego filtru, wyłączy go)',
 
     options: [{
-        name: 'number',
-        description: 'Podaj liczbę sekund, do którego momentu chcesz przewinąć utwór',
-        type: 'NUMBER',
+        name: 'choice',
+        description: 'Wybierz filtr',
+        type: 'STRING',
         required: true,
+        choices: [
+            { name: 'disable', value: 'disable' },
+            { name: '3d', value: '3d' },
+            { name: 'bassboost', value: 'bassboost' },
+            { name: 'echo', value: 'echo' },
+            { name: 'karaoke', value: 'karaoke' },
+            { name: 'nightcore', value: 'nightcore' },
+            { name: 'vaporwave', value: 'vaporwave' },
+            { name: 'flanger', value: 'flanger' },
+            { name: 'gate', value: 'gate' },
+            { name: 'haas', value: 'haas' },
+            { name: 'reverse', value: 'reverse' },
+            { name: 'surround', value: 'surround' },
+            { name: 'mcompand', value: 'mcompand' },
+            { name: 'phaser', value: 'phaser' },
+            { name: 'tremolo', value: 'tremolo' },
+            { name: 'earwax', value: 'earwax' }
+        ],
     }],
 
     async run(client, msgInt) {
 
-        const number = msgInt.options.getNumber('number');
+        const choice = msgInt.options.getString('choice');
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -61,40 +79,34 @@ module.exports = {
             });
         };
 
-        /** OTHER ERRORS */
-
-        const song = queue.songs[0]; // now playing song
-
-        if (song.isLive) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie można przewijać transmisji na żywo!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (isNaN(number) || number > queue.songs[0].duration || number < 0) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Wprowadź poprawną wartość *(w sekundach)*!')
-                ],
-                ephemeral: true,
-            });
-        };
-
         /** COMMAND */
 
-        client.distube.seek(msgInt, number); // execute command
+        if (choice === 'disable') {
+            client.distube.setFilter(msgInt, false);
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR1)
+                    .setDescription('🪄 | **Wyłączono** wszystkie filtry.')
+                ],
+            });
+        };
+
+        const filter = client.distube.setFilter(msgInt, choice);
+
+        if (filter.length === 0) {
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR1)
+                    .setDescription('🪄 | Żaden filtr **nie jest aktywny**.')
+                ],
+            });
+        };
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setDescription(`⏺️ | Przewinięto utwór do: \`${queue.formattedCurrentTime}\``)
+                .setDescription('🪄 | **Włączone filtry**: ' + (filter.join(', ')))
             ],
         });
 

@@ -9,7 +9,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'move',
-    description: 'przesunięcie wybranej pozycji w kolejce utworów',
+    description: 'Przesunięcie wybranej pozycji w kolejce utworów',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{

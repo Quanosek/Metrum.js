@@ -9,7 +9,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'forceplay',
-    description: 'wymuszenie puszczenia podanego utworu',
+    description: 'Wymuszenie puszczenia podanego utworu',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{

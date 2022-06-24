@@ -9,7 +9,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'add',
-    description: 'dodanie podanego utworu jako następny w kolejce',
+    description: 'Dodanie podanego utworu jako następny w kolejce',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{

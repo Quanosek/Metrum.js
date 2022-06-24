@@ -17,49 +17,26 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        let name = args.join(' ');
-        if (!name) name = queue.songs[0].name; // default value
+        let title = args.join(' ');
 
         const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERROR */
 
-        if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
+        if (!title) {
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
+            if (!queue) {
+                msg.react('❌'), autoDelete(msg);
 
-        if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+                return msg.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!')
+                    ],
+                }).then(msg => autoDelete(msg));
+            };
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
+            title = queue.songs[0].name; // default value
         };
 
         /** CREATING URL ADDRESS */
@@ -75,7 +52,8 @@ module.exports = {
         };
 
         const url = new URL('https://some-random-api.ml/lyrics');
-        url.searchParams.append('title', name)
+        url.searchParams.append('title', title);
+        // console.log(url.href); // check final link
 
         /** COMMAND */
 
@@ -98,13 +76,12 @@ module.exports = {
 
         } catch (err) { // no song error
 
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription('Nie znaleziono tekstu dla tego utworu!')
+                    .setDescription('Niestety nie znaleziono tekstu dla tego utworu!')
                 ],
             }).then(msg => autoDelete(msg));
         };

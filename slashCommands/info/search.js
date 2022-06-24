@@ -12,21 +12,46 @@ module.exports = {
     description: 'Wyszukiwanie utworów',
 
     options: [{
-        name: 'song',
+        name: 'title',
         description: 'Podaj tytuł utworu, który chcesz wyszukać',
         type: 'STRING',
-        required: true,
     }],
 
     async run(client, msgInt) {
 
-        const song = msgInt.options.getString('song');
+        let title;
+        if (msgInt.type === 'APPLICATION_COMMAND') {
+
+            title = msgInt.options.getString('title');
+
+            const queue = client.distube.getQueue(msgInt);
+
+            if (!title) {
+
+                if (!queue) {
+
+                    return msgInt.reply({
+                        embeds: [new MessageEmbed()
+                            .setColor(COLOR_ERR)
+                            .setDescription('Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!')
+                        ],
+                        ephemeral: true,
+                    });
+                };
+
+                title = queue.songs[0].name; // default value
+            };
+
+        } else { // button interaction
+
+            title = msgInt.customLink;
+        };
 
         /** COMMAND */
 
         try {
 
-            let result = await client.distube.search(song);
+            let result = await client.distube.search(title);
             let searchResult = '';
 
             for (let i = 0; i < 10; i++) {
@@ -37,7 +62,7 @@ module.exports = {
 
             const embed = new MessageEmbed()
                 .setColor(COLOR1)
-                .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${song}\``)
+                .setTitle(`🔎 | Wyniki wyszukiwania dla: \`${title}\``)
                 .setDescription(searchResult)
                 .setFooter({ text: 'możesz szybko wybrać, który utwór chcesz odtworzyć:' })
 
@@ -48,7 +73,7 @@ module.exports = {
             for (let i = 0; i < 5; i++) {
                 buttons.addComponents(
                     new MessageButton()
-                    .setCustomId(`search-${song}-${i+1}`)
+                    .setCustomId(`search-${title}-${i+1}`)
                     .setStyle('SECONDARY')
                     .setLabel(`${i+1}`)
                 );

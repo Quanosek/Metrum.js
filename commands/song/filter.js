@@ -7,14 +7,34 @@ const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-/** PAUSE COMMAND */
+/** FILTER COMMAND */
 
 module.exports = {
-    name: 'pause',
-    aliases: ['ps'],
-    description: 'Wstrzymanie/wznowienie odtwarzania utworu',
+    name: 'filter',
+    aliases: ['f'],
+    description: 'Ustaw filtr na odtwarzaną muzykę (ponowne wybranie danego filtru, wyłączy go)',
 
     async run(client, prefix, msg, args) {
+
+        const choice = args[0];
+        const modes = [
+            'disable',
+            '3d',
+            'bassboost',
+            'echo',
+            'karaoke',
+            'nightcore',
+            'vaporwave',
+            'flanger',
+            'gate',
+            'haas',
+            'reverse',
+            'surround',
+            'mcompand',
+            'phaser',
+            'tremolo',
+            'earwax'
+        ];
 
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
@@ -57,30 +77,39 @@ module.exports = {
 
         /** COMMAND */
 
-        if (queue.playing) {
+        if (modes.includes(choice)) {
+
             msg.react('✅');
 
-            client.distube.pause(msg); //execute command
+            if (choice === 'disable') {
+                client.distube.setFilter(msg, false);
+
+                return msg.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR1)
+                        .setDescription('🪄 | **Wyłączono** wszystkie filtry.')
+                    ],
+                });
+            };
+
+            const filter = client.distube.setFilter(msg, choice);
+
+            if (filter.length === 0) {
+                return msg.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR1)
+                        .setDescription('🪄 | Żaden filtr **nie jest aktywny**.')
+                    ],
+                });
+            };
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription('⏸️ | Wstrzymano odtwarzanie.')
+                    .setDescription('🪄 | **Włączone filtry**: ' + (filter.join(', ')))
                 ],
             });
-        };
 
-        if (queue.paused) {
-            msg.react('✅');
-
-            client.distube.resume(msg); // execute command
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription('▶️ | Wznowiono odtwarzanie.')
-                ],
-            });
         };
 
     },

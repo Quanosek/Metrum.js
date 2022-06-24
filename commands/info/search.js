@@ -16,27 +16,31 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        const name = args.join(' ');
+        let title = args.join(' ');
 
-        /** ERROR */
+        const queue = client.distube.getQueue(msg);
 
-        if (!name) {
-            msg.react('❌');
-            autoDelete(msg);
+        if (!title) {
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz jeszcze wpisać **nazwę utworu**, który chcesz wyszukać!')
-                ],
-            }).then(msg => autoDelete(msg));
+            if (!queue) {
+                msg.react('❌'), autoDelete(msg);
+
+                return msg.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!')
+                    ],
+                }).then(msg => autoDelete(msg));
+            };
+
+            title = queue.songs[0].name; // default value
         };
 
         /** COMMAND */
 
         try {
 
-            let result = await client.distube.search(name);
+            let result = await client.distube.search(title);
             let searchResult = '';
 
             for (let i = 0; i < 10; i++) {
@@ -49,7 +53,7 @@ module.exports = {
 
             const embed = new MessageEmbed()
                 .setColor(COLOR1)
-                .setTitle(`🔍 | Wyniki wyszukiwania dla: \`${name}\``)
+                .setTitle(`🔎 | Wyniki wyszukiwania dla: \`${title}\``)
                 .setDescription(searchResult)
                 .setFooter({ text: 'możesz szybko wybrać, który utwór chcesz odtworzyć:' })
 
@@ -60,7 +64,7 @@ module.exports = {
             for (let i = 0; i < 5; i++) {
                 buttons.addComponents(
                     new MessageButton()
-                    .setCustomId(`search-${name}-${i+1}`)
+                    .setCustomId(`search-${title}-${i+1}`)
                     .setStyle('SECONDARY')
                     .setLabel(`${i+1}`)
                 );
@@ -69,8 +73,7 @@ module.exports = {
             return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
 
         } catch (err) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()

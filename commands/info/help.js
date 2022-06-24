@@ -16,34 +16,47 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        let command;
+        if (args[0]) command = args[0].toLowerCase()
+
+        if (command) {
+            const cmd = client.commands.find(x => x.name.includes(command) || x.aliases.includes(command));
+
+            if (!cmd) {
+                msg.react('❌'), autoDelete(msg);
+
+                return msg.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Nie znaleziono podanej komendy!')
+                    ],
+                }).then(msg => autoDelete(msg));
+            };
+
+            msg.react('✅'), autoDelete(msg, 20);
+
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR2)
+                    .setTitle(`❓ | Opis komendy \`${cmd.name}\`:`)
+                    .setDescription(cmd.description)
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+                ],
+            }).then(msg => autoDelete(msg, 20));
+        };
+
         /** COMMAND */
 
-        msg.react('❓');
-        autoDelete(msg, 60);
+        msg.react('❓'), autoDelete(msg, 45);
 
         const embed = new MessageEmbed() // main message
             .setColor(COLOR1)
             .setThumbnail(ICON)
-            .setTitle(`Hej, jestem ${NAME}!`)
+            .setTitle(`😄 | Hej, jestem ${NAME}!`)
             .setDescription(`
-Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
+Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **700+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-** ● Lista dostępnych komend po prefixie:** (${client.commands.size})
-
-** - Utwór:** (8)
-\`forward\`, \`lyrics\`, \`pause\`, \`play\`, \`resume\`, \`rewind\`, \`seek\`, \`skip\`
-
-** - Kolejka:** (6)
-\`addend\`, \`addrelated\`, \`previous\`, \`radio\`, \`repeat\`, \`shuffle\`
-
-** - Informacje:** (6)
-\`help\`, \`invite\`, \`nowplaying\`, \`ping\`, \`queue\`, \`search\`
-
-** - Moderacja:** (9)
-\`add\`, \`clear\`, \`forceleave\`, \`forceplay\`, \`forceskip\`, \`jump\`, \`move\`, \`prefix\`, \`remove\`
-
-** ● Więcej:**
-Aby dowiedzieć się o dokładnym działaniu komend odwiedź [stronę internetową](${WEBSITE}), możesz także mnie [zaprosić](${INVITE}) na swój własny serwer lub [zostawić opinię](${OPINION})!
+Jeśli chcesz się dowiedzieć o działaniu danej komendy wystarczy, że wpiszesz np. \`${prefix}help play\`, aby przeczytać opis komendy play. Więcej informacji znajdziesz na stronie internetowej
             `)
             .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
@@ -67,8 +80,7 @@ Aby dowiedzieć się o dokładnym działaniu komend odwiedź [stronę internetow
                 .setLabel(`Zostaw opinię!`)
             )
 
-        return msg.channel.send({ embeds: [embed], components: [buttons] })
-            .then(msg => autoDelete(msg, 60)); // print message
+        return msg.channel.send({ embeds: [embed], components: [buttons] }).then(msg => autoDelete(msg, 45)); // print message
 
     },
 };

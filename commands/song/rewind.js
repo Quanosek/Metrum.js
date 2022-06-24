@@ -26,8 +26,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -38,8 +37,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -50,8 +48,7 @@ module.exports = {
         };
 
         if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -66,8 +63,7 @@ module.exports = {
         const song = queue.songs[0]; // now playing song
 
         if (song.isLive) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -80,8 +76,7 @@ module.exports = {
         let seekTime = queue.currentTime - number;
 
         if (isNaN(number) || number === 0) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()

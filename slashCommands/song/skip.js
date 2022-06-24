@@ -77,6 +77,22 @@ module.exports = {
             });
         };
 
+        // translation
+
+        let votes, rest = votes % 10;
+        if (rest > 1 || rest < 5) votes = 'głosy'
+        else if (rest < 2 || rest > 4) votes = 'głosów'
+
+        let voteText, skipText;
+
+        if (msgInt.type === 'APPLICATION_COMMAND') {
+            voteText = `🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`
+            skipText = '⏭️ | Pominięto utwór.'
+        } else { // button interaction
+            voteText = `🗳️ | ${msgInt.member.user} głosuje za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`
+            skipText = `⏭️ | ${msgInt.member.user} pominął/pominęła utwór.`
+        };
+
         /** voting */
 
         skipVotes.push(msgInt.member.user.id);
@@ -84,18 +100,10 @@ module.exports = {
 
         if (required > 1) {
 
-            // translation
-
-            let votes, rest = votes % 10;
-            if (rest > 1 || rest < 5) votes = 'głosy'
-            else if (rest < 2 || rest > 4) votes = 'głosów'
-
-            // message
-
             msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
-                    .setDescription(`🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`)
+                    .setDescription(voteText)
                 ],
             });
         };
@@ -114,7 +122,7 @@ module.exports = {
             msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription('⏭️ | Pominięto utwór.')
+                    .setDescription(skipText)
                 ],
             });
 

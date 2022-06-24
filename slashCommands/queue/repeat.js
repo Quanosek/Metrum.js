@@ -9,30 +9,23 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'repeat',
-    description: 'przełączanie trybów zapętlenia: utworu/kolejki/wyłączone',
+    description: 'Przełączanie trybów zapętlenia: utworu/kolejki/wyłączone',
 
     options: [{
         name: 'mode',
         description: 'Wybierz tryb działania zapętlenia',
         type: 'NUMBER',
-        choices: [{
-                name: 'song',
-                value: 1,
-            },
-            {
-                name: 'queue',
-                value: 2,
-            },
-            {
-                name: 'disable',
-                value: 0,
-            }
+        choices: [
+            { name: 'song', value: 1 },
+            { name: 'queue', value: 2 },
+            { name: 'disable', value: 0 }
         ],
     }],
 
     async run(client, msgInt) {
 
-        const choice = msgInt.options.getNumber('mode');
+        let choice;
+        if (msgInt.type === 'APPLICATION_COMMAND') choice = msgInt.options.getNumber('mode');
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -77,14 +70,20 @@ module.exports = {
 
         let mode = client.distube.setRepeatMode(msgInt);
 
-        if (!choice) {
-            mode = mode ? mode === 2 ? '🔁 | Włączono zapętlanie **kolejki**.' : '🔂 | Włączono zapętlanie **utworu**.' : '🔁 | **Wyłączono** zapętlanie.';
+        if (msgInt.type === 'APPLICATION_COMMAND') {
 
-        } else {
-            queue.repeatMode = choice;
-            if (choice === 0) mode = '🔁 | **Wyłączono** zapętlanie.';
-            if (choice === 1) mode = '🔂 | Włączono zapętlanie **utworu**.';
-            if (choice === 2) mode = '🔁 | Włączono zapętlanie **kolejki**.';
+            if (!choice) {
+                mode = mode ? mode === 2 ? '🔁 | Włączono zapętlanie **kolejki**.' : '🔂 | Włączono zapętlanie **utworu**.' : '🔁 | **Wyłączono** zapętlanie.';
+
+            } else {
+                queue.repeatMode = choice;
+                if (choice === 0) mode = '🔁 | **Wyłączono** zapętlanie.';
+                if (choice === 1) mode = '🔂 | Włączono zapętlanie **utworu**.';
+                if (choice === 2) mode = '🔁 | Włączono zapętlanie **kolejki**.';
+            };
+
+        } else { // button interaction
+            mode = mode ? mode === 2 ? `🔁 | ${msgInt.member.user} włączył(a) zapętlanie **kolejki**.` : `🔂 | ${msgInt.member.user} włączył(a) zapętlanie **utworu**.` : `🔁 | ${msgInt.member.user} **wyłączył(a)** zapętlanie.`;
         };
 
         return msgInt.reply({

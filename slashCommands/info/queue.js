@@ -64,13 +64,20 @@ module.exports = {
             embed.addField('Łącznie w kolejce:', `**${queue.songs.length} ${songs}!**`, true);
         };
 
-        if (queue.paused || queue.autoplay || queue.repeatMode) {
+        const filters = queue.filters;
+
+        if (queue.paused ||
+            queue.repeatMode ||
+            queue.autoplay ||
+            filters.length !== 0
+        ) {
             let params = '';
 
             if (queue.paused) params += '\`⏸️|pauza\` \n'
-            if (queue.repeatMode === 1) params += '\`🔁|zapętlanie utworu\` \n'
+            if (queue.repeatMode === 1) params += '\`🔂|zapętlanie utworu\` \n'
             if (queue.repeatMode === 2) params += '\`🔁|zapętlanie kolejki\` \n'
             if (queue.autoplay) params += '\`📻|auto-odtwarzanie\` \n'
+            if (filters.length !== 0) params += '\`🪄|filtry: ' + (filters.join(', ')) + '\` \n'
 
             embed.addField('Włączone opcje:', params);
         };

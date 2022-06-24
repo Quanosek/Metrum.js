@@ -27,8 +27,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -39,8 +38,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -51,8 +49,7 @@ module.exports = {
         };
 
         if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -65,8 +62,7 @@ module.exports = {
         /** OTHER ERROR */
 
         if (isNaN(number) || number > queue.songs.length || number === 0) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()

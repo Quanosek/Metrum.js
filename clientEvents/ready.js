@@ -19,7 +19,7 @@ module.exports = {
 
         /** on ready */
 
-        console.log(realDate() + ' Bot is ready!'.brightYellow); // on ready message// on ready message
+        console.log(realDate() + ' Bot is ready to use!'.brightYellow); // on ready message// on ready message
         // client.user.setActivity(`@${NAME}`, { type: 'LISTENING' }); // bot activity
 
         /* auto-leave voice channels */

@@ -18,8 +18,7 @@ module.exports = {
 
         /** COMMAND */
 
-        msg.react('✅');
-        autoDelete(msg, 20);
+        msg.react('✅'), autoDelete(msg, 20);
 
         return msg.channel.send({
             embeds: [new MessageEmbed()

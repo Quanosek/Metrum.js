@@ -41,7 +41,7 @@ module.exports = (client) => {
             /** register slash commands */
 
             try {
-                console.log(realDate() + ' Started refreshing slash commands.');
+                console.log(realDate() + ' Started refreshing slash commands...');
 
                 const guild = client.guilds.cache.get(GUILD_ID);
 

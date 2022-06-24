@@ -9,7 +9,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'remove',
-    description: 'usunięcie wybranej pozycji z kolejki utworów',
+    description: 'Usunięcie wybranej pozycji z kolejki utworów',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{

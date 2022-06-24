@@ -27,8 +27,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -39,8 +38,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -51,8 +49,7 @@ module.exports = {
         };
 
         if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -65,8 +62,7 @@ module.exports = {
         // before
 
         if (!args[0]) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -77,8 +73,7 @@ module.exports = {
         };
 
         if (isNaN(before) || before > queue.songs.length || before < 1) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -89,8 +84,7 @@ module.exports = {
         };
 
         if (before === 1) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -103,8 +97,7 @@ module.exports = {
         // after
 
         if (!args[1]) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -115,8 +108,7 @@ module.exports = {
         };
 
         if (isNaN(after) || after > queue.songs.length || after < 1) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -127,8 +119,7 @@ module.exports = {
         };
 
         if (after === 1) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -139,8 +130,7 @@ module.exports = {
         };
 
         if (before === after) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()

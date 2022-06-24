@@ -8,8 +8,7 @@ const realDate = require('./realDate.js');
 
 function autoDelete(msg, delay) {
 
-    if (!msg) console.log(realDate() + ` Guild: ${msg.guild.name}, ID: ${msg.guild.id}`.grey + `\n >>> autoDelete Error: Message is not declared!`.red);
-
+    if (!msg) return;
     if (!delay) delay = 10; // delay of deleting
 
     delay += '000'; // to milliseconds

@@ -25,8 +25,7 @@ module.exports = {
         /** ERRORS */
 
         if (!uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -37,8 +36,7 @@ module.exports = {
         };
 
         if (msg.guild.afkChannel && uservoice.id === msg.guild.afkChannel.id) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -54,8 +52,7 @@ module.exports = {
                 client.distube.voices.get(msg).leave();
 
             } else if (queue && uservoice != botvoice) {
-                msg.react('❌');
-                autoDelete(msg);
+                msg.react('❌'), autoDelete(msg);
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
@@ -67,8 +64,7 @@ module.exports = {
         };
 
         if (!song) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -79,8 +75,7 @@ module.exports = {
         };
 
         if (!(uservoice.permissionsFor(msg.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msg.guild.me).has('CONNECT'))) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -91,8 +86,7 @@ module.exports = {
         };
 
         if (!(uservoice.permissionsFor(msg.guild.me).has('SPEAK'))) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()

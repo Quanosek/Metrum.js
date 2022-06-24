@@ -6,8 +6,9 @@ const { Schema, model } = require('mongoose');
 
 const schema = new Schema({
 
-    guildId: String,
+    guildId: Number,
     prefix: String,
+    volume: Number,
 
 });
 

@@ -9,7 +9,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'jump',
-    description: 'pominięcie określonej liczby utworów w kolejce (domyślnie: 1)',
+    description: 'Pominięcie określonej liczby utworów w kolejce (domyślnie: 1)',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{

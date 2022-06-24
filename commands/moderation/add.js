@@ -26,8 +26,7 @@ module.exports = {
         /** ERRORS */
 
         if (!uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -38,8 +37,7 @@ module.exports = {
         };
 
         if (uservoice.id === msg.guild.afkChannel.id) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -55,8 +53,7 @@ module.exports = {
                 client.distube.voices.get(msg).leave();
 
             } else if (queue && uservoice != botvoice) {
-                msg.react('❌');
-                autoDelete(msg);
+                msg.react('❌'), autoDelete(msg);
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
@@ -68,8 +65,7 @@ module.exports = {
         };
 
         if (!song) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()

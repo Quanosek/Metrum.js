@@ -61,13 +61,20 @@ module.exports = {
 
         embed.addField('Dodane przez:', `${song.user}`);
 
-        if (queue.paused || queue.autoplay || queue.repeatMode) {
+        const filters = queue.filters;
+
+        if (queue.paused ||
+            queue.repeatMode ||
+            queue.autoplay ||
+            filters.length !== 0
+        ) {
             let params = '';
 
             if (queue.paused) params += '\`⏸️|pauza\` \n'
             if (queue.repeatMode === 1) params += '\`🔂|zapętlanie utworu\` \n'
             if (queue.repeatMode === 2) params += '\`🔁|zapętlanie kolejki\` \n'
             if (queue.autoplay) params += '\`📻|auto-odtwarzanie\` \n'
+            if (filters.length !== 0) params += '\`🪄|filtry: ' + (filters.join(', ')) + '\` \n'
 
             embed.addField('Włączone opcje:', params);
         };
@@ -80,25 +87,30 @@ module.exports = {
                 new MessageButton()
                 .setCustomId(`nowplaying-pause`)
                 .setStyle('SUCCESS')
-                .setLabel(`⏸️`)
+                .setLabel(`⏸️ | Zatrzymaj`)
             )
             .addComponents(
                 new MessageButton()
-                .setCustomId(`nowplaying-repeat1`)
-                .setStyle('PRIMARY')
-                .setLabel(`🔂`)
+                .setCustomId(`nowplaying-skip`)
+                .setStyle('SUCCESS')
+                .setLabel(`⏭️ | Pomiń`)
             )
             .addComponents(
                 new MessageButton()
-                .setCustomId(`nowplaying-repeat2`)
+                .setCustomId(`nowplaying-repeat`)
                 .setStyle('PRIMARY')
-                .setLabel(`🔁`)
+                .setLabel(`🔁 | Zapętlanie`)
             )
             .addComponents(
                 new MessageButton()
                 .setCustomId(`nowplaying-radio`)
                 .setStyle('PRIMARY')
-                .setLabel(`📻`)
+                .setLabel(`📻 | Radio`)
+            ).addComponents(
+                new MessageButton()
+                .setCustomId(`nowplaying-search-${song.name.trim().substring(0, 80)}`)
+                .setStyle('SECONDARY')
+                .setLabel(`🔎 | Wyszukaj podobne`)
             )
 
         return msgInt.reply({ embeds: [embed], components: [buttons] }); // print message

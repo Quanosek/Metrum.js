@@ -54,6 +54,16 @@ module.exports = {
 
         /** COMMAND */
 
+        let pauseText, resumeText;
+
+        if (msgInt.type === 'APPLICATION_COMMAND') {
+            pauseText = '⏸️ | Wstrzymano odtwarzanie.'
+            resumeText = '▶️ | Wznowiono odtwarzanie.'
+        } else { // button interaction
+            pauseText = `⏸️ | ${msgInt.member.user} wstrzymał(a) odtwarzanie.`
+            resumeText = `▶️ | ${msgInt.member.user} wznowił(a) odtwarzanie.`
+        };
+
         if (queue.playing) {
 
             client.distube.pause(msgInt); //execute command
@@ -61,7 +71,7 @@ module.exports = {
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription('⏸️ | Wstrzymano odtwarzanie.')
+                    .setDescription(pauseText)
                 ],
             });
         };
@@ -73,7 +83,7 @@ module.exports = {
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription('▶️ | Wznowiono odtwarzanie.')
+                    .setDescription(resumeText)
                 ],
             });
         };

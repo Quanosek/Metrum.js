@@ -23,8 +23,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -35,8 +34,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -47,8 +45,7 @@ module.exports = {
         };
 
         if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -64,13 +61,11 @@ module.exports = {
 
         queue.addRelatedSong(); // execute command
 
-        const song = queue.songs[0]; // now playing song
-
         return msg.channel.send({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
                 .setTitle('➕ | Dodano do kolejki podobny utwór do:')
-                .setDescription(`\`${song.name}\`.`)
+                .setDescription(`\`${queue.songs[0].name}\`.`)
             ],
         });
 

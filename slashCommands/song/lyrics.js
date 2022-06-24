@@ -10,56 +10,36 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'lyrics',
-    description: 'wyświetlenie tekstu do odtwarzanego utworu',
+    description: 'Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu',
 
     options: [{
-        name: 'name',
+        name: 'title',
         description: 'Podaj tytuł utworu, który chcesz wyszukać',
         type: 'STRING',
     }],
 
     async run(client, msgInt) {
 
-        let name = msgInt.options.getString('name');
-        if (!name) name = queue.songs[0].name;
+        let title = msgInt.options.getString('title');
 
         const queue = client.distube.getQueue(msgInt);
-        const botvoice = msgInt.guild.me.voice.channel;
-        const uservoice = msgInt.member.voice.channel;
 
         /** COMMON ERRORS */
 
-        if (!botvoice) {
+        if (!title) {
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+            if (!queue) {
 
-        if (!uservoice || botvoice != uservoice) {
+                return msgInt.reply({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!')
+                    ],
+                    ephemeral: true,
+                });
+            };
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
+            title = queue.songs[0].name; // default value
         };
 
         /** CREATING URL ADDRESS */
@@ -75,7 +55,8 @@ module.exports = {
         };
 
         const url = new URL('https://some-random-api.ml/lyrics');
-        url.searchParams.append('title', name)
+        url.searchParams.append('title', title);
+        // console.log(url.href); // check final link
 
         /** COMMAND */
 
@@ -87,7 +68,7 @@ module.exports = {
 
                 return new MessageEmbed()
                     .setColor(COLOR1)
-                    .setTitle(isFirst ? `${data.title} - ${data.author}` : '')
+                    .setTitle(isFirst ? `${data.name} - ${data.author}` : '')
                     .setURL(isFirst ? `${data.links.genius}` : '')
                     .setThumbnail(isFirst ? `${data.thumbnail.genius}` : '')
                     .setDescription(value)
@@ -100,7 +81,7 @@ module.exports = {
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription('Nie znaleziono tekstu dla tego utworu!')
+                    .setDescription('Niestety nie znaleziono tekstu dla tego utworu!')
                 ],
                 ephemeral: true,
             });

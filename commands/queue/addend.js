@@ -23,8 +23,7 @@ module.exports = {
         /** COMMON ERRORS */
 
         if (!botvoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -35,8 +34,7 @@ module.exports = {
         };
 
         if (!uservoice || botvoice != uservoice) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -47,8 +45,7 @@ module.exports = {
         };
 
         if (!queue) {
-            msg.react('❌');
-            autoDelete(msg);
+            msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -62,9 +59,7 @@ module.exports = {
 
         msg.react('✅');
 
-        const song = queue.songs[0]; // now playing song
-
-        return client.distube.play(msg, song.url); // execute command
+        return client.distube.play(msg, queue.songs[0].url); // execute command
 
     },
 };

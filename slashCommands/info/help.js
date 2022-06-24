@@ -13,32 +13,50 @@ module.exports = {
     name: 'help',
     description: 'Wiadomość informacyjna',
 
+    options: [{
+        name: 'command',
+        description: 'Podaj nazwę komendy, o której chcesz się dowiedzieć więcej',
+        type: 'STRING',
+    }],
+
     async run(client, msgInt) {
+
+        const command = msgInt.options.getString('command').toLowerCase();
+
+        if (command) {
+            const cmd = client.slashCommands.find(x => x.name.includes(command));
+
+            if (!cmd) {
+
+                return msgInt.reply({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('Nie znaleziono podanej komendy!')
+                    ],
+                    ephemeral: true,
+                });
+            };
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR2)
+                    .setTitle(`❓ | Opis komendy \`${cmd.name}\`:`)
+                    .setDescription(cmd.description)
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+                ],
+                ephemeral: true,
+            });
+        };
 
         /** COMMAND */
 
         const embed = new MessageEmbed() // main message
             .setColor(COLOR1)
             .setThumbnail(ICON)
-            .setTitle(`Hej, jestem ${NAME}!`)
+            .setTitle(`😄 | Hej, jestem ${NAME}!`)
             .setDescription(`
-Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
+Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **700+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-** ● Lista dostępnych komend po ukośniku:** (${client.slashCommands.size})
-
-** - Utwór:** (8)
-\`forward\`, \`lyrics\`, \`pause\`, \`play\`, \`resume\`, \`rewind\`, \`seek\`, \`skip\`
-
-** - Kolejka:** (6)
-\`addend\`, \`addrelated\`, \`previous\`, \`radio\`, \`repeat\`, \`shuffle\`
-
-** - Informacje:** (7)
-\`help\`, \`invite\`, \`nowplaying\`, \`ping\`, \`prefix\`, \`queue\`, \`search\`
-
-** - Moderacja:** (8)
-\`add\`, \`clear\`, \`forceleave\`, \`forceplay\`, \`forceskip\`, \`jump\`, \`move\`, \`remove\`
-
-** ● Więcej:**
 Aby dowiedzieć się o dokładnym działaniu komend odwiedź [stronę internetową](${WEBSITE}), możesz także mnie [zaprosić](${INVITE}) na swój własny serwer lub [zostawić opinię](${OPINION})!
             `)
             .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
@@ -63,8 +81,7 @@ Aby dowiedzieć się o dokładnym działaniu komend odwiedź [stronę internetow
                 .setLabel(`Zostaw opinię!`)
             )
 
-        return msgInt.reply({ embeds: [embed], components: [buttons] })
-            .then(autoDelete(msgInt, 60)); // print message
+        return msgInt.reply({ embeds: [embed], components: [buttons] }).then(autoDelete(msgInt, 60)); // print message
 
     },
 };

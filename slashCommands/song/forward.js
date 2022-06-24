@@ -9,7 +9,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'forward',
-    description: 'przewinięcie utworu do przodu o podaną liczbę sekund (domyślnie: 10)',
+    description: 'Przewinięcie utworu do przodu o podaną liczbę sekund (domyślnie: 10)',
 
     options: [{
         name: 'number',

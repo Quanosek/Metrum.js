@@ -9,26 +9,22 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'radio',
-    description: 'auto-odtwarzanie podobnych utworów (radio utworu)',
+    description: 'Auto-odtwarzanie podobnych utworów (radio utworu)',
 
     options: [{
         name: 'mode',
         description: 'Wybierz tryb działania radia',
         type: 'NUMBER',
-        choices: [{
-                name: 'enable',
-                value: 1,
-            },
-            {
-                name: 'disable',
-                value: 0,
-            }
+        choices: [
+            { name: 'enable', value: 1 },
+            { name: 'disable', value: 0 }
         ],
     }],
 
     async run(client, msgInt) {
 
-        const choice = msgInt.options.getNumber('mode');
+        let choice;
+        if (msgInt.type === 'APPLICATION_COMMAND') choice = msgInt.options.getNumber('mode');
 
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
@@ -71,21 +67,30 @@ module.exports = {
 
         /** COMMAND */
 
-        let mode = client.distube.toggleAutoplay(msgInt);
+        let radioText, mode = client.distube.toggleAutoplay(msgInt);
 
-        if (!choice) {
-            mode = mode ? '**Włączono**' : '**Wyłączono**';
+        if (msgInt.type === 'APPLICATION_COMMAND') {
 
-        } else {
-            queue.autoplay = choice;
-            if (choice === 0) mode = '**Wyłączono**';
-            if (choice === 1) mode = '**Włączono**';
+            if (!choice) {
+                mode = mode ? '**Włączono**' : '**Wyłączono**';
+
+            } else {
+                queue.autoplay = choice;
+                if (choice === 0) mode = '**Wyłączono**';
+                if (choice === 1) mode = '**Włączono**';
+            };
+
+            radioText = '📻 | ' + mode + ' auto-odtwarzanie (radio utworu).'
+
+        } else { // button interaction
+            mode = mode ? '**włączył(a)**' : '**wyłączył(a)**';
+            radioText = `📻 | ${msgInt.member.user} ` + mode + ` auto-odtwarzanie (radio utworu).`
         };
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setDescription('📻 | ' + mode + ' auto-odtwarzanie (radio utworu).')
+                .setDescription(radioText)
             ],
         });
 

@@ -29,8 +29,7 @@ module.exports = {
             /** errors */
 
             if (!newPrefix) {
-                msg.react('❌');
-                autoDelete(msg);
+                msg.react('❌'), autoDelete(msg);
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
@@ -41,8 +40,7 @@ module.exports = {
             };
 
             if (newPrefix.length > 8) {
-                msg.react('❌');
-                msgAutoDelete(msg);
+                msg.react('❌'), msgAutoDelete(msg);
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
@@ -53,8 +51,7 @@ module.exports = {
             };
 
             if (args[2]) {
-                msg.react('❌');
-                autoDelete(msg);
+                msg.react('❌'), autoDelete(msg);
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
@@ -66,8 +63,7 @@ module.exports = {
 
             /** command */
 
-            msg.react('✅');
-            autoDelete(msg, 15);
+            msg.react('✅'), autoDelete(msg, 15);
 
             db.prefix = newPrefix;
             await db.save();
@@ -83,8 +79,7 @@ module.exports = {
         /** RESET COMMAND */
 
         if (args[0] === 'reset' || args[0] === 'r') {
-            msg.react('✅');
-            autoDelete(msg, 15);
+            msg.react('✅'), autoDelete(msg, 15);
 
             db.prefix = PREFIX;
             await db.save();
@@ -99,8 +94,7 @@ module.exports = {
 
         /** HELP MENU */
 
-        msg.react('❓');
-        autoDelete(msg, 45);
+        msg.react('❓'), autoDelete(msg, 45);
 
         return msg.channel.send({
             embeds: [new MessageEmbed()

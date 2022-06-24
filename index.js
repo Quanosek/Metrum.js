@@ -13,7 +13,7 @@ const realDate = require('./functions/realDate.js')
 /** ON RUN */
 
 console.clear(); // start with clear terminal
-console.log(realDate() + ' Bot ' + `${NAME}`.brightYellow + ' starting up...'); // log
+console.log(realDate() + ' Bot ' + `${NAME}`.brightYellow + ' is starting up...'); // log
 
 /** MAIN DEFINE */
 
@@ -53,7 +53,7 @@ const handlers = fs
         await mongoose.connect(MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-        }).then(() => console.log(realDate() + ' Connected to database.'));
+        }).then(() => console.log(realDate() + ' Successfully connected to the database.'));
     } catch (err) {
         if (err) return console.error(` >>> ${err}`.brightRed);
     };
@@ -135,15 +135,6 @@ client.distube
             .setDescription(`${err}`)
         ],
     }).then(msg => autoDelete(msg));
-})
-
-.on('initQueue', (queue) => {
-
-    queue.paused = false;
-    queue.autoplay = false;
-    queue.loop = 2;
-    queue.volume = 100;
-
 })
 
 .on('noRelated', (queue) => {
