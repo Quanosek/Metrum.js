@@ -89,13 +89,14 @@ module.exports = {
             msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription(`🔍 | Szukam: \`${song}\`, może to chwilę zająć...`)
+                    .setDescription(`🔍 | **Szukam:** \`${song}\`, może to chwilę zająć...`)
                 ],
             });
         };
 
         /** execute command */
 
+        if (queue) queue.added = true;
         return client.distube.play(uservoice, song, {
             msg,
             textChannel: msg.channel,

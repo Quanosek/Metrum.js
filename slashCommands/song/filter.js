@@ -86,7 +86,7 @@ module.exports = {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
+                    .setColor(COLOR2)
                     .setDescription('🪄 | **Wyłączono** wszystkie filtry.')
                 ],
             });
@@ -97,7 +97,7 @@ module.exports = {
         if (filter.length === 0) {
             return msgInt.reply({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
+                    .setColor(COLOR2)
                     .setDescription('🪄 | Żaden filtr **nie jest aktywny**.')
                 ],
             });
@@ -105,7 +105,7 @@ module.exports = {
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
-                .setColor(COLOR1)
+                .setColor(COLOR2)
                 .setDescription('🪄 | **Włączone filtry**: ' + (filter.join(', ')))
             ],
         });

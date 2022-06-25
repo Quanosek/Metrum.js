@@ -20,7 +20,18 @@ module.exports = {
 
         /** COMMON ERRORS */
 
-        if (botvoice && (!uservoice || botvoice != uservoice)) {
+        if (!botvoice) {
+
+            return msgInt.reply({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR_ERR)
+                    .setDescription('Nie jestem na żadnym kanale głosowym!')
+                ],
+                ephemeral: true,
+            });
+        };
+
+        if (!uservoice || botvoice != uservoice) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()

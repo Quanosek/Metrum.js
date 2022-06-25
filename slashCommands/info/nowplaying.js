@@ -49,17 +49,31 @@ module.exports = {
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
 
-        embed.addFields({ name: 'Tytuł:', value: `[${song.name}](${song.url})` }, { name: 'Autor:', value: `[${song.uploader.name}](${song.uploader.url})` }, );
+        let timeValue;
+        if (song.isLive) timeValue = `\`Live\``
+        else timeValue = `\`${queue.formattedCurrentTime}\` / \`${song.formattedDuration}\``
 
-        if (song.isLive) {
-            embed.addField('Czas trwania:', `\`Live\``);
-        } else {
-            embed.addField('Czas trwania:', `\`${queue.formattedCurrentTime}\` / \`${song.formattedDuration}\``);
-        };
-
-        embed.addFields({ name: 'Wyświetlenia:', value: `\`${song.views}\``, inline: true }, { name: 'Łapki w górę:', value: `\`${song.likes}\``, inline: true }, );
-
-        embed.addField('Dodane przez:', `${song.user}`);
+        embed.addFields({
+            name: 'Tytuł:',
+            value: `[${song.name}](${song.url})`
+        }, {
+            name: 'Autor:',
+            value: `[${song.uploader.name}](${song.uploader.url})`
+        }, {
+            name: 'Czas trwania:',
+            value: timeValue,
+        }, {
+            name: 'Wyświetlenia:',
+            value: `\`${song.views}\``,
+            inline: true
+        }, {
+            name: 'Łapki w górę:',
+            value: `\`${song.likes}\``,
+            inline: true
+        }, {
+            name: 'Dodane przez:',
+            value: `${song.user}`,
+        });
 
         const filters = queue.filters;
 

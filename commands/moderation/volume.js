@@ -29,7 +29,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setTitle(`⚙️ | Ustawiona głośność: \`${queue.volume*2}%\``)
-                    .setDescription(`Aby zmienić tę wartość podaj wartość *(w procentach)* poziomu głośności (1-200).`)
+                    .setDescription('Możesz ustawić poziom głośności bota w danej sesji. Podaj wartość (w procentach) w przedziale 1-200.')
                 ],
             }).then(msg => autoDelete(msg, 20));
         };
@@ -55,7 +55,7 @@ module.exports = {
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
-                .setColor(COLOR1)
+                .setColor(COLOR2)
                 .setDescription(`🔈 | Ustawiono poziom głośności: \`${value*2}%\``)
             ],
         }).then(msg => autoDelete(msg, 15));

@@ -83,6 +83,7 @@ module.exports = {
             };
 
         } else { // button interaction
+
             mode = mode ? mode === 2 ? `🔁 | ${msgInt.member.user} włączył(a) zapętlanie **kolejki**.` : `🔂 | ${msgInt.member.user} włączył(a) zapętlanie **utworu**.` : `🔁 | ${msgInt.member.user} **wyłączył(a)** zapętlanie.`;
         };
 

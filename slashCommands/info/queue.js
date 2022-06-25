@@ -31,7 +31,7 @@ module.exports = {
 
         if (!queue) {
 
-            return msgInt.channel.send({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
                     .setDescription('Obecnie nie jest odtwarzany żaden utwór!')

@@ -33,7 +33,7 @@ module.exports = {
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setTitle(`⚙️ | Ustawiona głośność bota: \`${queue.volume*2}%\``)
-                    .setDescription(`Aby zmienić tę wartość podaj wartość *(w procentach)* poziomu głośności (1-200).`)
+                    .setDescription('Możesz ustawić poziom głośności bota w danej sesji. Podaj wartość (w procentach) w przedziale 1-200.')
                 ],
             }).then(autoDelete(msgInt, 20));
         };
@@ -57,7 +57,7 @@ module.exports = {
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
-                .setColor(COLOR1)
+                .setColor(COLOR2)
                 .setDescription(`🔈 | Ustawiono poziom głośności bota: \`${value*2}%\``)
             ],
         }).then(autoDelete(msgInt, 15));

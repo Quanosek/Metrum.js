@@ -83,7 +83,7 @@ module.exports = {
             msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
-                    .setDescription(`🔍 | Szukam: \`${song}\`, może to chwilę zająć...`)
+                    .setDescription(`🔍 | **Szukam:** \`${song}\`, może to chwilę zająć...`)
                 ],
             });
         };

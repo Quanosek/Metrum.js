@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -77,6 +77,21 @@ module.exports = {
 
         /** COMMAND */
 
+        if (!choice) {
+            msg.react('🪄'), autoDelete(msg);
+
+            modeText = modes.join('\`, \`')
+
+            return msg.channel.send({
+                embeds: [new MessageEmbed()
+                    .setColor(COLOR1)
+                    .setTitle('⚙️ | Menu filtrów:')
+                    .setDescription('Możesz ustawić filtr na odtwarzane utwory w danej sesji.\n\n**Dostępne tryby:**\n' + `\`${modeText}\``)
+                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
+                ],
+            }).then(msg => autoDelete(msg, 30));
+        };
+
         if (modes.includes(choice)) {
 
             msg.react('✅');
@@ -86,7 +101,7 @@ module.exports = {
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(COLOR1)
+                        .setColor(COLOR2)
                         .setDescription('🪄 | **Wyłączono** wszystkie filtry.')
                     ],
                 });
@@ -97,7 +112,7 @@ module.exports = {
             if (filter.length === 0) {
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
-                        .setColor(COLOR1)
+                        .setColor(COLOR2)
                         .setDescription('🪄 | Żaden filtr **nie jest aktywny**.')
                     ],
                 });
@@ -105,7 +120,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
+                    .setColor(COLOR2)
                     .setDescription('🪄 | **Włączone filtry**: ' + (filter.join(', ')))
                 ],
             });

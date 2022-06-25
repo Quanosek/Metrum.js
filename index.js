@@ -91,8 +91,6 @@ client.distube
     else if (rest < 2 || rest > 4) songs = 'utworów'
     else if (rest > 1 || rest < 5) songs = 'utwory'
 
-    let requester = playlist.member.user;
-
     return queue.textChannel.send({
         embeds: [new MessageEmbed()
             .setColor(COLOR1)
@@ -103,7 +101,6 @@ client.distube
 
 **łącznie ${playlist.songs.length} ${songs}**!
             `)
-            .setFooter({ text: `dodał(a): ${requester.username}`, iconURL: `${requester.displayAvatarURL()}` })
         ],
     });
 })
@@ -112,17 +109,22 @@ client.distube
 
     if (queue.songs.length < 2) return;
 
-    let requester = song.member.user;
+    const embed = new MessageEmbed()
+        .setColor(COLOR2)
+        .setThumbnail(song.thumbnail)
 
-    return queue.textChannel.send({
-        embeds: [new MessageEmbed()
-            .setColor(COLOR2)
-            .setThumbnail(song.thumbnail)
-            .setTitle('➕ | Dodano do kolejki:')
-            .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-            .setFooter({ text: `dodał(a): ${requester.username}`, iconURL: `${requester.displayAvatarURL()}` })
-        ],
-    });
+    if (queue.added) {
+        queue.added = false;
+        embed.setTitle('➕ | Dodano do kolejki jako następny:');
+        embed.setDescription(`**2.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``);
+        if (queue.songs.length > 2) embed.setFooter({ text: `Utworów w kolejce: ${queue.songs.length}` });
+
+    } else {
+        embed.setTitle('➕ | Dodano do kolejki:');
+        embed.setDescription(`**${queue.songs.length}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``);
+    };
+
+    return queue.textChannel.send({ embeds: [embed] })
 })
 
 .on("error", (channel, err) => {

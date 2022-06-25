@@ -54,15 +54,17 @@ module.exports = {
 
         /** COMMAND */
 
-        queue.addRelatedSong(); // execute command
+        const song = queue.songs[0];
+        client.distube.addRelatedSong(queue) // execute command
 
-        const song = queue.songs[0]; // now playing song
+        const relatedSong = song.related.find((song, id) => id === 0);
 
         return msgInt.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setTitle('➕ | Dodano do kolejki podobny utwór do:')
-                .setDescription(`\`${song.name}\`.`)
+                .setThumbnail(relatedSong.thumbnail)
+                .setTitle('➕ | Dodano do kolejki podobny utwór do obecnie odtwarzanego:')
+                .setDescription(`**${queue.songs.length+1}.** [${relatedSong.name}](${relatedSong.url}) - \`${relatedSong.formattedDuration}\``)
             ],
         });
 

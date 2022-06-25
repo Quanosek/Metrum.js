@@ -16,7 +16,7 @@ module.exports = {
         msgInt.reply({ // send
 
             embeds: [new MessageEmbed()
-                .setColor(COLOR1)
+                .setColor('RANDOM')
                 .setDescription('🏓 | Pong!')
             ],
             ephemeral: true,
@@ -26,7 +26,7 @@ module.exports = {
 
             msgInt.editReply({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
+                    .setColor('RANDOM')
                     .setTitle('🏓 | Pong!')
                     .setDescription(`
 Opóźnienie bota: \`${resultmsg.createdTimestamp - msgInt.createdTimestamp} ms\`

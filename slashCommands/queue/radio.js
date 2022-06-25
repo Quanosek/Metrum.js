@@ -83,6 +83,7 @@ module.exports = {
             radioText = '📻 | ' + mode + ' auto-odtwarzanie (radio utworu).'
 
         } else { // button interaction
+
             mode = mode ? '**włączył(a)**' : '**wyłączył(a)**';
             radioText = `📻 | ${msgInt.member.user} ` + mode + ` auto-odtwarzanie (radio utworu).`
         };

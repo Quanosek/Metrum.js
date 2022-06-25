@@ -70,7 +70,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
+                    .setColor(COLOR2)
                     .setDescription(`⚙️ | Ustawiono nowy prefix: \`${newPrefix}\``)
                 ],
             }).then(msg => autoDelete(msg, 15));
@@ -86,7 +86,7 @@ module.exports = {
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
+                    .setColor(COLOR2)
                     .setDescription(`⚙️ | Przywrócono domyślny prefix: \`${PREFIX}\``)
                 ],
             }).then(msg => autoDelete(msg, 15));
