@@ -57,8 +57,8 @@ module.exports = {
             .setDescription(`
 Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **700+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-Aby dowiedzieć się o dokładnym działaniu komend odwiedź [stronę internetową](${WEBSITE}), możesz także mnie [zaprosić](${INVITE}) na swój własny serwer lub [zostawić opinię](${OPINION})!
-            `)
+Jeśli chcesz się dowiedzieć o działaniu danej komendy wystarczy, że wpiszesz np. \`${prefix}help play\`, aby przeczytać opis komendy play. Więcej informacji znajdziesz na oficjalnej stronie internetowej.
+                        `)
             .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
         const buttons = new MessageActionRow() // buttons

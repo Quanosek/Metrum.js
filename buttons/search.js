@@ -93,7 +93,7 @@ module.exports = {
         interaction.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setTitle(`🎵 | ${msgInt.member.user} wybrał(a) utwór:`)
+                .setTitle(`🎵 | ${interaction.user} wybrał(a) utwór:`)
                 .setDescription(`[${result[songId - 1].name}](${result[songId - 1].url}) - \`${result[songId - 1].formattedDuration}\``)
             ],
         });

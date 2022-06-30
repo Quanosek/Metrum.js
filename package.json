@@ -1,6 +1,6 @@
 {
     "name": "metrum",
-    "version": "2.4.1",
+    "version": "2.4.2",
     "description": "Polski zaawansowany bot muzyczny",
     "main": "index.js",
     "scripts": {
