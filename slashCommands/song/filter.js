@@ -20,23 +20,25 @@ module.exports = {
             { name: 'disable', value: 'disable' },
             { name: '3d', value: '3d' },
             { name: 'bassboost', value: 'bassboost' },
+            { name: 'earwax', value: 'earwax' },
             { name: 'echo', value: 'echo' },
-            { name: 'karaoke', value: 'karaoke' },
-            { name: 'nightcore', value: 'nightcore' },
-            { name: 'vaporwave', value: 'vaporwave' },
             { name: 'flanger', value: 'flanger' },
             { name: 'gate', value: 'gate' },
             { name: 'haas', value: 'haas' },
+            { name: 'karaoke', value: 'karaoke' },
+            { name: 'mcompand', value: 'mcompand' },
+            { name: 'nightcore', value: 'nightcore' },
+            { name: 'phaser', value: 'phaser' },
             { name: 'reverse', value: 'reverse' },
             { name: 'surround', value: 'surround' },
-            { name: 'mcompand', value: 'mcompand' },
-            { name: 'phaser', value: 'phaser' },
             { name: 'tremolo', value: 'tremolo' },
-            { name: 'earwax', value: 'earwax' }
+            { name: 'vaporwave', value: 'vaporwave' },
         ],
     }],
 
     async run(client, msgInt) {
+
+        /** DEFINE */
 
         const choice = msgInt.options.getString('choice');
 
@@ -44,45 +46,29 @@ module.exports = {
         const botvoice = msgInt.guild.me.voice.channel;
         const uservoice = msgInt.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
 
-        if (!uservoice || botvoice != uservoice) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** COMMAND */
 
+        /** choices */
+
         if (choice === 'disable') {
-            client.distube.setFilter(msgInt, false);
+            client.distube.setFilter(msgInt, false); // execute command
+
+            // print command message
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -92,9 +78,12 @@ module.exports = {
             });
         };
 
-        const filter = client.distube.setFilter(msgInt, choice);
+        const filter = client.distube.setFilter(msgInt, choice); // execute command
 
         if (filter.length === 0) {
+
+            // print command message
+
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
@@ -103,10 +92,16 @@ module.exports = {
             });
         };
 
+        /** default message */
+
+        const enabled = filter.join('\`, \`');
+
+        // print command message
+
         return msgInt.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR2)
-                .setDescription('🪄 | **Włączone filtry**: ' + (filter.join(', ')))
+                .setDescription('🪄 | **Włączone filtry**: ' + `\`${enabled}\``)
             ],
         });
 

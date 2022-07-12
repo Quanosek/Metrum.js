@@ -4,7 +4,7 @@ require('colors');
 
 /** FUNCTION */
 
-function realDate() {
+module.exports = function() {
 
     const date = new Date()
 
@@ -28,5 +28,3 @@ function realDate() {
     return `[${newDate}]`.brightCyan
 
 };
-
-module.exports = realDate;

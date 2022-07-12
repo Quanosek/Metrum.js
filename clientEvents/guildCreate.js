@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { PREFIX, ICON, WEBSITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
+const { NAME, PREFIX, ICON, WEBSITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
 
 require('colors');
 
@@ -39,18 +39,17 @@ module.exports = {
         if (channelToSend) {
 
             try {
-
                 return channelToSend.send({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR1)
                         .setThumbnail(ICON)
                         .setTitle('😄 | Cieszę się, że tu jestem!')
                         .setDescription(`
-Dziękuję za dodanie mnie na serwer!!! Jestem Metrum, czyli najlepszy bezpłatny bot muzyczny, oferujący odtwarzanie linków z **YouTube**, **Spotify** i **SoundCloud** w najlepszej jakości z obsługą szukania, kolejek, transmisji na żywo, playlist i auto-odtwarzania i dużo więcej.
+Dziękuję za dodanie mnie na ten serwer! Jestem ${NAME}, czyli zaawansowany, polski bot muzyczny z serii Metrum, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **700+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-Moim domyślnym prefixem jest: \`${PREFIX}\`
+Obsługuję zarówno komendy po ukośniku, jak i prefixie. Moim domyślnym prefixem jest: \`${PREFIX}\`
 
-Aby dowiedzieć się więcej użyj komendy \`help\` lub odwiedź moją [stronę internetową](${WEBSITE})!
+Aby dowiedzieć się więcej, użyj komendy \`help\` lub odwiedź moją [stronę internetową](${WEBSITE})!
                         `)
                         .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
                     ],

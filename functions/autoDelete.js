@@ -6,7 +6,7 @@ const realDate = require('./realDate.js');
 
 /** FUNCTION */
 
-function autoDelete(msg, delay) {
+module.exports = function(msg, delay) {
 
     if (!msg) return;
     if (!delay) delay = 10; // delay of deleting
@@ -31,5 +31,3 @@ function autoDelete(msg, delay) {
 
     };
 };
-
-module.exports = autoDelete;

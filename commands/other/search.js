@@ -12,12 +12,13 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'search',
     aliases: ['sr'],
-    description: 'Wyszukiwanie utworów po podanym tytule',
+    description: 'Wyszukiwanie utworów podobnych do obecnie granego lub po podanym tytule',
 
     async run(client, prefix, msg, args) {
 
-        let title = args.join(' ');
+        /** DEFINE */
 
+        let title = args.join(' ');
         const queue = client.distube.getQueue(msg);
 
         if (!title) {
@@ -40,7 +41,7 @@ module.exports = {
 
         try {
 
-            let result = await client.distube.search(title);
+            const result = await client.distube.search(title);
             let searchResult = '';
 
             for (let i = 0; i < 10; i++) {
@@ -72,7 +73,7 @@ module.exports = {
 
             return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
 
-        } catch (err) {
+        } catch (err) { // other error
             msg.react('❌'), autoDelete(msg);
 
             return msg.channel.send({

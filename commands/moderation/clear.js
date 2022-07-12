@@ -17,50 +17,35 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        /** DEFINE */
+
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
+
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!uservoice || botvoice != uservoice) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!queue) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
         /** COMMAND */
 
         msg.react('✅');
-
         client.distube.stop(msg); // execute command
+
+        // print command message
 
         return msg.channel.send({
             embeds: [new MessageEmbed()

@@ -1,10 +1,9 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR } = process.env;
+const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 require('colors');
-
 const { MessageEmbed } = require('discord.js');
 
 /** INTERACTION CREATE EVENT */
@@ -23,7 +22,7 @@ module.exports = {
             const cmd = client.slashCommands.get(msgInt.commandName);
             msgInt.member = msgInt.guild.members.cache.get(msgInt.user.id);
 
-            /** error */
+            /** errors */
 
             if (!cmd) return; // no command
 
@@ -38,7 +37,7 @@ module.exports = {
                 });
             };
 
-            /** finish */
+            /** execute */
 
             try {
                 await cmd.run(client, msgInt); // run slash command
@@ -55,7 +54,6 @@ module.exports = {
                         ],
                         ephemeral: true,
                     });
-
                 };
             };
 
@@ -70,9 +68,22 @@ module.exports = {
             const [name, ...params] = msgInt.customId.split('-');
             const button = client.buttons.get(name);
 
+            /** errors */
+
             if (!button) return; // no button
 
-            /** command */
+            if (!msgInt.member.permissions.has(button.permissions || [])) { // no permissions
+
+                return msgInt.reply({
+                    embeds: [new MessageEmbed()
+                        .setColor(COLOR_ERR)
+                        .setDescription('🛑 | Nie masz uprawnień do użycia tego przycisku!')
+                    ],
+                    ephemeral: true,
+                });
+            };
+
+            /** execute */
 
             try {
                 await button.run(client, msgInt, params); // run button command
@@ -88,7 +99,6 @@ module.exports = {
                         ],
                         ephemeral: true,
                     });
-
                 };
             };
 

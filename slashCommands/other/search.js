@@ -9,7 +9,7 @@ const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
     name: 'search',
-    description: 'Wyszukiwanie utworów',
+    description: 'Wyszukiwanie utworów podobnych do obecnie granego lub po podanym tytule',
 
     options: [{
         name: 'title',
@@ -19,11 +19,11 @@ module.exports = {
 
     async run(client, msgInt) {
 
-        let title;
-        if (msgInt.type === 'APPLICATION_COMMAND') {
+        /** MESSAGE TYPE DEFINE */
+
+        if (msgInt.type === 'APPLICATION_COMMAND') { // slash command
 
             title = msgInt.options.getString('title');
-
             const queue = client.distube.getQueue(msgInt);
 
             if (!title) {
@@ -51,7 +51,7 @@ module.exports = {
 
         try {
 
-            let result = await client.distube.search(title);
+            const result = await client.distube.search(title);
             let searchResult = '';
 
             for (let i = 0; i < 10; i++) {
@@ -60,7 +60,7 @@ module.exports = {
 
             /** message */
 
-            const embed = new MessageEmbed()
+            const embed = new MessageEmbed() // main message
                 .setColor(COLOR1)
                 .setTitle(`🔎 | Wyniki wyszukiwania dla: \`${title}\``)
                 .setDescription(searchResult)
@@ -81,7 +81,7 @@ module.exports = {
 
             return msgInt.reply({ embeds: [embed], components: [buttons] }); // print message
 
-        } catch (err) {
+        } catch (err) { // other error
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()

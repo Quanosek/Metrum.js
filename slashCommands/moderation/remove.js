@@ -5,11 +5,11 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
-/** CLEAR SLASH COMMAND */
+/** REMOVE SLASH COMMAND */
 
 module.exports = {
     name: 'remove',
-    description: 'Usunięcie wybranej pozycji z kolejki utworów',
+    description: 'Usunięcie wybranej pozycji z kolejki utworów (domyślnie: obecnie grany)',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{
@@ -20,6 +20,8 @@ module.exports = {
 
     async run(client, msgInt) {
 
+        /** DEFINE */
+
         let number = msgInt.options.getNumber('number');
         if (!number) number = 1; // default value
 
@@ -27,62 +29,35 @@ module.exports = {
         const botvoice = msgInt.guild.me.voice.channel;
         const uservoice = msgInt.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+        else if (isNaN(number) || number > queue.songs.length || number < 1)
+            errorEmbed.setDescription('Wprowadź poprawną wartość!');
 
-        if (!uservoice || botvoice != uservoice) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        /** OTHER ERROR */
-
-        if (isNaN(number) || number > queue.songs.length || number < 1) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Wprowadź poprawną wartość!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** COMMAND */
 
-        if (!number || number === 1) { // currently playing
+        if (number === 1) { // currently playing
+
+            // execute command
 
             if (queue.songs.length < 2) {
                 if (queue.autoplay) client.distube.skip(msgInt);
                 else client.distube.stop(msgInt);
             } else client.distube.skip(msgInt);
+
+            // print command message
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
@@ -94,17 +69,19 @@ module.exports = {
         } else { // song number > 1
 
             number = number - 1;
-            const song = queue.songs[number];
+            const song = queue.songs[number]; // chosen song
 
-            msgInt.reply({
+            queue.songs.splice(number, 1); // execute command
+
+            // print command message
+
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
                     .setTitle('🗑️ | Usunięto z kolejki utworów pozycję:')
                     .setDescription(`**${number + 1}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``)
                 ],
             });
-
-            return queue.songs.splice(number, 1); // execute command
         };
 
     },

@@ -1,10 +1,7 @@
 /** IMPORT */
 
-require('dotenv').config();
-const { NAME } = process.env;
-
+const ms = require('ms');
 require('colors');
-
 const { getVoiceConnection } = require('@discordjs/voice');
 
 const realDate = require('../functions/realDate.js');
@@ -17,25 +14,20 @@ module.exports = {
 
     async run(client) {
 
-        /** on ready */
+        // on ready log
+        console.log(realDate() + ' Bot is ready to use!'.brightYellow);
 
-        console.log(realDate() + ' Bot is ready to use!'.brightYellow); // on ready message// on ready message
-        // client.user.setActivity(`@${NAME}`, { type: 'LISTENING' }); // bot activity
-
-        /* auto-leave voice channels */
-
+        // auto-leave voice channels
         const guildsID = client.guilds.cache.map(guild => guild.id);
 
         setInterval(() => {
-
             guildsID.forEach(id => {
                 const connection = getVoiceConnection(id)
                 const queue = client.distube.getQueue(id);
 
                 if (connection && !queue) { connection.destroy() };
             });
-
-        }, 600000); // 10 minutes interval
+        }, ms('10m'));
 
     },
 };

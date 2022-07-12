@@ -3,6 +3,7 @@
 require('dotenv').config();
 const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
+const ms = require('ms');
 const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
@@ -12,103 +13,78 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'forward',
     aliases: ['fw'],
-    description: 'Przewinięcie utworu do przodu o podaną liczbę sekund (domyślnie: 10)',
+    description: 'Przewinięcie utworu do przodu o podaną wartość (domyślnie: 10 sekund)',
 
     async run(client, prefix, msg, args) {
 
-        let number = Number(args[0]);
-        if (!args[0]) number = 10; // default value
+        /** DEFINE */
+
+        let number = args.join(' ');
+        if (!number) number = '10s'; // default value
+
+        if (/[a-z]/.test(number)) number = ms(number) / 1000;
+        else number = ms(number);
 
         const queue = client.distube.getQueue(msg);
+        if (queue) song = queue.songs[0]; // now playing song
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
-            msg.react('❌'), autoDelete(msg);
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue) {
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+        } else {
+            if (song.isLive)
+                errorEmbed.setDescription('Nie można przewijać transmisji na żywo!');
+            if (isNaN(number) || number === 0)
+                errorEmbed.setDescription('Wprowadź poprawną wartość (w sekundach)!');
         };
 
-        if (!uservoice || botvoice != uservoice) {
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!queue) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        /** OTHER ERRORS */
-
-        const song = queue.songs[0]; // now playing song
-
-        if (song.isLive) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie można przewijać transmisji na żywo!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        let seekTime = queue.currentTime + number;
-
-        if (isNaN(number) || number === 0) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Wprowadź poprawną wartość (w sekundach)!')
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
         /** COMMAND */
 
         msg.react('✅');
 
+        // seekTime
+
+        let seekTime = queue.currentTime + number;
         if (seekTime < 0) seekTime = 0;
         else if (seekTime >= song.duration) seekTime = song.duration - 1;
 
         client.distube.seek(msg, seekTime); // execute command
 
-        let seconds, rest = number % 10;
+        // translation
+
         const abs = Math.abs(number);
+        const rest = number % 10;
 
         if (abs === 1) seconds = 'sekundę'
         else if (rest < 2 || rest > 4) seconds = 'sekund'
         else if (rest > 1 || rest < 5) seconds = 'sekundy'
 
-        if (number > 0) text = `⏩ | Przewinięto utwór o \`${number}\` ${seconds} **do przodu** (\`${queue.formattedCurrentTime}/${song.formattedDuration}\`).`;
-        else text = `⏪ | Przewinięto utwór o \`${abs}\` ${seconds} **do tyłu** (\`${queue.formattedCurrentTime}/${song.formattedDuration}\`).`;
+        // message description
+
+        if (number > 0) text = `⏩ | Przewinięto utwór o \`${number}\` ${seconds} **do przodu**`;
+        else text = `⏪ | Przewinięto utwór o \`${abs}\` ${seconds} **do tyłu**`;
+
+        // print command message
 
         return msg.channel.send({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setDescription(text)
+                .setDescription(text + ` (\`${queue.formattedCurrentTime}\`/\`${song.formattedDuration}\`).`)
             ],
         });
 

@@ -60,6 +60,11 @@ const handlers = fs
 
 })();
 
+/** DISCORD TOGETHER */
+
+const { DiscordTogether } = require('discord-together');
+client.discordTogether = new DiscordTogether(client);
+
 /** DISTUBE DEFINE */
 
 const { DisTube } = require('distube');
@@ -84,25 +89,33 @@ client.distube
 
     .on('addList', (queue, playlist) => {
 
-    let songs;
-    let rest = playlist.songs.length % 10;
-
+    const rest = playlist.songs.length % 10;
     if (playlist.songs.length === 1) songs = 'utwór'
     else if (rest < 2 || rest > 4) songs = 'utworów'
     else if (rest > 1 || rest < 5) songs = 'utwory'
 
-    return queue.textChannel.send({
-        embeds: [new MessageEmbed()
-            .setColor(COLOR1)
-            .setThumbnail(playlist.thumbnail)
-            .setTitle('➕ | Dodano do kolejki playlistę:')
-            .setDescription(`
-\`${playlist.name}\`
+    let color = COLOR1,
+        source = '',
+        tracks = `\nliczba utworów: \`${playlist.songs.length}\`\n`
 
-**łącznie ${playlist.songs.length} ${songs}**!
-            `)
-        ],
-    });
+    if (playlist.source === 'youtube')
+        color = '#ff0000', source = ' YouTube';
+    if (playlist.source === 'spotify')
+        color = '#1ed760', source = ' Spotify', tracks = '';
+    if (playlist.source === 'soundcloud')
+        color = '#ff5500', source = ' SoundCloud';
+
+    const embed = new MessageEmbed()
+        .setColor(color)
+        .setThumbnail(playlist.thumbnail)
+        .setTitle(`➕ | Dodano do kolejki playlistę${source}:`)
+        .setDescription(`
+[${playlist.name}](${playlist.url})
+${tracks}
+        `)
+        .setFooter({ text: `Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue` })
+
+    return queue.textChannel.send({ embeds: [embed] });
 })
 
 .on('addSong', (queue, song) => {
@@ -114,14 +127,19 @@ client.distube
         .setThumbnail(song.thumbnail)
 
     if (queue.added) {
+
         queue.added = false;
         embed.setTitle('➕ | Dodano do kolejki jako następny:');
         embed.setDescription(`**2.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``);
+
         if (queue.songs.length > 2) embed.setFooter({ text: `Utworów w kolejce: ${queue.songs.length}` });
 
     } else {
+
         embed.setTitle('➕ | Dodano do kolejki:');
         embed.setDescription(`**${queue.songs.length}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``);
+
+        if (queue.songs.length) embed.setFooter({ text: `Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue` });
     };
 
     return queue.textChannel.send({ embeds: [embed] })
@@ -152,7 +170,6 @@ client.distube
 .on('playSong', (queue, song) => {
 
     client.distube.setSelfDeaf;
-
     let requester = song.member.user;
 
     return queue.textChannel.send({

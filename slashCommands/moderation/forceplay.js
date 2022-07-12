@@ -9,17 +9,19 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'forceplay',
-    description: 'Wymuszenie puszczenia podanego utworu',
+    description: 'Wymuszenie puszczenia podanego utworu (podaj tytuł utworu lub wklej dowolny link)',
     permissions: ['MANAGE_MESSAGES'],
 
     options: [{
         name: 'song',
-        description: 'Podaj tytuł utworu lub link Youtube, Spotify albo SoundCloud',
+        description: 'Podaj tytuł utworu lub wklej dowolny link',
         type: 'STRING',
         required: true,
     }],
 
     async run(client, msgInt) {
+
+        /** DEFINE */
 
         const song = msgInt.options.getString('song');
 
@@ -29,46 +31,35 @@ module.exports = {
 
         /** ERRORS */
 
-        if (!uservoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!uservoice)
+            errorEmbed.setDescription('Musisz najpierw **dołączyć** na kanał głosowy!');
+        else if (uservoice.id === msgInt.guild.afkChannel.id)
+            errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
 
-        if (uservoice.id === msgInt.guild.afkChannel.id) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`Jesteś na kanale AFK!`)
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (botvoice) {
-
+        else if (botvoice) {
             if (botvoice.members.size === 1) {
-                client.distube.voices.get(msgInt).leave();
+                try {
+                    client.distube.voices.get(msgInt).leave();
+                } catch (err) {
+                    if (err) console.error(` >>> ${err}`.brightRed);
+                };
+            } else if (queue && uservoice != botvoice)
+                errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
 
-            } else if (queue && uservoice != botvoice) {
+        } else if (!(uservoice.permissionsFor(msgInt.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msgInt.guild.me).has('CONNECT')))
+            errorEmbed.setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`);
+        else if (!(uservoice.permissionsFor(msgInt.guild.me).has('SPEAK')))
+            errorEmbed.setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`);
 
-                return msgInt.reply({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                    ],
-                    ephemeral: true,
-                });
-            };
-        };
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** COMMAND */
+
+        // print command message
 
         if (
             song.includes('youtu.be/') ||
@@ -88,7 +79,7 @@ module.exports = {
             });
         };
 
-        /** execute command */
+        // execute command
 
         return client.distube.play(uservoice, song, {
             msgInt,

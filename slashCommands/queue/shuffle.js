@@ -7,7 +7,7 @@ const { MessageEmbed } = require('discord.js');
 
 /** SHUFFLE SLASH COMMAND */
 
-let shuffleVotes = []; //votes
+let shuffleVotes = []; // votes
 
 module.exports = {
     name: 'shuffle',
@@ -15,44 +15,26 @@ module.exports = {
 
     async run(client, msgInt) {
 
+        /** DEFINE */
+
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
         const uservoice = msgInt.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
 
-        if (!uservoice || botvoice != uservoice) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany *żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** VOTING SYSTEM */
 
@@ -71,22 +53,25 @@ module.exports = {
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Już oddał*ś swój głos!`)
+                    .setDescription(`🗳️ | Twój głos został już zapisany!`)
                 ],
                 ephemeral: true,
             });
         };
 
-        /** voting */
+        /** message */
 
         shuffleVotes.push(msgInt.author.id);
         process.setMaxListeners(Infinity);
+
+        // print voting message
 
         if (required > 1) {
 
             // translation
 
-            let votes, rest = votes % 10;
+            const rest = votes % 10;
+
             if (rest > 1 || rest < 5) votes = 'głosy'
             else if (rest < 2 || rest > 4) votes = 'głosów'
 
@@ -104,32 +89,32 @@ module.exports = {
 
         if (shuffleVotes.length >= required) {
 
-            client.distube.shuffle(msgInt)
+            client.distube.shuffle(msgInt) // execute command
+
+            shuffleVotes = []; // reset votes
 
             // translation
 
-            let songs, rest = queue.songs.length % 10;
+            const rest = queue.songs.length % 10;
 
             if (queue.songs.length === 1) songs = 'utwór'
             else if (rest > 1 || rest < 5) songs = 'utwory'
             else if (rest < 2 || rest > 4) songs = 'utworów'
 
-            // message
+            // print command message
 
-            msgInt.reply({
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setDescription(`🔀 | Wymieszano kolejkę zawierającą **${queue.songs.length}** ${songs}.`)
                 ],
             });
-
-            return shuffleVotes = [];
         };
 
-        /** EVENT */
+        /** event */
 
-        client.distube.on('playSong', (queue, song) => {
-            return shuffleVotes = [];
+        client.distube.on('initQueue', (queue) => {
+            return shuffleVotes = []; // reset votes
         });
 
     },

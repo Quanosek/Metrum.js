@@ -12,9 +12,11 @@ const autoDelete = require('../../functions/autoDelete.js');
 module.exports = {
     name: 'play',
     aliases: ['p'],
-    description: 'Odtwarzanie muzyki (podaj tytuł utworu lub link Youtube, Spotify albo SoundCloud!)',
+    description: 'Odtwarzanie muzyki (podaj tytuł utworu lub wklej dowolny link)',
 
     async run(client, prefix, msg, args) {
+
+        /** DEFINE */
 
         const song = args.join(' ');
 
@@ -24,81 +26,42 @@ module.exports = {
 
         /** ERRORS */
 
-        if (!uservoice) {
-            msg.react('❌'), autoDelete(msg);
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
+        if (!uservoice)
+            errorEmbed.setDescription('Musisz najpierw **dołączyć** na kanał głosowy!');
+        else if (uservoice.id === msg.guild.afkChannel.id)
+            errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
 
-        if (msg.guild.afkChannel && uservoice.id === msg.guild.afkChannel.id) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`Jesteś na kanale AFK!`)
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (botvoice) {
-
+        else if (botvoice) {
             if (botvoice.members.size === 1) {
-                client.distube.voices.get(msg).leave();
+                try {
+                    client.distube.voices.get(msg).leave();
+                } catch (err) {
+                    if (err) console.error(` >>> ${err}`.brightRed);
+                };
+            } else if (queue && uservoice != botvoice)
+                errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
 
-            } else if (queue && uservoice != botvoice) {
-                msg.react('❌'), autoDelete(msg);
+        } else if (!song)
+            errorEmbed.setDescription(`Musisz jeszcze wpisać **tytuł utworu**, albo wkleić **dowolny link**!`);
 
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                    ],
-                }).then(msg => autoDelete(msg));
-            };
-        };
+        else if (!(uservoice.permissionsFor(msg.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msg.guild.me).has('CONNECT')))
+            errorEmbed.setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`);
+        else if (!(uservoice.permissionsFor(msg.guild.me).has('SPEAK')))
+            errorEmbed.setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`);
 
-        if (!song) {
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`Musisz jeszcze wpisać **nazwę** utworu, albo link do: **YouTube**, **Spotify** lub **SoundCloud**!`)
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!(uservoice.permissionsFor(msg.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msg.guild.me).has('CONNECT'))) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`)
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!(uservoice.permissionsFor(msg.guild.me).has('SPEAK'))) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`)
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
         /** COMMAND */
 
         msg.react('✅');
+
+        // print command message
 
         if (!(
                 song.includes('youtu.be/') ||
@@ -115,7 +78,7 @@ module.exports = {
             });
         };
 
-        /** execute command */
+        // execute command
 
         return client.distube.play(uservoice, song, {
             msg,

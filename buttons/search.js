@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { COLOR_ERR, COLOR1 } = process.env;
+const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -14,89 +14,59 @@ module.exports = {
 
         /** DEFINE */
 
+        const name = params[0];
+        const songId = params[1];
+
         const queue = client.distube.getQueue(interaction);
         const botvoice = interaction.guild.me.voice.channel;
         const uservoice = interaction.member.voice.channel;
 
-        const name = params[0];
-        const songId = params[1];
-
-        let result = await client.distube.search(name);
+        const result = await client.distube.search(name);
 
         /** ERRORS */
 
-        if (!uservoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return interaction.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!uservoice)
+            errorEmbed.setDescription('Musisz najpierw **dołączyć** na kanał głosowy!');
+        else if (interaction.guild.afkChannel && uservoice.id === interaction.guild.afkChannel.id)
+            errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
 
-        if (interaction.guild.afkChannel && uservoice.id === interaction.guild.afkChannel.id) {
-
-            return interaction.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`Jesteś na kanale AFK!`)
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (botvoice) {
-
+        else if (botvoice) {
             if (botvoice.members.size === 1) {
-                client.distube.voices.get(interaction).leave();
+                try {
+                    client.distube.voices.get(interaction).leave();
+                } catch (err) {
+                    if (err) console.error(` >>> ${err}`.brightRed);
+                };
+            } else if (queue && uservoice != botvoice)
+                errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        } else if (!(uservoice.permissionsFor(interaction.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msgInt.guild.me).has('CONNECT')))
+            errorEmbed.setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`);
+        else if (!(uservoice.permissionsFor(interaction.guild.me).has('SPEAK')))
+            errorEmbed.setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`);
 
-            } else if (queue && uservoice != botvoice) {
-
-                return interaction.reply({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                    ],
-                    ephemeral: true,
-                });
-            };
-
-        };
-
-        if (!(uservoice.permissionsFor(interaction.guild.me).has('VIEW_CHANNEL') ||
-                uservoice.permissionsFor(interaction.guild.me).has('CONNECT'))) {
-
-            return interaction.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`)
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!(uservoice.permissionsFor(interaction.guild.me).has('SPEAK'))) {
-
-            return interaction.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`)
-                ],
-                ephemeral: true,
-            });
-        };
+        if (errorEmbed.description) // print error embed
+            return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** COMMAND */
+
+        // print button message
 
         interaction.reply({
             embeds: [new MessageEmbed()
                 .setColor(COLOR1)
-                .setTitle(`🎵 | ${interaction.user} wybrał(a) utwór:`)
-                .setDescription(`[${result[songId - 1].name}](${result[songId - 1].url}) - \`${result[songId - 1].formattedDuration}\``)
+                .setDescription(`
+**🎵 | ${interaction.user} wybrał(a) utwór:**
+
+**${songId}.** [${result[songId - 1].name}](${result[songId - 1].url}) - \`${result[songId - 1].formattedDuration}\`
+                `)
+                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
             ],
         });
+
+        // execute command
 
         return client.distube.play(uservoice, result[songId - 1].url, {
             interaction,

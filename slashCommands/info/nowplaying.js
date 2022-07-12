@@ -13,43 +13,34 @@ module.exports = {
 
     async run(client, msgInt) {
 
+        /** DEFINE */
+
         const queue = client.distube.getQueue(msgInt);
+        if (queue) song = queue.songs[0]; // that song informations
         const botvoice = msgInt.guild.me.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
 
-        if (!queue) {
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
+        /** BIG MESSAGE */
 
-        /** COMMAND */
-
-        const song = queue.songs[0]; // that song in queue
-
-        const embed = new MessageEmbed() // create big embed
+        const embed = new MessageEmbed() // create embed message
             .setColor(COLOR1)
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
 
-        let timeValue;
+        /** message content */
+
         if (song.isLive) timeValue = `\`Live\``
         else timeValue = `\`${queue.formattedCurrentTime}\` / \`${song.formattedDuration}\``
 
@@ -75,9 +66,12 @@ module.exports = {
             value: `${song.user}`,
         });
 
+        // enabled options menu
+
         const filters = queue.filters;
 
-        if (queue.paused ||
+        if (
+            queue.paused ||
             queue.repeatMode ||
             queue.autoplay ||
             filters.length !== 0
@@ -93,10 +87,14 @@ module.exports = {
             embed.addField('Włączone opcje:', params);
         };
 
+        // next song informations
+
         const nextSong = queue.songs[1];
         if (nextSong) embed.addField('Następne w kolejce:', `[${nextSong.name}](${nextSong.url}) - \`${nextSong.formattedDuration}\``);
 
-        const buttons = new MessageActionRow() // buttons
+        /** buttons */
+
+        const buttons = new MessageActionRow()
             .addComponents(
                 new MessageButton()
                 .setCustomId(`nowplaying-pause`)
@@ -127,7 +125,9 @@ module.exports = {
                 .setLabel(`🔎 | Wyszukaj podobne`)
             )
 
-        return msgInt.reply({ embeds: [embed], components: [buttons] }); // print message
+        /** print big message */
+
+        return msgInt.reply({ embeds: [embed], components: [buttons] });
 
     },
 };

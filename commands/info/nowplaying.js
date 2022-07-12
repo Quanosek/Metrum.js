@@ -16,45 +16,36 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        /** DEFINE */
+
         const queue = client.distube.getQueue(msg);
+        if (queue) song = queue.songs[0]; // that song in queue
         const botvoice = msg.guild.me.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
+
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
-        if (!queue) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        /** COMMAND */
+        /** BIG MESSAGE */
 
         msg.react('✅');
-
-        const song = queue.songs[0]; // that song in queue
 
         const embed = new MessageEmbed() // create big embed
             .setColor(COLOR1)
             .setTitle('**🎵 | Teraz odtwarzane:**')
             .setThumbnail(song.thumbnail)
 
-        let timeValue;
         if (song.isLive) timeValue = `\`Live\``
         else timeValue = `\`${queue.formattedCurrentTime}\` / \`${song.formattedDuration}\``
 
@@ -80,9 +71,12 @@ module.exports = {
             value: `${song.user}`,
         });
 
+        // enabled options menu
+
         const filters = queue.filters;
 
-        if (queue.paused ||
+        if (
+            queue.paused ||
             queue.repeatMode ||
             queue.autoplay ||
             filters.length !== 0
@@ -98,10 +92,14 @@ module.exports = {
             embed.addField('Włączone opcje:', params);
         };
 
+        // next song informations
+
         const nextSong = queue.songs[1];
         if (nextSong) embed.addField('Następne w kolejce:', `[${nextSong.name}](${nextSong.url}) - \`${nextSong.formattedDuration}\``);
 
-        const buttons = new MessageActionRow() // buttons
+        /** buttons */
+
+        const buttons = new MessageActionRow()
             .addComponents(
                 new MessageButton()
                 .setCustomId(`nowplaying-pause`)
@@ -131,6 +129,8 @@ module.exports = {
                 .setStyle('SECONDARY')
                 .setLabel(`🔎 | Wyszukaj podobne`)
             )
+
+        /** print big message */
 
         return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
 

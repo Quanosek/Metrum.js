@@ -13,36 +13,27 @@ module.exports = {
 
     async run(client, msgInt) {
 
+        /** DEFINE */
+
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
 
-        if (!queue) {
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
+        /** BIG MESSAGE */
 
-        /** COMMAND */
-
-        const embed = new MessageEmbed() // create big embed
+        const embed = new MessageEmbed() // create embed message
             .setColor(COLOR1)
             .setTitle('**💿 | Kolejka utworów:**')
             .setDescription(queue.songs.map(
@@ -52,21 +43,30 @@ module.exports = {
                 .slice(0, 30)
                 .join('\n')
             )
-            .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
 
-        let songs, rest = queue.songs.length % 10;
+        if (queue.songs.length < 2) embed.setFooter({ text: `Aby dowiedzieć się więcej o tym utworze użyj komendy: nowplaying` });
+        else embed.setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` });
+
+        // translation
+
+        const rest = queue.songs.length % 10;
 
         if (queue.songs.length === 1) songs = 'utwór'
         else if (rest < 2 || rest > 4) songs = 'utworów'
         else if (rest > 1 || rest < 5) songs = 'utwory'
 
+        // message content
+
         if (queue.songs.length > 30) {
             embed.addField('Łącznie w kolejce:', `**${queue.songs.length} ${songs}!**`, true);
         };
 
+        // enabled options menu
+
         const filters = queue.filters;
 
-        if (queue.paused ||
+        if (
+            queue.paused ||
             queue.repeatMode ||
             queue.autoplay ||
             filters.length !== 0
@@ -82,7 +82,9 @@ module.exports = {
             embed.addField('Włączone opcje:', params);
         };
 
-        return msgInt.reply({ embeds: [embed] }); // print message
+        // print big message
+
+        return msgInt.reply({ embeds: [embed] });
 
     },
 };

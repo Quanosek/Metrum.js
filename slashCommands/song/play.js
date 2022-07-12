@@ -9,16 +9,18 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'play',
-    description: 'Odtwarzanie muzyki',
+    description: 'Odtwarzanie muzyki (podaj tytuł utworu lub wklej dowolny link)',
 
     options: [{
         name: 'song',
-        description: 'Podaj tytuł utworu lub link Youtube, Spotify albo SoundCloud',
+        description: 'Podaj tytuł utworu lub wklej dowolny link',
         type: 'STRING',
         required: true,
     }],
 
     async run(client, msgInt) {
+
+        /** DEFINE */
 
         const song = msgInt.options.getString('song');
 
@@ -28,70 +30,38 @@ module.exports = {
 
         /** ERRORS */
 
-        if (!uservoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz najpierw dołączyć na kanał głosowy!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!uservoice)
+            errorEmbed.setDescription('Musisz najpierw **dołączyć** na kanał głosowy!');
+        else if (uservoice.id === msgInt.guild.afkChannel.id)
+            errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
 
-        if (msgInt.guild.afkChannel && uservoice.id === msgInt.guild.afkChannel.id) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`Jesteś na kanale AFK!`)
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (botvoice) {
-
+        else if (botvoice) {
             if (botvoice.members.size === 1) {
-                client.distube.voices.get(msgInt).leave();
+                try {
+                    client.distube.voices.get(msgInt).leave();
+                } catch (err) {
+                    if (err) console.error(` >>> ${err}`.brightRed);
+                };
+            } else if (queue && uservoice != botvoice)
+                errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
 
-            } else if (queue && uservoice != botvoice) {
+        } else if (!(uservoice.permissionsFor(msgInt.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msgInt.guild.me).has('CONNECT')))
+            errorEmbed.setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`);
+        else if (!(uservoice.permissionsFor(msgInt.guild.me).has('SPEAK')))
+            errorEmbed.setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`);
 
-                return msgInt.reply({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                    ],
-                    ephemeral: true,
-                });
-            };
-        };
-
-        if (!(uservoice.permissionsFor(msgInt.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msgInt.guild.me).has('CONNECT'))) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`)
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!(uservoice.permissionsFor(msgInt.guild.me).has('SPEAK'))) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`**Nie mam uprawnień** do aktywności głosowej na twoim kanale!`)
-                ],
-                ephemeral: true,
-            });
-        };
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** COMMAND */
 
-        if (song.includes('youtu.be/') ||
+        // print command message
+
+        if (
+            song.includes('youtu.be/') ||
             song.includes('youtube.com/') ||
             song.includes('open.spotify.com/') ||
             song.includes('soundcloud.com/')
@@ -99,7 +69,6 @@ module.exports = {
             msgInt.reply(song);
 
         } else {
-
             msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
@@ -108,7 +77,7 @@ module.exports = {
             });
         };
 
-        /** execute command */
+        // execute command
 
         return client.distube.play(uservoice, song, {
             msgInt,

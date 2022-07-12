@@ -8,17 +8,18 @@ const { MessageEmbed } = require('discord.js');
 
 const autoDelete = require('../../functions/autoDelete.js');
 
-/** PAUSE COMMAND */
+/** LYRICS COMMAND */
 
 module.exports = {
     name: 'lyrics',
     aliases: ['ly'],
-    description: 'Wyświetlenie tekstu do odtwarzanego utworu',
+    description: 'Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu',
 
     async run(client, prefix, msg, args) {
 
-        let title = args.join(' ');
+        /** DEFINE */
 
+        let title = args.join(' ');
         const queue = client.distube.getQueue(msg);
 
         /** ERROR */
@@ -72,7 +73,7 @@ module.exports = {
             });
 
             msg.react('✅');
-            return msg.channel.send({ embeds })
+            return msg.channel.send({ embeds });
 
         } catch (err) { // no song error
 

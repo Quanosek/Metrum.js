@@ -1,7 +1,7 @@
 {
     "name": "metrum",
-    "version": "2.4.2",
-    "description": "Polski zaawansowany bot muzyczny",
+    "version": "2.5.0",
+    "description": "Polski zaawansowany bot muzyczny na platformę Discord",
     "main": "index.js",
     "scripts": {
         "dev": "env YTDL_NO_UPDATE=1 nodemon index.js"
@@ -23,13 +23,15 @@
         "@distube/yt-dlp": "^1.0.2",
         "@distube/ytdl-core": "^4.11.3",
         "colors": "^1.4.0",
-        "discord.js": "^13.6.0",
+        "discord-together": "^1.3.3",
+        "discord.js": "^13.8.1",
         "distube": "^3.3.4",
-        "dotenv": "^16.0.0",
+        "dotenv": "^16.0.1",
         "ffmpeg-static": "^4.4.1",
         "libsodium-wrappers": "^0.7.10",
-        "mongoose": "^6.3.1",
-        "nodemon": "^2.0.15",
+        "mongoose": "^6.4.3",
+        "ms": "^2.1.3",
+        "nodemon": "^2.0.19",
         "opusscript": "^0.0.8"
     }
 }

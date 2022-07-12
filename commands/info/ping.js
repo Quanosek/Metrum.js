@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
+const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -16,14 +16,15 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        /** COMMAND */
+        /** MESSAGE */
 
         msg.react('🏓'), autoDelete(msg);
 
-        msg.channel.send({
+        msg.channel.send({ // send
+
             embeds: [new MessageEmbed()
                 .setColor('RANDOM')
-                .setDescription('pong!')
+                .setDescription('🏓 | Pong!')
             ],
 
         }).then(resultmsg => {

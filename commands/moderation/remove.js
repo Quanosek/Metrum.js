@@ -17,6 +17,8 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        /** DEFINE */
+
         let number = Number(args[0]);
         if (!args[0]) number = 1; // default value
 
@@ -24,52 +26,23 @@ module.exports = {
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
+
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+        else if (isNaN(number) || number > queue.songs.length || number < 1)
+            errorEmbed.setDescription('Wprowadź poprawną wartość!');
+
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!uservoice || botvoice != uservoice) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!queue) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        /** OTHER ERROR */
-
-        if (isNaN(number) || number > queue.songs.length || number < 1) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Wprowadź poprawną wartość!')
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
         /** COMMAND */
@@ -78,10 +51,14 @@ module.exports = {
 
         if (number === 1) { // currently playing
 
+            // execute command
+
             if (queue.songs.length < 2) {
                 if (queue.autoplay) client.distube.skip(msg);
                 else client.distube.stop(msg);
             } else client.distube.skip(msg);
+
+            // print command message
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -93,9 +70,13 @@ module.exports = {
         } else { // song number > 1
 
             number = number - 1;
-            const song = queue.songs[number];
+            const song = queue.songs[number]; // chosen song
 
-            msg.channel.send({
+            queue.songs.splice(number, 1); // execute command
+
+            // print command message
+
+            return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
                     .setTitle('🗑️ | Usunięto z kolejki utworów pozycję:')
@@ -103,7 +84,6 @@ module.exports = {
                 ],
             });
 
-            return queue.songs.splice(number, 1); // execute command
         };
 
     },

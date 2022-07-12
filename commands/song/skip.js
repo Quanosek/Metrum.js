@@ -18,43 +18,27 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        /** DEFINE */
+
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
+
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!uservoice || botvoice != uservoice) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!queue) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
         /** VOTING SYSTEM */
@@ -75,15 +59,17 @@ module.exports = {
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Już oddał*ś swój głos!`)
+                    .setDescription(`🗳️ | Twój głos został już zapisany!`)
                 ],
             }).then(msg => autoDelete(msg, 5));
         };
 
-        /** voting */
+        /** message */
 
         skipVotes.push(msg.author.id);
         process.setMaxListeners(Infinity);
+
+        // print voting message
 
         if (required > 1) {
 
@@ -91,7 +77,8 @@ module.exports = {
 
             // translation
 
-            let votes, rest = votes % 10;
+            const rest = votes % 10;
+
             if (rest > 1 || rest < 5) votes = 'głosy'
             else if (rest < 2 || rest > 4) votes = 'głosów'
 
@@ -111,6 +98,8 @@ module.exports = {
 
             msg.react('✅');
 
+            // execute command
+
             if (queue.paused) client.distube.resume(msg);
 
             if (queue.songs.length < 2) {
@@ -118,20 +107,22 @@ module.exports = {
                 else client.distube.stop(msg);
             } else client.distube.skip(msg);
 
-            msg.channel.send({
+            skipVotes = []; // reset votes
+
+            // print command message
+
+            return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setDescription('⏭️ | Pominięto utwór.')
                 ],
             });
-
-            return skipVotes = [];
         };
 
-        /** EVENT */
+        /** event */
 
         client.distube.on('playSong', (queue, song) => {
-            return skipVotes = [];
+            return skipVotes = []; // reset votes
         });
 
     },

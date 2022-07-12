@@ -15,44 +15,26 @@ module.exports = {
 
     async run(client, msgInt) {
 
+        /** DEFINE */
+
         const queue = client.distube.getQueue(msgInt);
         const botvoice = msgInt.guild.me.voice.channel;
         const uservoice = msgInt.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
 
-        if (!uservoice || botvoice != uservoice) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** VOTING SYSTEM */
 
@@ -66,26 +48,31 @@ module.exports = {
 
         /** error */
 
-        if (skipVotes.some((x) => x === msgInt.member.user.id)) {
+        if (skipVotes.some((x) => x === msgInt.author.id)) {
 
             return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Już oddał*ś swój głos!`)
+                    .setDescription(`🗳️ | Twój głos został już zapisany!`)
                 ],
                 ephemeral: true,
             });
         };
 
+        /** voting message */
+
         // translation
 
-        let votes, rest = votes % 10;
+        const rest = votes % 10;
+
         if (rest > 1 || rest < 5) votes = 'głosy'
         else if (rest < 2 || rest > 4) votes = 'głosów'
 
+        // message content
+
         let voteText, skipText;
 
-        if (msgInt.type === 'APPLICATION_COMMAND') {
+        if (msgInt.type === 'APPLICATION_COMMAND') { // slash command
             voteText = `🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`
             skipText = '⏭️ | Pominięto utwór.'
         } else { // button interaction
@@ -93,10 +80,10 @@ module.exports = {
             skipText = `⏭️ | ${msgInt.member.user} pominął/pominęła utwór.`
         };
 
-        /** voting */
-
         skipVotes.push(msgInt.member.user.id);
         process.setMaxListeners(Infinity);
+
+        // print voting message
 
         if (required > 1) {
 
@@ -112,6 +99,8 @@ module.exports = {
 
         if (skipVotes.length >= required) {
 
+            // execute command
+
             if (queue.paused) client.distube.resume(msgInt);
 
             if (queue.songs.length < 2) {
@@ -119,20 +108,22 @@ module.exports = {
                 else client.distube.stop(msgInt);
             } else client.distube.skip(msgInt);
 
-            msgInt.reply({
+            skipVotes = []; // reset votes
+
+            // print command message
+
+            return msgInt.reply({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR1)
                     .setDescription(skipText)
                 ],
             });
-
-            return skipVotes = [];
         };
 
-        /** EVENT */
+        /** event */
 
         client.distube.on('playSong', (queue, song) => {
-            return skipVotes = [];
+            return skipVotes = []; // reset votes
         });
 
     },

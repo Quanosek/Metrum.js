@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
+const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
 
 const { MessageEmbed } = require('discord.js');
 
@@ -12,6 +12,8 @@ module.exports = {
     description: 'Ping-pong',
 
     async run(client, msgInt) {
+
+        /** MESSAGE */
 
         msgInt.reply({ // send
 

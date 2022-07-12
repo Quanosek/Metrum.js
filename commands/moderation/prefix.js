@@ -28,37 +28,19 @@ module.exports = {
 
             /** errors */
 
-            if (!newPrefix) {
+            const errorEmbed = new MessageEmbed() // create embed
+                .setColor(COLOR_ERR)
+
+            if (!newPrefix)
+                errorEmbed.setDescription('⚙️ | Musisz jeszcze wpisać nowy prefix!');
+            else if (newPrefix.length > 8)
+                errorEmbed.setDescription('⚙️ | Wybrany prefix jest zbyt długi *(max. 8 znaków)*!');
+            else if (args[2])
+                errorEmbed.setDescription('⚙️ | W prefixie nie może być spacji!');
+
+            if (errorEmbed.description) { // print error embed
                 msg.react('❌'), autoDelete(msg);
-
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('⚙️ | Musisz jeszcze wpisać nowy prefix!')
-                    ],
-                }).then(msg => autoDelete(msg));
-            };
-
-            if (newPrefix.length > 8) {
-                msg.react('❌'), msgAutoDelete(msg);
-
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('⚙️ | Wybrany prefix jest zbyt długi *(max. 8 znaków)*!')
-                    ],
-                }).then(msg => autoDelete(msg));
-            };
-
-            if (args[2]) {
-                msg.react('❌'), autoDelete(msg);
-
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('⚙️ | W prefixie nie może być spacji!')
-                    ],
-                }).then(msg => autoDelete(msg));
+                return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
             };
 
             /** command */

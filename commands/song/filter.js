@@ -16,71 +16,59 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
+        /** DEFINE */
+
         const choice = args[0];
         const modes = [
             'disable',
             '3d',
             'bassboost',
+            'earwax',
             'echo',
-            'karaoke',
-            'nightcore',
-            'vaporwave',
             'flanger',
             'gate',
             'haas',
+            'karaoke',
+            'mcompand',
+            'nightcore',
+            'phaser',
             'reverse',
             'surround',
-            'mcompand',
-            'phaser',
             'tremolo',
-            'earwax'
+            'vaporwave'
         ];
 
         const queue = client.distube.getQueue(msg);
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
+
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!uservoice || botvoice != uservoice) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!queue) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
         /** COMMAND */
 
+        /** no choices (info) */
+
         if (!choice) {
             msg.react('🪄'), autoDelete(msg);
 
-            modeText = modes.join('\`, \`')
+            let modeText = modes.join('\`, \`');
+
+            // print command message
 
             return msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -92,12 +80,16 @@ module.exports = {
             }).then(msg => autoDelete(msg, 30));
         };
 
+        /** choices */
+
         if (modes.includes(choice)) {
 
             msg.react('✅');
 
             if (choice === 'disable') {
-                client.distube.setFilter(msg, false);
+                client.distube.setFilter(msg, false); // execute command
+
+                // print command message
 
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
@@ -107,9 +99,12 @@ module.exports = {
                 });
             };
 
-            const filter = client.distube.setFilter(msg, choice);
+            const filter = client.distube.setFilter(msg, choice); // execute command
 
             if (filter.length === 0) {
+
+                // print command message
+
                 return msg.channel.send({
                     embeds: [new MessageEmbed()
                         .setColor(COLOR2)
@@ -118,10 +113,16 @@ module.exports = {
                 });
             };
 
+            /** default message */
+
+            const enabled = filter.join('\`, \`');
+
+            // print command message
+
             return msg.channel.send({
                 embeds: [new MessageEmbed()
                     .setColor(COLOR2)
-                    .setDescription('🪄 | **Włączone filtry**: ' + (filter.join(', ')))
+                    .setDescription('🪄 | **Włączone filtry**: ' + `\`${enabled}\``)
                 ],
             });
 

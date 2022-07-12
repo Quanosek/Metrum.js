@@ -8,7 +8,6 @@ const schema = new Schema({
 
     guildId: Number,
     prefix: String,
-    volume: Number,
 
 });
 

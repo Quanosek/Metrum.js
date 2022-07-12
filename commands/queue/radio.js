@@ -16,7 +16,8 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        let choice;
+        /** DEFINE */
+
         if (args[0] === 'enable' || args[0] === 'e') choice = 1;
         if (args[0] === 'disable' || args[0] === 'd') choice = 0;
 
@@ -24,45 +25,29 @@ module.exports = {
         const botvoice = msg.guild.me.voice.channel;
         const uservoice = msg.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
+
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+
+        if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!uservoice || botvoice != uservoice) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-        if (!queue) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-            }).then(msg => autoDelete(msg));
+            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
         };
 
         /** COMMAND */
 
         msg.react('✅');
         let mode = client.distube.toggleAutoplay(msg);
+
+        // execute command
 
         if (isNaN(choice)) {
             mode = mode ? '**Włączono**' : '**Wyłączono**';
@@ -72,6 +57,8 @@ module.exports = {
             if (choice === 0) mode = '**Wyłączono**';
             if (choice === 1) mode = '**Włączono**';
         };
+
+        // print command message
 
         return msg.channel.send({
             embeds: [new MessageEmbed()

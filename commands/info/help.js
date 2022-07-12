@@ -1,7 +1,7 @@
 /** IMPORT */
 
 require('dotenv').config();
-const { NAME, ICON, WEBSITE, INVITE, OPINION, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
+const { NAME, ICON, WEBSITE, INVITE, OPINION, DONATE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
 
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 
@@ -16,7 +16,8 @@ module.exports = {
 
     async run(client, prefix, msg, args) {
 
-        let command;
+        /** WITH ARGUMENTS */
+
         if (args[0]) command = args[0].toLowerCase()
 
         if (command) {
@@ -45,7 +46,7 @@ module.exports = {
             }).then(msg => autoDelete(msg, 20));
         };
 
-        /** COMMAND */
+        /** WITHOUT ARGUMENTS */
 
         msg.react('❓'), autoDelete(msg, 45);
 
@@ -78,6 +79,12 @@ Jeśli chcesz się dowiedzieć o działaniu danej komendy wystarczy, że wpiszes
                 .setStyle('LINK')
                 .setURL(OPINION)
                 .setLabel(`Zostaw opinię!`)
+            )
+            .addComponents(
+                new MessageButton()
+                .setStyle('LINK')
+                .setURL(DONATE)
+                .setLabel(`Wesprzyj twórcę!`)
             )
 
         return msg.channel.send({ embeds: [embed], components: [buttons] }).then(msg => autoDelete(msg, 45)); // print message

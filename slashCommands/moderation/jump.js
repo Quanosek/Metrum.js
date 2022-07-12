@@ -20,6 +20,8 @@ module.exports = {
 
     async run(client, msgInt) {
 
+        /** DEFINE */
+
         let number = msgInt.options.getNumber('number');
         if (!number) number = 1; // default value
 
@@ -27,70 +29,47 @@ module.exports = {
         const botvoice = msgInt.guild.me.voice.channel;
         const uservoice = msgInt.member.voice.channel;
 
-        /** COMMON ERRORS */
+        /** ERRORS */
 
-        if (!botvoice) {
+        const errorEmbed = new MessageEmbed() // create embed
+            .setColor(COLOR_ERR)
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie jestem na żadnym kanale głosowym!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (!botvoice)
+            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+        else if (!uservoice || botvoice != uservoice)
+            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+        else if (!queue)
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+        else if (isNaN(number) || number > queue.songs.length || number === 0)
+            errorEmbed.setDescription('Wprowadź poprawną wartość!');
 
-        if (!uservoice || botvoice != uservoice) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Musisz być na kanale głosowym razem ze mną!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        if (!queue) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Obecnie nie jest odtwarzany żaden utwór!')
-                ],
-                ephemeral: true,
-            });
-        };
-
-        /** OTHER ERROR */
-
-        if (isNaN(number) || number > queue.songs.length || number === 0) {
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Wprowadź poprawną wartość!')
-                ],
-                ephemeral: true,
-            });
-        };
+        if (errorEmbed.description) // print error embed
+            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
         /** COMMAND */
+
+        // execute command
 
         if (queue.songs.length <= 2) {
             if (queue.autoplay === true) client.distube.skip(msgInt)
             else client.distube.stop(msgInt);
         } else client.distube.jump(msgInt, number);
 
-        let songs, rest = number % 10;
+        // translation
+
         const abs = Math.abs(number);
+        const rest = number % 10;
 
         if (abs === 1) songs = 'utwór'
         else if (rest < 2 || rest > 4) songs = 'utworów'
         else if (rest > 1 || rest < 5) songs = 'utwory'
 
+        // message description
+
         if (number > 0) text = `⏭️ | Pominięto **${number}** ${songs}.`;
         else text = `⏮️ | Cofnięto się o **${fixedNumber}** ${songs}.`;
+
+        // print command message
 
         return msgInt.reply({
             embeds: [new MessageEmbed()

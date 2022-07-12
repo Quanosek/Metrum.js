@@ -1,7 +1,3 @@
-/** IMPORT */
-
-require('dotenv').config();
-
 /** NOWPLAYING COMMAND BUTTON */
 
 module.exports = {

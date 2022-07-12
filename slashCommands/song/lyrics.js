@@ -6,7 +6,7 @@ const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
 const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 
-/** LYRICS SlASH COMMAND */
+/** LYRICS SLASH COMMAND */
 
 module.exports = {
     name: 'lyrics',
@@ -20,11 +20,12 @@ module.exports = {
 
     async run(client, msgInt) {
 
-        let title = msgInt.options.getString('title');
+        /** DEFINE */
 
+        let title = msgInt.options.getString('title');
         const queue = client.distube.getQueue(msgInt);
 
-        /** COMMON ERRORS */
+        /** ERROR */
 
         if (!title) {
 
@@ -74,7 +75,7 @@ module.exports = {
                     .setDescription(value)
             });
 
-            return msgInt.reply({ embeds })
+            return msgInt.reply({ embeds });
 
         } catch (err) { // no song error
 
