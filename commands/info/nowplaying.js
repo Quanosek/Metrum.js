@@ -28,9 +28,9 @@ module.exports = {
             .setColor(COLOR_ERR)
 
         if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
         else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
 
         if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);

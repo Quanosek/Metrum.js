@@ -26,6 +26,7 @@ module.exports = {
         const command = msgInt.options.getString('command');
 
         if (command) {
+
             const cmd = client.slashCommands.find(x => x.name.includes(command.toLowerCase()));
 
             if (!cmd) {

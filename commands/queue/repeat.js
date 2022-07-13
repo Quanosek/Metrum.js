@@ -32,11 +32,11 @@ module.exports = {
             .setColor(COLOR_ERR)
 
         if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
         else if (!uservoice || botvoice != uservoice)
             errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
         else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
 
         if (errorEmbed.description) { // print error embed
             msg.react('❌'), autoDelete(msg);
@@ -50,7 +50,7 @@ module.exports = {
 
         // execute command
 
-        if (isNaN(choice)) {
+        if (!choice) {
             mode = mode ? mode === 2 ? '🔁 | Włączono zapętlanie **kolejki**.' : '🔂 | Włączono zapętlanie **utworu**.' : '🔁 | **Wyłączono** zapętlanie.';
 
         } else {

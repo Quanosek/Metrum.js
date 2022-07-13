@@ -32,11 +32,11 @@ module.exports = {
             .setColor(COLOR_ERR)
 
         if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
         else if (!uservoice || botvoice != uservoice)
             errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
         else if (!queue) {
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
         } else {
             if (!args[0])
                 errorEmbed.setDescription('Musisz jeszcze wpisać numer, który utwór z kolejki chcesz przesunąć!');

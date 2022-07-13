@@ -27,11 +27,11 @@ module.exports = {
             .setColor(COLOR_ERR)
 
         if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na żadnym kanale głosowym!');
+            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
         if (!uservoice || botvoice != uservoice)
             errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
         if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany żaden utwór!');
+            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
 
         if (errorEmbed.description) // print error embed
             return interaction.reply({ embeds: [errorEmbed], ephemeral: true });

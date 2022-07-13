@@ -39,8 +39,9 @@ Opóźnienie API: \`${client.ws.ping} ms\`
                     `)
                     .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
                 ],
-            });
-        }).then(msg => autoDelete(msg));
+            }).then(msg => autoDelete(msg));
+
+        });
 
     },
 };

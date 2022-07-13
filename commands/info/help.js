@@ -18,9 +18,9 @@ module.exports = {
 
         /** WITH ARGUMENTS */
 
-        if (args[0]) command = args[0].toLowerCase()
+        if (args[0]) {
 
-        if (command) {
+            const command = args[0].toLowerCase();
             const cmd = client.commands.find(x => x.name.includes(command) || x.aliases.includes(command));
 
             if (!cmd) {
