@@ -56,7 +56,7 @@ Aby dowiedzieć się więcej, użyj komendy \`help\` lub odwiedź moją [stronę
                 });
 
             } catch (err) {
-                if (err) console.error(` >>> ${err}`.brightRed);
+                if (err) console.error(` >>> [WELCOME MSG] ${err}`.brightRed);
             };
 
         };

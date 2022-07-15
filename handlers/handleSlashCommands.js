@@ -66,7 +66,7 @@ module.exports = (client) => {
                 };
 
             } catch (err) {
-                if (err) console.error(` >>> ${err}`.brightRed);
+                if (err) console.error(` >>> [HANDLE COMMANDS] ${err}`.brightRed);
             };
 
         });

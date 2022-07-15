@@ -42,10 +42,10 @@ module.exports = {
             try {
                 await cmd.run(client, msgInt); // run slash command
 
-            } catch (err) {
+            } catch (err) { // error
                 if (err) {
 
-                    console.error(` >>> ${err}`.brightRed);
+                    console.error(` [RUN INTERACTION] >>> ${err}`.brightRed);
 
                     return msgInt.reply({
                         embeds: [new MessageEmbed()
@@ -90,7 +90,8 @@ module.exports = {
 
             } catch (err) { // error
                 if (err) {
-                    console.error(` >>> ${err}`.brightRed);
+
+                    console.error(` >>> [RUN BUTTON] ${err}`.brightRed);
 
                     return msgInt.reply({
                         embeds: [new MessageEmbed()

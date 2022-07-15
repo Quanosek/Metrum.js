@@ -55,7 +55,7 @@ const handlers = fs
             useUnifiedTopology: true,
         }).then(() => console.log(realDate() + ' Successfully connected to the database.'));
     } catch (err) {
-        if (err) return console.error(` >>> ${err}`.brightRed);
+        if (err) return console.error(` >>> [MONGODB] ${err}`.brightRed);
     };
 
 })();
@@ -147,7 +147,7 @@ ${tracks}
 
 .on("error", (channel, err) => {
 
-    console.error(` >>> ${err}`.brightRed);
+    console.error(` >>> [DISTUBE] ${err}`.brightRed);
 
     return channel.send({
         embeds: [new MessageEmbed()

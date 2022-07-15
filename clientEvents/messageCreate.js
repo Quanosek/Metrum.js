@@ -89,10 +89,10 @@ Użyj komendy \`help\` po więcej informacji!
         try {
             await cmd.run(client, prefix, msg, args); // run command
 
-        } catch (err) {
+        } catch (err) { // error
             if (err) {
 
-                console.error(` >>> ${err}`.brightRed);
+                console.error(` >>> [RUN COMMAND] ${err}`.brightRed);
                 autoDelete(msg);
 
                 return msg.channel.send({

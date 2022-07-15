@@ -33,15 +33,16 @@ module.exports = {
 
         if (!uservoice)
             errorEmbed.setDescription('Musisz najpierw **dołączyć** na kanał głosowy!');
-        else if (uservoice.id === msg.guild.afkChannel.id)
-            errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
+        else if (msg.guild.afkChannel) {
+            if (uservoice.id === msg.guild.afkChannel.id)
+                errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
 
-        else if (botvoice) {
+        } else if (botvoice) {
             if (botvoice.members.size === 1) {
                 try {
                     client.distube.voices.get(msg).leave();
                 } catch (err) {
-                    if (err) console.error(` >>> ${err}`.brightRed);
+                    if (err) console.error(` >>> [ADD CMD] ${err}`.brightRed);
                 };
             } else if (queue && uservoice != botvoice)
                 errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');

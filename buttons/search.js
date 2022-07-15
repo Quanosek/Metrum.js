@@ -30,18 +30,20 @@ module.exports = {
 
         if (!uservoice)
             errorEmbed.setDescription('Musisz najpierw **dołączyć** na kanał głosowy!');
-        else if (interaction.guild.afkChannel && uservoice.id === interaction.guild.afkChannel.id)
-            errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
+        else if (interaction.guild.afkChannel) {
+            if (uservoice.id === interaction.guild.afkChannel.id)
+                errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
 
-        else if (botvoice) {
+        } else if (botvoice) {
             if (botvoice.members.size === 1) {
                 try {
                     client.distube.voices.get(interaction).leave();
                 } catch (err) {
-                    if (err) console.error(` >>> ${err}`.brightRed);
+                    if (err) console.error(` >>> [SEARCH BUTTON] ${err}`.brightRed);
                 };
             } else if (queue && uservoice != botvoice)
                 errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
+
         } else if (!(uservoice.permissionsFor(interaction.guild.me).has('VIEW_CHANNEL') || uservoice.permissionsFor(msgInt.guild.me).has('CONNECT')))
             errorEmbed.setDescription(`**Nie mam dostępu** do kanału głosowego, na którym jesteś!`);
         else if (!(uservoice.permissionsFor(interaction.guild.me).has('SPEAK')))

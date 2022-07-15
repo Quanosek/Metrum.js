@@ -36,9 +36,10 @@ module.exports = {
 
         if (!chosen)
             errorEmbed.setDescription('**Dołącz** na kanał głosowy lub go **wybierz**!');
-        else if (chosen.id === msgInt.guild.afkChannel.id)
-            errorEmbed.setDescription('Wybrany kanał głosowy jest kanałem **AFK**!');
-        else if (!(chosen.permissionsFor(msgInt.guild.me).has('CREATE_INSTANT_INVITE')))
+        else if (msgInt.guild.afkChannel) {
+            if (uservoice.id === msgInt.guild.afkChannel.id)
+                errorEmbed.setDescription(`Jesteś na kanale **AFK**!`);
+        } else if (!(chosen.permissionsFor(msgInt.guild.me).has('CREATE_INSTANT_INVITE')))
             errorEmbed.setDescription(`**Nie mam uprawnień** do tworzenia zaproszeń na kanał **${chosen}**!`);
 
         if (errorEmbed.description) // print error embed
