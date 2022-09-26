@@ -39,8 +39,6 @@ export default {
       title = queue.songs[0].name; // default value
     }
 
-    msg.react("✅");
-
     // search for lyrics
     const searches = await client.Genius.songs.search(title);
     const song = searches[0];
@@ -54,11 +52,13 @@ export default {
           embeds: [
             new discord.EmbedBuilder()
               .setColor(process.env.COLOR_ERR)
-              .setDescription("*Nie znaleziono* tekstu dla tego utworu!"),
+              .setDescription("**Nie znaleziono** tekstu dla tego utworu!"),
           ],
         })
         .then((msg) => autoDelete(msg));
     }
+
+    msg.react("✅");
 
     // lyrics text format
     const lyrics = await song.lyrics();

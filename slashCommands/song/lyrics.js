@@ -51,7 +51,7 @@ export default {
         embeds: [
           new discord.EmbedBuilder()
             .setColor(process.env.COLOR_ERR)
-            .setDescription("*Nie znaleziono* tekstu dla tego utworu!"),
+            .setDescription("**Nie znaleziono** tekstu dla tego utworu!"),
         ],
         ephemeral: true,
       });
