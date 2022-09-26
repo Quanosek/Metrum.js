@@ -7,20 +7,20 @@ import fs from "fs";
 import JSONbig from "json-bigint";
 
 // database source path
-const JSONpath = `./.files/databases/${process.env.NAME}.json`;
+const JSONpath = `./.files/database.json`;
 
 // export default module
 
 export default {
   read(guildID) {
-    const database = JSONopen(JSONpath);
+    const database = JSONopen();
     const guildIndex = dbSearch(database, guildID);
 
     if (guildIndex > -1) return database[guildIndex]; // execute command
   },
 
   create(guildID, options) {
-    const database = JSONopen(JSONpath);
+    const database = JSONopen();
 
     if (dbSearch(database, guildID) === -1) database.push({ id: guildID });
     const guildIndex = dbSearch(database, guildID);
@@ -34,7 +34,7 @@ export default {
   },
 
   delete(guildID) {
-    const database = JSONopen(JSONpath);
+    const database = JSONopen();
     const guildIndex = dbSearch(database, guildID);
 
     // execute command
@@ -44,7 +44,7 @@ export default {
 
   set: {
     prefix(guildID, newPrefix) {
-      const database = JSONopen(JSONpath);
+      const database = JSONopen();
       const guildIndex = dbSearch(database, guildID);
 
       // execute command
@@ -54,7 +54,7 @@ export default {
   },
 
   size() {
-    const database = JSONopen(JSONpath);
+    const database = JSONopen();
 
     // execute command
     return database.length;
@@ -63,7 +63,7 @@ export default {
 
 // define helpful functions
 
-function JSONopen(JSONpath) {
+function JSONopen() {
   const JSONstring = fs.readFileSync(JSONpath);
   return JSONbig.parse(JSONstring);
 }
