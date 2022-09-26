@@ -39,13 +39,13 @@ export default {
       //   realDate() + " Deleted".brightRed + " all local slash commands."
       // );
 
-      // await client.application.commands.set(client.slashCommands); // register cmd globally
-      // console.log(
-      //   realDate() +
-      //     " Registered all slash commands " +
-      //     "globally".brightYellow +
-      //     "."
-      // );
+      await client.application.commands.set(client.slashCommands); // register cmd globally
+      console.log(
+        realDate() +
+          " Registered all slash commands " +
+          "globally".brightYellow +
+          "."
+      );
       //
       // LOCALLY;
       //
