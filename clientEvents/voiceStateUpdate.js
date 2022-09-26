@@ -1,29 +1,34 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { CLIENT_ID } = process.env;
+import "colors";
+import realDate from "../functions/realDate.js";
 
-require('colors');
+// define module
+export default {
+  name: "voiceStateUpdate",
 
-const realDate = require('../functions/realDate.js');
-
-/** VOICE STATE UPDATE EVENT */
-
-module.exports = {
-    name: 'voiceStateUpdate',
-
-    async run(client, oldState, newState) {
-
-        if (oldState.id === CLIENT_ID) {
-
-            if (!oldState.channelId && newState.channelId) {
-                console.log(realDate() + ` Guild: ${oldState.guild.name}, ID: ${oldState.guild.id}`.grey + `\n >>> Bot ` + `joined`.brightGreen + ` the voice channel.`);
-
-            } else if (!newState.channelId) {
-                console.log(realDate() + ` Guild: ${newState.guild.name}, ID: ${newState.guild.id}`.grey + `\n >>> Bot ` + `left`.brightRed + ` the voice channel.`);
-
-            };
-        };
-
-    },
+  async run(client, oldState, newState) {
+    // join/leave voice channel log
+    if (oldState.id === process.env.CLIENT_ID) {
+      if (!oldState.channelId && newState.channelId) {
+        console.log(
+          realDate() +
+            ` Guild: ${oldState.guild.name}, ID: ${oldState.guild.id}`.grey +
+            "\n >>> Bot " +
+            "joined".brightGreen +
+            " the voice channel."
+        );
+      } else if (!newState.channelId) {
+        console.log(
+          realDate() +
+            ` Guild: ${newState.guild.name}, ID: ${newState.guild.id}`.grey +
+            "\n >>> Bot " +
+            "left".brightRed +
+            " the voice channel."
+        );
+      }
+    }
+  },
 };

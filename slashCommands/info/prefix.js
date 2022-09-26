@@ -1,36 +1,30 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { PREFIX, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import db from "../../functions/database.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "prefix",
+  description: "Pokazuje prefix bota",
 
-const schema = require('../../schemas/guilds.js');
+  async run(client, msgInt) {
+    // define
+    const prefix = db.read(msgInt.guild.id).prefix;
 
-/** PREFIX SLASH COMMAND */
-
-module.exports = {
-    name: 'prefix',
-    description: 'Pokazuje prefix bota',
-
-    async run(client, msgInt) {
-
-        /** MANAGE DATABASE */
-
-        const db = await schema.findOne({ guildId: msgInt.guild.id }); // database
-        let prefix = db.prefix; // custom prefix
-
-        /** MESSAGE */
-
-        msgInt.reply({
-
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setDescription(`⚙️ | Mój prefix to: \`${prefix}\``)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-            ],
-            ephemeral: true,
-        });
-
-    },
+    // print message embed
+    msgInt.reply({
+      embeds: [
+        new discord.EmbedBuilder()
+          .setColor(process.env.COLOR1)
+          .setDescription(`⚙️ | Mój prefix to: \`${prefix}\``)
+          .setFooter({
+            text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+          }),
+      ],
+      ephemeral: true,
+    });
+  },
 };

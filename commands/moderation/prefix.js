@@ -1,100 +1,108 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { NAME, PREFIX, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
+import db from "../../functions/database.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "prefix",
+  aliases: ["pref", "pf", "px"],
+  description: "Zmiana prefixu bota",
+  permissions: ["ADMINISTRATOR"],
 
-const autoDelete = require('../../functions/autoDelete.js');
-const schema = require('../../schemas/guilds.js');
+  async run(client, prefix, msg, args) {
+    // prefix set command
+    if (args[0] === "set" || args[0] === "s") {
+      const newPrefix = args[1];
 
-/** PREFIX COMMAND */
+      // errors
+      const errorEmbed = new discord.EmbedBuilder().setColor(
+        process.env.COLOR_ERR
+      );
 
-module.exports = {
-    name: 'prefix',
-    aliases: ['px'],
-    description: 'Zmiana prefixu bota',
-    permissions: ['ADMINISTRATOR'],
+      if (!newPrefix)
+        errorEmbed.setDescription("⚙️ | Musisz jeszcze wpisać nowy prefix!");
+      else if (newPrefix.length > 8)
+        errorEmbed.setDescription(
+          "⚙️ | Wybrany prefix jest zbyt długi *(max. 8 znaków)*!"
+        );
+      else if (args[2])
+        errorEmbed.setDescription("⚙️ | W prefixie nie może być spacji!");
 
-    async run(client, prefix, msg, args) {
+      if (errorEmbed.data.description) {
+        msg.react("❌"), autoDelete(msg);
+        return msg.channel
+          .send({ embeds: [errorEmbed] })
+          .then((msg) => autoDelete(msg));
+      }
 
-        const db = await schema.findOne({ guildId: msg.guild.id }); // database
+      // command
+      msg.react("✅"), autoDelete(msg, 15);
 
-        /** SET COMMAND */
+      db.set.prefix(msg.guild.id, newPrefix); // change prefix
 
-        if (args[0] === 'set') {
+      // print message embed
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR1)
+              .setDescription(`⚙️ | Ustawiono nowy prefix: \`${newPrefix}\``),
+          ],
+        })
+        .then((msg) => autoDelete(msg, 15));
+    }
 
-            const newPrefix = args[1];
+    // prefix reset command
+    if (args[0] === "reset" || args[0] === "r") {
+      msg.react("✅"), autoDelete(msg, 15);
 
-            /** errors */
+      db.set.prefix(msg.guild.id, process.env.PREFIX); // change prefix
 
-            const errorEmbed = new MessageEmbed() // create embed
-                .setColor(COLOR_ERR)
+      // print message embed
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR1)
+              .setDescription(
+                `⚙️ | Przywrócono domyślny prefix: \`${process.env.PREFIX}\``
+              ),
+          ],
+        })
+        .then((msg) => autoDelete(msg, 15));
+    }
 
-            if (!newPrefix)
-                errorEmbed.setDescription('⚙️ | Musisz jeszcze wpisać nowy prefix!');
-            else if (newPrefix.length > 8)
-                errorEmbed.setDescription('⚙️ | Wybrany prefix jest zbyt długi *(max. 8 znaków)*!');
-            else if (args[2])
-                errorEmbed.setDescription('⚙️ | W prefixie nie może być spacji!');
+    // prefix help menu
+    msg.react("❓"), autoDelete(msg, "1m");
 
-            if (errorEmbed.description) { // print error embed
-                msg.react('❌'), autoDelete(msg);
-                return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-            };
-
-            /** command */
-
-            msg.react('✅'), autoDelete(msg, 15);
-
-            db.prefix = newPrefix;
-            await db.save();
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription(`⚙️ | Ustawiono nowy prefix: \`${newPrefix}\``)
-                ],
-            }).then(msg => autoDelete(msg, 15));
-        };
-
-        /** RESET COMMAND */
-
-        if (args[0] === 'reset' || args[0] === 'r') {
-            msg.react('✅'), autoDelete(msg, 15);
-
-            db.prefix = PREFIX;
-            await db.save();
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription(`⚙️ | Przywrócono domyślny prefix: \`${PREFIX}\``)
-                ],
-            }).then(msg => autoDelete(msg, 15));
-        };
-
-        /** HELP MENU */
-
-        msg.react('❓'), autoDelete(msg, 45);
-
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle(`⚙️ | Menu zmiany prefixu`)
-                .setDescription(`
-Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia prefixu zawsze można wspomnieć bota, tzn. wpisać @${NAME}.
+    // print message embed
+    return msg.channel
+      .send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR2)
+            .setTitle("⚙️ | Menu zmiany prefixu")
+            .setDescription(
+              `
+Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia prefixu zawsze można wspomnieć bota, tzn. wpisać @${process.env.NAME}.
 
 ** ● Komendy:**
 \`${prefix}prefix set <prefix>\` - ustawia nowy prefix
-\`${prefix}prefix reset\` - przywraca domyślny prefix (\`${PREFIX}\`)
+\`${prefix}prefix reset\` - przywraca domyślny prefix (\`${process.env.PREFIX}\`)
 
 ** ● Informacje dodatkowe:**
 Wszystkie komendy obsługują również skróty np. zamiast pisać \`${prefix}prefix\`, równie dobrze możesz wpisać: \`${prefix}px\` itp..
-                `)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-            ],
-        }).then(msg => autoDelete(msg, 45));
-
-    },
+              `
+            )
+            .setFooter({
+              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+            }),
+        ],
+      })
+      .then((msg) => autoDelete(msg, "1m"));
+  },
 };

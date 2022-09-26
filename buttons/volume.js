@@ -1,76 +1,75 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
 
-const { MessageEmbed } = require('discord.js');
+// button module
+export default {
+  name: "volume",
+  permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
-/** VOLUME COMMAND BUTTON */
+  async run(client, interaction, params) {
+    // define
+    const name = params[0];
 
-module.exports = {
-    name: 'volume',
-    permissions: ['MANAGE_MESSAGES'],
+    const botvoice = interaction.guild.members.me.voice.channel;
+    const uservoice = interaction.member.voice.channel;
+    const queue = client.distube.getQueue(interaction);
 
-    async run(client, interaction, params) {
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-        /** DEFINE */
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-        const name = params[0];
+    if (errorEmbed.data.description)
+      return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 
-        const queue = client.distube.getQueue(interaction);
-        const botvoice = interaction.guild.me.voice.channel;
-        const uservoice = interaction.member.voice.channel;
+    // buttons values
+    let value = client.distube.getQueue(interaction).volume;
+    if (name === "more") value = value + 5;
+    if (name === "less") value = value - 5;
 
-        /** ERRORS */
-
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
-
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
-
-        if (errorEmbed.description) // print error embed
-            return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
-
-        /** COMMAND */
-
-        // buttons values
-
-        let value = client.distube.getQueue(interaction).volume
-
-        if (name === 'more') value = value + 5;
-        if (name === 'less') value = value - 5;
-
-        if (name === 'normal') {
-
-            if (value === 50) {
-                return interaction.reply({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription(`🔈 | Głośność bota **jest już ustawiona** na \`100%\``)
-                    ],
-                    ephemeral: true,
-                });
-
-            } else {
-                value = 50;
-            };
-        };
-
-        client.distube.setVolume(interaction, value); // execute command
-
-        // print button message
-
-        interaction.reply({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setDescription(`🔈 | ${interaction.user} zmienił **poziom głośności bota** na: \`${value*2}%\``)
-            ],
+    if (name === "normal") {
+      if (value === 50) {
+        return interaction.reply({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription(
+                "🔈 | Głośność bota **jest już ustawiona** na `100%`"
+              ),
+          ],
+          ephemeral: true,
         });
+      } else {
+        value = 50;
+      }
+    }
 
-    },
+    // print button message
+    interaction.reply({
+      embeds: [
+        new discord.EmbedBuilder()
+          .setColor(process.env.COLOR1)
+          .setDescription(
+            `🔈 | ${interaction.user} zmienił **poziom głośności bota** na: \`${
+              value * 2
+            }%\``
+          ),
+      ],
+    });
+
+    // execute command
+    return client.distube.setVolume(interaction, value);
+  },
 };

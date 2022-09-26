@@ -1,33 +1,30 @@
-/** IMPORT */
+// import
+import "colors";
+import ms from "ms";
+import realDate from "./realDate.js";
 
-require('colors');
+// define function
+export default (msg, delay) => {
+  if (!msg) return;
+  if (!delay) delay = "10s"; // default value
+  if (!/[a-z]/.test(delay)) delay += "000"; // change to milliseconds
 
-const realDate = require('./realDate.js');
-
-/** FUNCTION */
-
-module.exports = function(msg, delay) {
-
-    if (!msg) return;
-    if (!delay) delay = 10; // delay of deleting
-
-    delay += '000'; // to milliseconds
-
-    if (msg.type === 'APPLICATION_COMMAND') { // slash commands
-
-        setTimeout(() => msg.deleteReply().catch(err => {
-            if (err.code !== 10008 && err.code !== 50013) {
-                console.error(realDate() + ` Guild: ${msg.guild.name}, ID: ${msg.guild.id}`.grey + `\n >>> autoDelete Error: ${err} (code: ${err.code})`.red);
-            };
-        }), delay);
-
-    } else { // legacy commands
-
-        setTimeout(() => msg.delete().catch(err => {
-            if (err.code !== 10008 && err.code !== 50013) {
-                console.error(realDate() + ` Guild: ${msg.guild.name}, ID: ${msg.guild.id}`.grey + `\n >>> autoDelete Error: ${err} (code: ${err.code})`.red);
-            };
-        }), delay);
-
-    };
+  // console.log(msg.type);
+  if (msg.type === 0) {
+    // Default
+    setTimeout(() => {
+      msg.delete().catch((err) => {
+        if (!(err.code === 10008 || err.code === 50013))
+          return console.log(realDate() + ` [autoDelete] ${err}`.brightRed);
+      });
+    }, ms(delay));
+  } else if (msg.type === 20) {
+    // ChatInputCommand
+    setTimeout(() => {
+      msg.deleteReply().catch((err) => {
+        if (!(err.code === 10008 || err.code === 50013))
+          return console.log(realDate() + ` [autoDelete] ${err}`.brightRed);
+      });
+    }, ms(delay));
+  }
 };

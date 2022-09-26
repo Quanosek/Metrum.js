@@ -1,83 +1,78 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "jump",
+  aliases: ["j"],
+  description: "Pominięcie określonej liczby utworów w kolejce (domyślnie: 1)",
+  permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    let number = Number(args[0]);
+    if (!number) number = 1; // default value
 
-/** JUMP COMMAND */
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
 
-module.exports = {
-    name: 'jump',
-    aliases: ['j'],
-    description: 'Pominięcie określonej liczby utworów w kolejce (domyślnie: 1)',
-    permissions: ['MANAGE_MESSAGES'],
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-    async run(client, prefix, msg, args) {
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
+    else if (isNaN(number) || number > queue.songs.length || number === 0)
+      errorEmbed.setDescription("Wprowadź **poprawną** wartość!");
 
-        /** DEFINE */
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        let number = Number(args[0]);
-        if (!args[0]) number = 1; // default value
+    msg.react("✅");
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+    // execute command
+    if (queue.songs.length <= 2) {
+      if (queue.autoplay === true) client.distube.skip(msg);
+      else client.distube.stop(msg);
+    } else client.distube.jump(msg, number);
 
-        /** ERRORS */
+    // translation
+    let songs;
+    const abs = Math.abs(number);
+    const rest = number % 10;
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
+    if (abs === 1) songs = "utwór";
+    else if (rest < 2 || rest > 4) songs = "utworów";
+    else if (rest > 1 || rest < 5) songs = "utwory";
 
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
-        else if (isNaN(number) || number > queue.songs.length || number === 0)
-            errorEmbed.setDescription('Wprowadź **poprawną** wartość!');
+    // message description
+    let text;
+    if (number > 0) text = `⏭️ | Pominięto **${number}** ${songs}.`;
+    else text = `⏮️ | Cofnięto się o **${abs}** ${songs}.`;
 
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
-
-        /** COMMAND */
-
-        // execute command
-
-        msg.react('✅');
-
-        if (queue.songs.length <= 2) {
-            if (queue.autoplay === true) client.distube.skip(msg)
-            else client.distube.stop(msg);
-        } else client.distube.jump(msg, number);
-
-        // translation
-
-        const abs = Math.abs(number);
-        const rest = number % 10;
-
-        if (abs === 1) songs = 'utwór'
-        else if (rest < 2 || rest > 4) songs = 'utworów'
-        else if (rest > 1 || rest < 5) songs = 'utwory'
-
-        // message description
-
-        if (number > 0) text = `⏭️ | Pominięto **${number}** ${songs}.`;
-        else text = `⏮️ | Cofnięto się o **${abs}** ${songs}.`;
-
-        // print command message
-
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setDescription(text)
-            ],
-        });
-
-    },
+    // print message embed
+    return msg.channel.send({
+      embeds: [
+        new discord.EmbedBuilder()
+          .setColor(process.env.COLOR2)
+          .setDescription(text),
+      ],
+    });
+  },
 };

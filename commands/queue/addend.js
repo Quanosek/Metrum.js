@@ -1,49 +1,52 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "addend",
+  aliases: ["ade", "ae"],
+  description: "Dodanie obecnie granego utworu jeszcze raz, na koniec kolejki",
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    let song;
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
+    if (queue) song = queue.songs[0]; // now playing song
 
-/** ADD END COMMAND */
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-module.exports = {
-    name: 'addend',
-    aliases: ['ae'],
-    description: 'Dodanie obecnie granego utworu na koniec kolejki',
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-    async run(client, prefix, msg, args) {
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        /** DEFINE */
+    msg.react("✅");
 
-        const queue = client.distube.getQueue(msg);
-        if (queue) song = queue.songs[0]; // now playing song
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
-
-        /** ERRORS */
-
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
-
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
-
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
-
-        /** COMMAND */
-
-        msg.react('✅');
-        return client.distube.play(msg, song.url); // execute command
-
-    },
+    // execute command
+    return client.distube.play(uservoice, song.url, {
+      msg,
+      textChannel: msg.channel,
+      member: msg.member,
+    });
+  },
 };

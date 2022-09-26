@@ -1,33 +1,32 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { OPINION, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "opinion",
+  aliases: ["op"],
+  description: "Link z możliwością zostawienia opinii o bocie",
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    msg.react("✅"), autoDelete(msg, 20);
 
-/** INVITE COMMAND */
-
-module.exports = {
-    name: 'opinion',
-    aliases: ['op'],
-    description: 'Zaproś mnie na swój serwer',
-
-    async run(client, prefix, msg, args) {
-
-        /** MESSAGE */
-
-        msg.react('✅'), autoDelete(msg, 20);
-
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle('**📣 | Podziel się swoją opinią na temat bota!**')
-                .setURL(OPINION)
-                .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-            ],
-        }).then(msg => autoDelete(msg, 20));
-
-    },
+    // print message embed
+    return msg.channel
+      .send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR2)
+            .setTitle("📣 | Podziel się swoją opinią na temat bota!")
+            .setURL(process.env.OPINION)
+            .setFooter({
+              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+            }),
+        ],
+      })
+      .then((msg) => autoDelete(msg, 20));
+  },
 };

@@ -1,113 +1,118 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+// command module
+export default {
+  name: "volume",
+  aliases: ["v"],
+  description: "Zmienianie głośności bota",
+  permissions: [discord.PermissionsBitField.Flags.Administrator],
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    const value = Number(args[0]) / 2;
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
 
-/** VOLUME COMMAND */
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-module.exports = {
-    name: 'volume',
-    aliases: ['v'],
-    description: 'Zmiana głośności bota',
-    permissions: ['ADMINISTRATOR'],
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-    async run(client, prefix, msg, args) {
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        /** DEFINE */
+    // default command menu
+    if (isNaN(value) || !value) {
+      msg.react("🔈");
 
-        const value = Number(args[0]) / 2;
+      // create message embed
+      const embed = new discord.EmbedBuilder()
+        .setColor(process.env.COLOR2)
+        .setTitle(`⚙️ | Ustawiona głośność: \`${queue.volume * 2}%\``)
+        .setDescription(
+          "Możesz ustawić poziom głośności bota w danej sesji. Podaj wartość (w procentach) w przedziale 1-200."
+        );
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+      // define buttons
+      const buttons = new discord.ActionRowBuilder()
+        .addComponents(
+          new discord.ButtonBuilder()
+            .setStyle(1) // Primary
+            .setCustomId("volume-less")
+            .setLabel("-10%")
+        )
+        .addComponents(
+          new discord.ButtonBuilder()
+            .setStyle(3) // Success
+            .setCustomId("volume-normal")
+            .setLabel("100%")
+        )
+        .addComponents(
+          new discord.ButtonBuilder()
+            .setStyle(1) // Primary
+            .setCustomId("volume-more")
+            .setLabel("+10%")
+        );
 
-        /** ERRORS */
+      // print message embed
+      return msg.channel.send({ embeds: [embed], components: [buttons] });
+    }
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
+    // wrong volume value error
+    if (value < 0.5 || value > 100) {
+      msg.react("❌"), autoDelete(msg);
 
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
-
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
-
-        /** DEFAULT COMMAND */
-
-        if (isNaN(value) || !value) {
-            msg.react('🔈'), autoDelete(msg, 60);
-
-            const embed = new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle(`⚙️ | Ustawiona głośność: \`${queue.volume*2}%\``)
-                .setDescription('Możesz ustawić poziom głośności bota w danej sesji. Podaj wartość (w procentach) w przedziale 1-200.')
-
-            const buttons = new MessageActionRow() // buttons
-                .addComponents(
-                    new MessageButton()
-                    .setCustomId(`volume-less`)
-                    .setStyle('PRIMARY')
-                    .setLabel(`-10%`)
-                )
-                .addComponents(
-                    new MessageButton()
-                    .setCustomId(`volume-normal`)
-                    .setStyle('SUCCESS')
-                    .setLabel(`100%`)
-                )
-                .addComponents(
-                    new MessageButton()
-                    .setCustomId(`volume-more`)
-                    .setStyle('PRIMARY')
-                    .setLabel(`+10%`)
-                )
-
-            return msg.channel.send({ embeds: [embed], components: [buttons] }) // print message
-                .then(msg => autoDelete(msg, 60));
-        };
-
-        /** OTHER ERROR */
-
-        if (value < 0.5 || value > 100) {
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`🔈 | Podano **niepoprawną wartość** *(w procentach)* poziomu głośności (\`1-200\`)!`)
-                ],
-            }).then(msg => autoDelete(msg, 20));
-        };
-
-        /** FINAL COMMAND */
-
-        msg.react('✅');
-        client.distube.setVolume(msg, value); //execute command
-
-        /** print message command */
-
-        msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription(`🔈 | Ustawiono **poziom głośności bota** na: \`${value*2}%\``)
-            ],
-        });
-
-        /** event */
-
-        client.distube.on('initQueue', (queue) => {
-            return queue.volume = value;
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription(
+                `🔈 | Podano **niepoprawną wartość** *(w procentach)* poziomu głośności (\`1-200\`)!`
+              ),
+          ],
         })
+        .then((msg) => autoDelete(msg));
+    }
 
-    },
+    msg.react("✅");
+
+    // execute command
+    client.distube.setVolume(msg, value);
+
+    // print message embed
+    msg.channel.send({
+      embeds: [
+        new discord.EmbedBuilder()
+          .setColor(process.env.COLOR1)
+          .setDescription(
+            `🔈 | Ustawiono **poziom głośności bota** na: \`${value * 2}%\``
+          ),
+      ],
+    });
+
+    // event
+    client.distube.on("initQueue", (queue) => {
+      return (queue.volume = value);
+    });
+  },
 };

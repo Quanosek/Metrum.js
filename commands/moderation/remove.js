@@ -1,90 +1,85 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "remove",
+  aliases: ["rm", "rmv"],
+  description:
+    "Usunięcie wybranej pozycji z kolejki utworów (domyślnie: obecnie grany)",
+  permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    let number = Number(args[0]);
+    if (!args[0]) number = 1; // default value
 
-/** REMOVE COMMAND */
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
 
-module.exports = {
-    name: 'remove',
-    aliases: ['rm'],
-    description: 'Usunięcie wybranej pozycji z kolejki utworów (domyślnie: obecnie grany)',
-    permissions: ['MANAGE_MESSAGES'],
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-    async run(client, prefix, msg, args) {
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
+    else if (isNaN(number) || number > queue.songs.length || number < 1)
+      errorEmbed.setDescription("Wprowadź **poprawną** wartość!");
 
-        /** DEFINE */
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        let number = Number(args[0]);
-        if (!args[0]) number = 1; // default value
+    msg.react("✅");
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+    if (number === 1) {
+      // execute command
+      if (queue.songs.length < 2) {
+        if (queue.autoplay) client.distube.skip(msg);
+        else client.distube.stop(msg);
+      } else client.distube.skip(msg);
 
-        /** ERRORS */
+      // print message embed
+      return msg.channel.send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR1)
+            .setDescription(
+              "🗑️ | Usunięto **obecnie odtwarzany utwór** z kolejki."
+            ),
+        ],
+      });
+    } else {
+      // execute command
+      const song = queue.songs[number - 1]; // chosen song
+      queue.songs.splice(number - 1, 1);
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
-
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
-        else if (isNaN(number) || number > queue.songs.length || number < 1)
-            errorEmbed.setDescription('Wprowadź **poprawną** wartość!');
-
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
-
-        /** COMMAND */
-
-        msg.react('✅');
-
-        if (number === 1) { // currently playing
-
-            // execute command
-
-            if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msg);
-                else client.distube.stop(msg);
-            } else client.distube.skip(msg);
-
-            // print command message
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription('🗑️ | Usunięto **obecnie odtwarzany** utwór z kolejki.')
-                ],
-            });
-
-        } else { // song number > 1
-
-            number = number - 1;
-            const song = queue.songs[number]; // chosen song
-
-            queue.songs.splice(number, 1); // execute command
-
-            // print command message
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setTitle('🗑️ | Usunięto z kolejki utworów pozycję:')
-                    .setDescription(`**${number + 1}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-                ],
-            });
-
-        };
-
-    },
+      // print message embed
+      return msg.channel.send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR2)
+            .setTitle("🗑️ | Usunięto z kolejki utworów pozycję:")
+            .setDescription(
+              `**${number}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``
+            ),
+        ],
+      });
+    }
+  },
 };

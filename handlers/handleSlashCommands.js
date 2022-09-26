@@ -1,74 +1,31 @@
-/** IMPORT */
+// import
+import * as discord from "discord.js";
 
-require('dotenv').config();
-const { REGISTER, GUILD_ID } = process.env;
+import "colors";
+import fs from "fs";
+import realDate from "../functions/realDate.js";
 
-require('colors');
-const fs = require('fs');
+// slash commands handler
+export default (client) => {
+  (async () => {
+    client.slashCommands = new discord.Collection();
 
-const { Collection } = require('discord.js');
-const realDate = require('../functions/realDate.js');
-
-/** SLASH COMMANDS HANDLER */
-
-module.exports = (client) => {
-    client.handleSlashCommands = async(path) => {
-
-        client.slashCommands = new Collection();
-        const allFolders = fs.readdirSync(`./${path}`);
-        const slashCommandsArray = [];
-
-        for (folder of allFolders) {
-            const allFiles = fs
-                .readdirSync(`./${path}/${folder}`)
-                .filter(file => file.endsWith('.js'))
-
-            for (file of allFiles) {
-                const cmd = require(`../${path}/${folder}/${file}`);
-
-                if (!cmd.name) return;
-
-                client.slashCommands.set((cmd.name), cmd); // run command
-
-                if (cmd.userPermissions) cmd.defaultPermission = false; // permissions
-
-                slashCommandsArray.push(cmd); // save command
-            };
-        };
-
-        client.on('ready', async() => {
-
-            /** register slash commands */
-
-            try {
-                console.log(realDate() + ' Started refreshing slash commands...');
-
-                const guild = client.guilds.cache.get(GUILD_ID);
-
-                if (REGISTER === 'globally') { // globally
-
-                    // await guild.commands.set([]);
-                    // console.log(realDate() + ' Deleted'.brightRed + ' all local slash commands.');
-
-                    await client.application.commands.set(slashCommandsArray);
-                    console.log(realDate() + ' Registered all slash commands ' + 'globally'.brightYellow + '.');
-
-                } else if (REGISTER === 'locally') { // locally
-
-                    // await client.application.commands.set([]);
-                    // console.log(realDate() + ' Deleted'.brightRed + ' all global slash commands.');
-
-                    await guild.commands.set(slashCommandsArray);
-                    console.log(realDate() + ' Registered all slash commands ' + 'locally'.brightYellow + '.');
-
-                } else {
-                    console.log(' >>> Wrong process.env.ENV value!'.brightRed);
-                };
-
-            } catch (err) {
-                if (err) console.error(` >>> [HANDLE COMMANDS] ${err}`.brightRed);
-            };
-
+    fs.readdirSync(`./slashCommands`).map((folder) => {
+      fs.readdirSync(`./slashCommands/${folder}`).map((file) => {
+        import(`../slashCommands/${folder}/${file}`).then((result) => {
+          const cmd = result.default;
+          // set slash commands
+          try {
+            if (!cmd.name) return;
+            client.slashCommands.set(cmd.name, cmd);
+            if (cmd.userPermissions) cmd.defaultPermission = false;
+          } catch (err) {
+            return console.log(
+              realDate() + ` [handleSlashCommands] ${err}`.brightRed
+            );
+          }
         });
-    };
+      });
+    });
+  })();
 };

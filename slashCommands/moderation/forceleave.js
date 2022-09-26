@@ -1,51 +1,48 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "forceleave",
+  description: "Wymuszenie wyjścia z kanału głosowego",
+  permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, msgInt) {
+    // define
+    const botvoice = msgInt.guild.members.me.voice.channel;
+    const uservoice = msgInt.member.voice.channel;
 
-/** FORCE LEAVE SLASH COMMAND */
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-module.exports = {
-    name: 'forceleave',
-    description: 'Wymuszenie wyjścia z kanału głosowego',
-    permissions: ['MANAGE_MESSAGES'],
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
 
-    async run(client, msgInt) {
+    if (errorEmbed.data.description)
+      return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
-        /** DEFINE */
+    // execute command
+    client.distube.voices.get(msgInt).leave();
 
-        const botvoice = msgInt.guild.me.voice.channel;
-        const uservoice = msgInt.member.voice.channel;
-
-        /** ERRORS */
-
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
-
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-
-        if (errorEmbed.description) // print error embed
-            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
-
-        /** COMMAND */
-
-        client.distube.voices.get(msgInt).leave(); // execute command
-
-        // print command message
-
-        return msgInt.reply({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR2)
-                .setDescription('🚪 | Wyszedłem z kanału głosowego!')
-            ],
-        }).then(autoDelete(msgInt));
-
-    },
+    // print message embed
+    return msgInt
+      .reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR2)
+            .setDescription("🚪 | Wyszedłem z kanału głosowego!"),
+        ],
+      })
+      .then(autoDelete(msgInt));
+  },
 };

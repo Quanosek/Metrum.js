@@ -1,78 +1,67 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "pause",
+  description: "Wstrzymanie/wznowienie odtwarzania utworu",
 
-/** PAUSE SLASH COMMAND */
+  async run(client, msgInt) {
+    // define
+    const botvoice = msgInt.guild.members.me.voice.channel;
+    const uservoice = msgInt.member.voice.channel;
+    const queue = client.distube.getQueue(msgInt);
 
-module.exports = {
-    name: 'pause',
-    description: 'Wstrzymanie/wznowienie odtwarzania utworu',
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-    async run(client, msgInt) {
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-        /** DEFINE */
+    if (errorEmbed.data.description)
+      return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
-        const queue = client.distube.getQueue(msgInt);
-        const botvoice = msgInt.guild.me.voice.channel;
-        const uservoice = msgInt.member.voice.channel;
+    // create message embed
+    const msgEmbed = new discord.EmbedBuilder().setColor(process.env.COLOR1);
 
-        /** ERRORS */
+    let pauseText, resumeText; // message content define
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
+    // interactions types description
+    if (msgInt.type === 20) {
+      // ChatInputCommand
+      pauseText = "⏸️ | **Wstrzymano** odtwarzanie.";
+      resumeText = "▶️ | **Wznowiono** odtwarzanie.";
+    } else {
+      // Button
+      pauseText = `⏸️ | **${msgInt.member.user} wstrzymał(a)** odtwarzanie.`;
+      resumeText = `▶️ | **${msgInt.member.user} wznowił(a)** odtwarzanie.`;
+    }
 
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
+    if (queue.playing) {
+      client.distube.pause(msgInt); //execute command
 
-        if (errorEmbed.description) // print error embed
-            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+      // print message embed
+      msgEmbed.setDescription(pauseText);
+      return msgInt.reply({ embeds: [msgEmbed] });
+    }
 
-        /** COMMAND */
+    if (queue.paused) {
+      client.distube.resume(msgInt); // execute command
 
-        // message content
-
-        if (msgInt.type === 'APPLICATION_COMMAND') {
-            pauseText = '⏸️ | **Wstrzymano** odtwarzanie.'
-            resumeText = '▶️ | **Wznowiono** odtwarzanie.'
-        } else { // button interaction
-            pauseText = `⏸️ | **${msgInt.member.user} wstrzymał(a)** odtwarzanie.`
-            resumeText = `▶️ | **${msgInt.member.user} wznowił(a)** odtwarzanie.`
-        };
-
-        if (queue.playing) {
-
-            client.distube.pause(msgInt); //execute command
-
-            // print command message
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(pauseText)
-                ],
-            });
-        };
-
-        if (queue.paused) {
-
-            client.distube.resume(msgInt); // execute command
-
-            // print command message
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(resumeText)
-                ],
-            });
-        };
-
-    },
+      // print message embed
+      msgEmbed.setDescription(resumeText);
+      return msgInt.reply({ embeds: [msgEmbed] });
+    }
+  },
 };

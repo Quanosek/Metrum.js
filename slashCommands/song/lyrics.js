@@ -1,92 +1,109 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
 
-const axios = require('axios');
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "lyrics",
+  description:
+    "Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu",
 
-/** LYRICS SLASH COMMAND */
-
-module.exports = {
-    name: 'lyrics',
-    description: 'Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu',
-
-    options: [{
-        name: 'title',
-        description: 'Podaj tytuł utworu, który chcesz wyszukać',
-        type: 'STRING',
-    }],
-
-    async run(client, msgInt) {
-
-        /** DEFINE */
-
-        let title = msgInt.options.getString('title');
-        const queue = client.distube.getQueue(msgInt);
-
-        /** ERROR */
-
-        if (!title) {
-
-            if (!queue) {
-
-                return msgInt.reply({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!')
-                    ],
-                    ephemeral: true,
-                });
-            };
-
-            title = queue.songs[0].name; // default value
-        };
-
-        /** CREATING URL ADDRESS */
-
-        function substring(length, value) {
-            const replaced = value.replace(/\n/g, '--');
-            const regex = `.{1,${length}}`;
-            const lines = replaced
-                .match(new RegExp(regex, 'g'))
-                .map(line => line.replace(/--/g, '\n'));
-
-            return lines;
-        };
-
-        const url = new URL('https://some-random-api.ml/lyrics');
-        url.searchParams.append('title', title);
-        // console.log(url.href); // check final link
-
-        /** COMMAND */
-
-        try {
-
-            const { data } = await axios.get(url.href);
-            const embeds = substring(4096, data.lyrics).map((value, index) => {
-                const isFirst = index === 0;
-
-                return new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setTitle(isFirst ? `${data.name} - ${data.author}` : '')
-                    .setURL(isFirst ? `${data.links.genius}` : '')
-                    .setThumbnail(isFirst ? `${data.thumbnail.genius}` : '')
-                    .setDescription(value)
-            });
-
-            return msgInt.reply({ embeds });
-
-        } catch (err) { // no song error
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Niestety nie znaleziono tekstu dla tego utworu!')
-                ],
-                ephemeral: true,
-            });
-        };
-
+  options: [
+    {
+      name: "title",
+      description: "Podaj tytuł utworu, który chcesz wyszukać",
+      type: 3, // string
     },
+  ],
+
+  async run(client, msgInt) {
+    // define
+    let title = msgInt.options.getString("title");
+    const queue = client.distube.getQueue(msgInt);
+
+    // no title provided
+    if (!title) {
+      if (!queue) {
+        return msgInt.reply({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription(
+                "Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!"
+              ),
+          ],
+          ephemeral: true,
+        });
+      }
+
+      title = queue.songs[0].name; // default value
+    }
+
+    // search for lyrics
+    const searches = await client.Genius.songs.search(title);
+    const song = searches[0];
+
+    // no song error
+    if (!song) {
+      return msgInt.reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR_ERR)
+            .setDescription("*Nie znaleziono* tekstu dla tego utworu!"),
+        ],
+        ephemeral: true,
+      });
+    }
+
+    // lyrics text format
+    const lyrics = await song.lyrics();
+
+    function formattedText(value) {
+      return value
+        .replace(/\[.*\]\n\n\[/, "[")
+        .replace(/\n\[/g, "\n\n[")
+        .replace(/\n\n\n\[/g, "\n\n[")
+        .replace(/\[|\]/g, "**");
+    }
+
+    const text = formattedText(lyrics).split("\n");
+
+    let size = 0;
+    let chunks = [""];
+
+    for (let i = 0; i < text.length; i++) {
+      size += text[i].length;
+
+      if (size <= 4096) {
+        chunks[chunks.length - 1] += `\n${text[i]}`;
+        size++;
+      } else {
+        chunks.push(text[i]);
+        size = text[i].length;
+      }
+    }
+
+    // print lyrics embeds
+    for (let i = 0; i < chunks.length; i++) {
+      const isFirst = i === 0;
+
+      //* dnia 30.07.2022 Krzysztof Olszewski zwrócił uwagę na nierozważne umiejscowienie "return", co psuło pętlę "for"
+      const embed = new discord.EmbedBuilder()
+        .setColor(process.env.COLOR1)
+        .setDescription(chunks[i]);
+
+      if (isFirst) {
+        embed
+          .setTitle(`${song.artist.name} - ${song.title}`)
+          .setURL(song.url)
+          .setThumbnail(song.image);
+
+        msgInt.reply({ embeds: [embed] });
+      } else {
+        msgInt.channel.send({ embeds: [embed] });
+      }
+    }
+  },
 };

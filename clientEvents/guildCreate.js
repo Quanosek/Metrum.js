@@ -1,64 +1,76 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { NAME, PREFIX, ICON, WEBSITE, AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH, COLOR1 } = process.env;
+import * as discord from "discord.js";
 
-require('colors');
+import "colors";
+import db from "../functions/database.js";
+import realDate from "../functions/realDate.js";
 
-const { MessageEmbed } = require('discord.js');
+// define module
+export default {
+  name: "guildCreate",
 
-const realDate = require('../functions/realDate.js');
-const schema = require('../schemas/guilds.js');
+  async run(client, guild) {
+    db.create(guild.id, { prefix: process.env.PREFIX }); // create db
 
-/** GUILD CREATE EVENT */
+    // log
+    console.log(
+      realDate() +
+        ` Guild: ${guild.name}, ID: ${guild.id}`.grey +
+        "\n >>> Bot " +
+        "joined".brightGreen +
+        " to the server!"
+    );
 
-module.exports = {
-    name: 'guildCreate',
+    // message channel
+    let channelToSend;
+    guild.channels.cache.forEach((channel) => {
+      if (
+        channel.type === 0 && // GuildText
+        channel
+          .permissionsFor(guild.members.me)
+          .has([
+            discord.PermissionsBitField.Flags.SendMessages,
+            discord.PermissionsBitField.Flags.ViewChannel,
+          ])
+      )
+        channelToSend = channel;
+    });
 
-    async run(client, guild) {
+    // welcome message
+    if (channelToSend) {
+      try {
+        return channelToSend.send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR1)
+              .setThumbnail("attachment://metrum.png")
+              .setTitle("😄 | Cieszę się, że tu jestem!")
+              .setDescription(
+                `
+Dziękuję za dodanie mnie na ten serwer! Jestem ${process.env.NAME}, czyli zaawansowany, polski bot muzyczny z serii Metrum, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **700+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
-        await schema.create({ // create db
-            guildName: guild.name,
-            guildId: guild.id,
-            prefix: PREFIX,
+Obsługuję zarówno komendy po ukośniku, jak i prefixie. Moim domyślnym prefixem jest: \`${process.env.PREFIX}\`
+
+Aby dowiedzieć się więcej, użyj komendy \`help\` lub odwiedź moją [stronę internetową](${process.env.WEBSITE})!
+                `
+              )
+              .setFooter({
+                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+              }),
+          ],
+          files: [
+            {
+              attachment: `.files/logo/${process.env.NAME}.png`,
+              name: "metrum.png",
+            },
+          ],
         });
-
-        console.log(realDate() + ` Guild: ${guild.name}, ID: ${guild.id}`.grey + `\n >>> Bot ` + `joined`.brightGreen + ` to the server!`); // log
-
-        /** welcome message */
-
-        let channelToSend;
-
-        guild.channels.cache.forEach(channel => {
-            if (
-                channel.type === 'GUILD_TEXT' &&
-                channel.permissionsFor(guild.me).has(['SEND_MESSAGES', 'VIEW_CHANNEL'])
-            ) channelToSend = channel;
-        });
-
-        if (channelToSend) {
-
-            try {
-                return channelToSend.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR1)
-                        .setThumbnail(ICON)
-                        .setTitle('😄 | Cieszę się, że tu jestem!')
-                        .setDescription(`
-Dziękuję za dodanie mnie na ten serwer! Jestem ${NAME}, czyli zaawansowany, polski bot muzyczny z serii Metrum, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **700+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
-
-Obsługuję zarówno komendy po ukośniku, jak i prefixie. Moim domyślnym prefixem jest: \`${PREFIX}\`
-
-Aby dowiedzieć się więcej, użyj komendy \`help\` lub odwiedź moją [stronę internetową](${WEBSITE})!
-                        `)
-                        .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-                    ],
-                });
-
-            } catch (err) {
-                if (err) console.error(` >>> [WELCOME MSG] ${err}`.brightRed);
-            };
-
-        };
-    },
+      } catch (err) {
+        console.log(realDate() + ` [guildCreate] ${err}`.brightRed);
+      }
+    }
+  },
 };

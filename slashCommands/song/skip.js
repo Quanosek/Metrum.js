@@ -1,130 +1,119 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
 
-const { MessageEmbed } = require('discord.js');
-
-/** SKIP SLASH COMMAND */
+// command module
 
 let skipVotes = []; // votes
 
-module.exports = {
-    name: 'skip',
-    description: 'Pominięcie obecnie granego utworu (głosowanie)',
+export default {
+  name: "skip",
+  description: "Pominięcie obecnie granego utworu (głosowanie)",
 
-    async run(client, msgInt) {
+  async run(client, msgInt) {
+    // define
+    const botvoice = msgInt.guild.members.me.voice.channel;
+    const uservoice = msgInt.member.voice.channel;
+    const queue = client.distube.getQueue(msgInt);
 
-        /** DEFINE */
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-        const queue = client.distube.getQueue(msgInt);
-        const botvoice = msgInt.guild.me.voice.channel;
-        const uservoice = msgInt.member.voice.channel;
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-        /** ERRORS */
+    if (errorEmbed.data.description)
+      return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
+    // voting system
+    let users = uservoice.members.size;
 
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
+    uservoice.members.forEach((member) => {
+      if (member.user.bot) users = users - 1;
+    });
 
-        if (errorEmbed.description) // print error embed
-            return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+    const required = Math.ceil(users / 2);
 
-        /** VOTING SYSTEM */
+    // voting errors
+    if (skipVotes.some((x) => x === msgInt.author.id)) {
+      return msgInt.reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR_ERR)
+            .setDescription("🗳️ | Twój głos został już zapisany!"),
+        ],
+        ephemeral: true,
+      });
+    }
 
-        let users = uservoice.members.size;
+    skipVotes.push(msgInt.member.user.id);
+    process.setMaxListeners(Infinity);
 
-        uservoice.members.forEach(member => {
-            if (member.user.bot) users = users - 1;
-        });
+    // translation
+    let votes;
+    const rest = required % 10;
 
-        const required = Math.ceil(users / 2);
+    if (rest > 1 || rest < 5) votes = "głosy";
+    else if (rest < 2 || rest > 4) votes = "głosów";
 
-        /** error */
+    let voteText, skipText; // message content define
 
-        if (skipVotes.some((x) => x === msgInt.author.id)) {
+    // interactions types description
+    if (msgInt.type === 20) {
+      // ChatInputCommand
+      voteText = `🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`;
+      skipText = "⏭️ | Pominięto utwór.";
+    } else {
+      // Button
+      voteText = `🗳️ | ${msgInt.member.user} głosuje za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`;
+      skipText = `⏭️ | ${msgInt.member.user} pominął/pominęła utwór.`;
+    }
 
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Twój głos został już zapisany!`)
-                ],
-                ephemeral: true,
-            });
-        };
+    // print voting message
+    if (required > 1) {
+      msgInt.reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR2)
+            .setDescription(voteText),
+        ],
+      });
+    }
 
-        /** voting message */
+    // command
+    if (skipVotes.length >= required) {
+      // execute command
+      if (queue.paused) client.distube.resume(msgInt);
+      if (queue.songs.length < 2) {
+        if (queue.autoplay) client.distube.skip(msgInt);
+        else client.distube.stop(msgInt);
+      } else client.distube.skip(msgInt);
 
-        // translation
+      skipVotes = []; // reset votes
 
-        const rest = votes % 10;
+      // print message embed
+      msgInt.reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR1)
+            .setDescription(skipText),
+        ],
+      });
+    }
 
-        if (rest > 1 || rest < 5) votes = 'głosy'
-        else if (rest < 2 || rest > 4) votes = 'głosów'
-
-        // message content
-
-        let voteText, skipText;
-
-        if (msgInt.type === 'APPLICATION_COMMAND') { // slash command
-            voteText = `🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`
-            skipText = '⏭️ | Pominięto utwór.'
-        } else { // button interaction
-            voteText = `🗳️ | ${msgInt.member.user} głosuje za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`
-            skipText = `⏭️ | ${msgInt.member.user} pominął/pominęła utwór.`
-        };
-
-        skipVotes.push(msgInt.member.user.id);
-        process.setMaxListeners(Infinity);
-
-        // print voting message
-
-        if (required > 1) {
-
-            msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription(voteText)
-                ],
-            });
-        };
-
-        /** COMMAND */
-
-        if (skipVotes.length >= required) {
-
-            // execute command
-
-            if (queue.paused) client.distube.resume(msgInt);
-
-            if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msgInt);
-                else client.distube.stop(msgInt);
-            } else client.distube.skip(msgInt);
-
-            skipVotes = []; // reset votes
-
-            // print command message
-
-            return msgInt.reply({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(skipText)
-                ],
-            });
-        };
-
-        /** event */
-
-        client.distube.on('playSong', (queue, song) => {
-            return skipVotes = []; // reset votes
-        });
-
-    },
+    // event
+    client.distube.on("playSong", (queue, song) => {
+      return (skipVotes = []); // reset votes
+    });
+  },
 };

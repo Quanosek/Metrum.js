@@ -1,88 +1,90 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+// command module
+export default {
+  name: "search",
+  aliases: ["sr"],
+  description:
+    "Wyszukiwanie utworów podobnych do obecnie granego lub po podanym tytule",
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    let title = args.join(" ");
+    const queue = client.distube.getQueue(msg);
 
-/** SEARCH COMMAND */
+    if (!title) {
+      if (!queue) {
+        msg.react("❌"), autoDelete(msg);
 
-module.exports = {
-    name: 'search',
-    aliases: ['sr'],
-    description: 'Wyszukiwanie utworów podobnych do obecnie granego lub po podanym tytule',
+        return msg.channel
+          .send({
+            embeds: [
+              new discord.EmbedBuilder()
+                .setColor(process.env.COLOR_ERR)
+                .setDescription(
+                  "Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!"
+                ),
+            ],
+          })
+          .then((msg) => autoDelete(msg));
+      }
 
-    async run(client, prefix, msg, args) {
+      title = queue.songs[0].name; // default value
+    }
 
-        /** DEFINE */
+    // execute command
+    try {
+      const result = await client.distube.search(title);
+      let searchResult = "";
 
-        let title = args.join(' ');
-        const queue = client.distube.getQueue(msg);
+      for (let i = 0; i < 10; i++) {
+        searchResult += `**${i + 1}.** [${result[i].name}](${
+          result[i].url
+        }) - \`${result[i].formattedDuration}\`\n`;
+      }
 
-        if (!title) {
+      msg.react("✅");
 
-            if (!queue) {
-                msg.react('❌'), autoDelete(msg);
+      // create message embed
+      const embed = new discord.EmbedBuilder()
+        .setColor(process.env.COLOR2)
+        .setTitle(`🔎 | Wyniki wyszukiwania dla: \`${title}\``)
+        .setDescription(searchResult)
+        .setFooter({
+          text: "możesz szybko wybrać, który utwór chcesz odtworzyć:",
+        });
 
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!')
-                    ],
-                }).then(msg => autoDelete(msg));
-            };
+      // create buttons
+      let buttons = new discord.ActionRowBuilder();
 
-            title = queue.songs[0].name; // default value
-        };
+      for (let i = 0; i < 5; i++) {
+        buttons.addComponents(
+          new discord.ButtonBuilder()
+            .setCustomId(`search-${title}-${i + 1}`)
+            .setStyle(2) // Secondary
+            .setLabel(`${i + 1}`)
+        );
+      }
 
-        /** COMMAND */
+      // print message embed
+      return msg.channel.send({ embeds: [embed], components: [buttons] });
+    } catch (err) {
+      msg.react("❌"), autoDelete(msg);
 
-        try {
-
-            const result = await client.distube.search(title);
-            let searchResult = '';
-
-            for (let i = 0; i < 10; i++) {
-                searchResult += `**${i + 1}.** [${result[i].name}](${result[i].url}) - \`${result[i].formattedDuration}\`\n`
-            };
-
-            msg.react('✅');
-
-            /** message */
-
-            const embed = new MessageEmbed()
-                .setColor(COLOR1)
-                .setTitle(`🔎 | Wyniki wyszukiwania dla: \`${title}\``)
-                .setDescription(searchResult)
-                .setFooter({ text: 'możesz szybko wybrać, który utwór chcesz odtworzyć:' })
-
-            /** buttons */
-
-            let buttons = new MessageActionRow()
-
-            for (let i = 0; i < 5; i++) {
-                buttons.addComponents(
-                    new MessageButton()
-                    .setCustomId(`search-${title}-${i+1}`)
-                    .setStyle('SECONDARY')
-                    .setLabel(`${i+1}`)
-                );
-            };
-
-            return msg.channel.send({ embeds: [embed], components: [buttons] }); // print message
-
-        } catch (err) { // other error
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Nie znaleziono żadnych wyników wyszukiwania!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-    },
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription("**Brak wyników** wyszukiwania!"),
+          ],
+        })
+        .then((msg) => autoDelete(msg));
+    }
+  },
 };

@@ -1,113 +1,108 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
-
-const autoDelete = require('../../functions/autoDelete.js');
-
-/** PREVIOUS COMMAND */
+// command module
 
 let previousVotes = []; // votes
 
-module.exports = {
-    name: 'previous',
-    aliases: ['pr'],
-    description: 'Odtworzenie poprzednio granego utworu w kolejce (głosowanie)',
+export default {
+  name: "previous",
+  aliases: ["pr", "prv"],
+  description: "Odtworzenie poprzednio granego utworu z kolejki (głosowanie)",
 
-    async run(client, prefix, msg, args) {
+  async run(client, prefix, msg, args) {
+    // define
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
 
-        /** DEFINE */
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue || queue.previousSongs.length < 1)
+      errorEmbed.setDescription("Nie znaleziono poprzedniego utworu!");
 
-        /** ERRORS */
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
+    // voting system
+    let users = uservoice.members.size;
 
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue || queue.previousSongs.length < 1)
-            errorEmbed.setDescription('Nie znaleziono poprzedniego utworu!');
+    uservoice.members.forEach((member) => {
+      if (member.user.bot) users = users - 1;
+    });
 
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
+    const required = Math.ceil(users / 2);
 
-        /** VOTING SYSTEM */
+    // voting errors
+    if (previousVotes.some((x) => x === msg.author.id)) {
+      msg.react("❌"), autoDelete(msg, 5);
 
-        let users = uservoice.members.size;
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription("🗳️ | Twój głos został już zapisany!"),
+          ],
+        })
+        .then((msg) => autoDelete(msg, 5));
+    }
 
-        uservoice.members.forEach(member => {
-            if (member.user.bot) users = users - 1;
-        });
+    previousVotes.push(msg.author.id);
+    process.setMaxListeners(Infinity);
 
-        const required = Math.ceil(users / 2);
+    // print voting message
+    if (required > 1) {
+      msg.react("✅");
 
-        /** error */
+      // translation
+      let votes;
+      const rest = required % 10;
 
-        if (previousVotes.some((x) => x === msg.author.id)) {
-            msg.react('❌'), autoDelete(msg, 5);
+      if (rest > 1 || rest < 5) votes = "głosy";
+      else if (rest < 2 || rest > 4) votes = "głosów";
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Twój głos został już zapisany!`)
-                ],
-            }).then(msg => autoDelete(msg, 5));
-        };
+      // message
+      msg.channel.send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR1)
+            .setDescription(
+              `🗳️ | Głosujesz za **odtworzeniem poprzednio granego utworu** (**${previousVotes.length}**/${required} ${votes}).`
+            ),
+        ],
+      });
+    }
 
-        /** message */
+    // command
+    if (previousVotes.length >= required) {
+      msg.react("✅");
 
-        previousVotes.push(msg.author.id);
-        process.setMaxListeners(Infinity);
+      client.distube.previous(msg); // execute command
 
-        // print voting message
+      previousVotes = []; // reset votes
+    }
 
-        if (required > 1) {
-
-            msg.react('✅');
-
-            // translation
-
-            const rest = votes % 10;
-
-            if (rest > 1 || rest < 5) votes = 'głosy'
-            else if (rest < 2 || rest > 4) votes = 'głosów'
-
-            // message
-
-            msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription(`🗳️ | Głosujesz za **wymieszaniem kolejki utworów** (**${previousVotes.length}**/${required} ${votes}).`)
-                ],
-            });
-        };
-
-        /** COMMAND */
-
-        if (previousVotes.length >= required) {
-
-            msg.react('✅');
-
-            client.distube.previous(msg); // execute command
-
-            return previousVotes = []; // reset votes
-        };
-
-        /** event */
-
-        client.distube.on('playSong', (queue, song) => {
-            return previousVotes = []; // reset votes
-        });
-
-    },
+    // event
+    client.distube.on("playSong", (queue, song) => {
+      return (previousVotes = []); // reset votes
+    });
+  },
 };

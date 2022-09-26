@@ -1,25 +1,25 @@
-/** IMPORT */
+// import
+import * as discord from "discord.js";
 
-require('colors');
-const fs = require('fs');
+import "colors";
+import fs from "fs";
+import realDate from "../functions/realDate.js";
 
-const { Collection } = require('discord.js');
+// buttons handler
+export default (client) => {
+  (async () => {
+    client.buttons = new discord.Collection();
 
-/** BUTTONS HANDLER */
-
-module.exports = (client) => {
-    client.handleButtons = async(path) => {
-
-        client.buttons = new Collection();
-
-        const buttonFiles = fs
-            .readdirSync(`./${path}`)
-            .filter(file => file.endsWith('.js'))
-
-        for (file of buttonFiles) {
-            const button = require(`../${path}/${file}`);
-            client.buttons.set(button.name, button);
-        };
-
-    };
+    fs.readdirSync(`./buttons`).map((file) => {
+      import(`../buttons/${file}`).then((result) => {
+        const button = result.default;
+        // set buttons
+        try {
+          client.buttons.set(button.name, button);
+        } catch (err) {
+          return console.log(realDate() + ` [handleButtons] ${err}`.brightRed);
+        }
+      });
+    });
+  })();
 };

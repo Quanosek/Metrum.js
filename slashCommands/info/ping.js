@@ -1,43 +1,44 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
+import * as discord from "discord.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "ping",
+  description: "Sprawdzenie pingu bota",
 
-/** PING SLASH COMMAND */
-
-module.exports = {
-    name: 'ping',
-    description: 'Ping-pong',
-
-    async run(client, msgInt) {
-
-        /** MESSAGE */
-
-        msgInt.reply({ // send
-
-            embeds: [new MessageEmbed()
-                .setColor('RANDOM')
-                .setDescription('🏓 | Pong!')
-            ],
-            ephemeral: true,
-            fetchReply: true,
-
-        }).then(resultmsg => { // modify sended
-
-            msgInt.editReply({
-                embeds: [new MessageEmbed()
-                    .setColor('RANDOM')
-                    .setTitle('🏓 | Pong!')
-                    .setDescription(`
-Opóźnienie bota: \`${resultmsg.createdTimestamp - msgInt.createdTimestamp} ms\`
+  async run(client, msgInt) {
+    // print message embed
+    msgInt
+      .reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR1)
+            .setDescription("🏓 | Pong!"),
+        ],
+        ephemeral: true,
+        fetchReply: true,
+      })
+      .then((results) => {
+        // edit message with values
+        msgInt.editReply({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR2)
+              .setTitle("🏓 | Pong!")
+              .setDescription(
+                `
+Opóźnienie bota: \`${results.createdTimestamp - msgInt.createdTimestamp} ms\`
 Opóźnienie API: \`${client.ws.ping} ms\`
-                    `)
-                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-                ],
-            });
+                `
+              )
+              .setFooter({
+                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+              }),
+          ],
         });
-
-    },
+      });
+  },
 };

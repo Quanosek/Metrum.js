@@ -1,69 +1,76 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import ms from "ms";
+import autoDelete from "../../functions/autoDelete.js";
 
-const ms = require('ms');
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "seek",
+  aliases: ["sk"],
+  description: "Przewinięcie obecnie granego utworu do podanej wartości",
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    let number = args.join(" ");
+    if (number) {
+      if (/[a-z]/.test(number)) number = ms(number) / 1000;
+      else number = ms(number);
+    }
 
-/** SEEK COMMAND */
+    let song;
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
+    if (queue) song = queue.songs[0]; // now playing song
 
-module.exports = {
-    name: 'seek',
-    aliases: ['sk'],
-    description: 'Przewinięcie granego utworu do podanej wartości',
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-    async run(client, prefix, msg, args) {
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue) {
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
+    } else {
+      if (song.isLive)
+        errorEmbed.setDescription(
+          "**Nie można** przewijać transmisji na żywo!"
+        );
+      if (isNaN(number) || number > queue.songs[0].duration || number < 0)
+        errorEmbed.setDescription(
+          "Wprowadź **poprawną** wartość, **większą od zera**, ale nie większą niż **długość utworu**!"
+        );
+    }
 
-        /** DEFINE */
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        let number = args.join(' ');
-        if (/[a-z]/.test(number)) number = ms(number) / 1000;
-        else number = ms(number);
+    msg.react("✅");
 
-        const queue = client.distube.getQueue(msg);
-        if (queue) song = queue.songs[0]; // now playing song
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+    // execute command
+    client.distube.seek(msg, number);
 
-        /** ERRORS */
-
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
-
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue) {
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
-        } else {
-            if (song.isLive)
-                errorEmbed.setDescription('Nie można przewijać transmisji na żywo!');
-            if (isNaN(number) || number === 0)
-                errorEmbed.setDescription('Wprowadź **poprawną** wartość (w sekundach)!');
-        };
-
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
-
-        /** COMMAND */
-
-        msg.react('✅');
-        client.distube.seek(msg, number); // execute command
-
-        // print command message
-
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setDescription(`⏺️ | Przewinięto utwór do: \`${queue.formattedCurrentTime}\`/\`${song.formattedDuration}\``)
-            ],
-        });
-
-    },
+    // print message embed
+    return msg.channel.send({
+      embeds: [
+        new discord.EmbedBuilder()
+          .setColor(process.env.COLOR1)
+          .setDescription(
+            `⏺️ | Przewinięto utwór do: \`${queue.formattedCurrentTime}\`/\`${song.formattedDuration}\``
+          ),
+      ],
+    });
+  },
 };

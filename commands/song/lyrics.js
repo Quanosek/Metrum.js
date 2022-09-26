@@ -1,91 +1,110 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
+import { Client } from "genius-lyrics/dist/helpers/http.js";
 
-const axios = require('axios');
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "lyrics",
+  aliases: ["l", "ly"],
+  description:
+    "Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu",
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    let title = args.join(" ");
+    const queue = client.distube.getQueue(msg);
 
-/** LYRICS COMMAND */
+    // no title provided
+    if (!title) {
+      if (!queue) {
+        msg.react("❌"), autoDelete(msg);
 
-module.exports = {
-    name: 'lyrics',
-    aliases: ['ly'],
-    description: 'Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu',
+        return msg.channel
+          .send({
+            embeds: [
+              new discord.EmbedBuilder()
+                .setColor(process.env.COLOR_ERR)
+                .setDescription(
+                  "Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!"
+                ),
+            ],
+          })
+          .then((msg) => autoDelete(msg));
+      }
 
-    async run(client, prefix, msg, args) {
+      title = queue.songs[0].name; // default value
+    }
 
-        /** DEFINE */
+    msg.react("✅");
 
-        let title = args.join(' ');
-        const queue = client.distube.getQueue(msg);
+    // search for lyrics
+    const searches = await client.Genius.songs.search(title);
+    const song = searches[0];
 
-        /** ERROR */
+    // no song error
+    if (!song) {
+      msg.react("❌"), autoDelete(msg);
 
-        if (!title) {
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription("*Nie znaleziono* tekstu dla tego utworu!"),
+          ],
+        })
+        .then((msg) => autoDelete(msg));
+    }
 
-            if (!queue) {
-                msg.react('❌'), autoDelete(msg);
+    // lyrics text format
+    const lyrics = await song.lyrics();
 
-                return msg.channel.send({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!')
-                    ],
-                }).then(msg => autoDelete(msg));
-            };
+    function formattedText(value) {
+      return value
+        .replace(/\[.*\]\n\n\[/, "[")
+        .replace(/\n\[/g, "\n\n[")
+        .replace(/\n\n\n\[/g, "\n\n[")
+        .replace(/\[|\]/g, "**");
+    }
 
-            title = queue.songs[0].name; // default value
-        };
+    const text = formattedText(lyrics).split("\n");
 
-        /** CREATING URL ADDRESS */
+    let size = 0;
+    let chunks = [""];
 
-        function substring(length, value) {
-            const replaced = value.replace(/\n/g, '--');
-            const regex = `.{1,${length}}`;
-            const lines = replaced
-                .match(new RegExp(regex, 'g'))
-                .map(line => line.replace(/--/g, '\n'));
+    for (let i = 0; i < text.length; i++) {
+      size += text[i].length;
 
-            return lines;
-        };
+      if (size <= 4096) {
+        chunks[chunks.length - 1] += `\n${text[i]}`;
+        size++;
+      } else {
+        chunks.push(text[i]);
+        size = text[i].length;
+      }
+    }
 
-        const url = new URL('https://some-random-api.ml/lyrics');
-        url.searchParams.append('title', title);
-        // console.log(url.href); // check final link
+    // print lyrics embeds
+    for (let i = 0; i < chunks.length; i++) {
+      const isFirst = i === 0;
 
-        /** COMMAND */
+      //* dnia 30.07.2022 Krzysztof Olszewski zwrócił uwagę na nierozważne umiejscowienie "return", co psuło pętlę "for"
+      const embed = new discord.EmbedBuilder()
+        .setColor(process.env.COLOR1)
+        .setDescription(chunks[i]);
 
-        try {
+      if (isFirst) {
+        embed
+          .setTitle(`${song.artist.name} - ${song.title}`)
+          .setURL(song.url)
+          .setThumbnail(song.image);
+      }
 
-            const { data } = await axios.get(url.href);
-            const embeds = substring(4096, data.lyrics).map((value, index) => {
-                const isFirst = index === 0;
-
-                return new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setTitle(isFirst ? `${data.title} - ${data.author}` : '')
-                    .setURL(isFirst ? `${data.links.genius}` : '')
-                    .setThumbnail(isFirst ? `${data.thumbnail.genius}` : '')
-                    .setDescription(value)
-            });
-
-            msg.react('✅');
-            return msg.channel.send({ embeds });
-
-        } catch (err) { // no song error
-
-            msg.react('❌'), autoDelete(msg);
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription('Niestety nie znaleziono tekstu dla tego utworu!')
-                ],
-            }).then(msg => autoDelete(msg));
-        };
-
-    },
+      msg.channel.send({ embeds: [embed] });
+    }
+  },
 };

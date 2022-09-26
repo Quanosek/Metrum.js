@@ -1,108 +1,68 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
 
-require('colors');
-const { MessageEmbed } = require('discord.js');
+import "colors";
+import realDate from "../functions/realDate.js";
 
-/** INTERACTION CREATE EVENT */
+// define module
+export default {
+  name: "interactionCreate",
 
-module.exports = {
-    name: 'interactionCreate',
+  async run(client, msgInt) {
+    // define
+    let element, execute;
+    msgInt.member = msgInt.guild.members.cache.get(msgInt.user.id);
 
-    async run(client, msgInt) {
+    // slashCommand
+    if (msgInt.isCommand()) {
+      element = client.slashCommands.get(msgInt.commandName);
+      execute = () => element.run(client, msgInt);
+    }
+    // button
+    if (msgInt.isButton()) {
+      const [name, ...params] = msgInt.customId.split("-");
+      element = client.buttons.get(name);
+      execute = () => element.run(client, msgInt, params);
+    }
 
-        /** COMMANDS */
+    // error message
+    if (!element) return;
+    else if (element.permissions) {
+      if (!msgInt.member.permissions.has(element.permissions)) {
+        return msgInt.reply({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription(
+                "🛑 | **Nie masz uprawnień** do użycia tej komendy!"
+              ),
+          ],
+          ephemeral: true,
+        });
+      }
+    }
 
-        if (msgInt.isCommand()) {
+    // execute command
+    try {
+      await execute();
+    } catch (err) {
+      console.log(
+        realDate() + ` [${element.name} interaction] ${err}`.brightRed
+      );
 
-            /** define */
-
-            const cmd = client.slashCommands.get(msgInt.commandName);
-            msgInt.member = msgInt.guild.members.cache.get(msgInt.user.id);
-
-            /** errors */
-
-            if (!cmd) return; // no command
-
-            if (!msgInt.member.permissions.has(cmd.permissions || [])) { // no permissions
-
-                return msgInt.reply({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('🛑 | Nie masz uprawnień do użycia tej komendy!')
-                    ],
-                    ephemeral: true,
-                });
-            };
-
-            /** execute */
-
-            try {
-                await cmd.run(client, msgInt); // run slash command
-
-            } catch (err) { // error
-                if (err) {
-
-                    console.error(` [RUN INTERACTION] >>> ${err}`.brightRed);
-
-                    return msgInt.reply({
-                        embeds: [new MessageEmbed()
-                            .setColor(COLOR_ERR)
-                            .setDescription('🛑 | Pojawił się błąd podczas uruchamiania komendy!')
-                        ],
-                        ephemeral: true,
-                    });
-                };
-            };
-
-        };
-
-        /** BUTTONS */
-
-        if (msgInt.isButton()) {
-
-            /** define */
-
-            const [name, ...params] = msgInt.customId.split('-');
-            const button = client.buttons.get(name);
-
-            /** errors */
-
-            if (!button) return; // no button
-
-            if (!msgInt.member.permissions.has(button.permissions || [])) { // no permissions
-
-                return msgInt.reply({
-                    embeds: [new MessageEmbed()
-                        .setColor(COLOR_ERR)
-                        .setDescription('🛑 | Nie masz uprawnień do użycia tego przycisku!')
-                    ],
-                    ephemeral: true,
-                });
-            };
-
-            /** execute */
-
-            try {
-                await button.run(client, msgInt, params); // run button command
-
-            } catch (err) { // error
-                if (err) {
-
-                    console.error(` >>> [RUN BUTTON] ${err}`.brightRed);
-
-                    return msgInt.reply({
-                        embeds: [new MessageEmbed()
-                            .setColor(COLOR_ERR)
-                            .setDescription('🛑 | Pojawił się błąd podczas uruchamiania komendy!')
-                        ],
-                        ephemeral: true,
-                    });
-                };
-            };
-
-        };
-    },
+      return msgInt.reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR_ERR)
+            .setDescription(
+              "🛑 | Pojawił się błąd podczas uruchamiania komendy!"
+            ),
+        ],
+        ephemeral: true,
+      });
+    }
+  },
 };

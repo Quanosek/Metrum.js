@@ -1,129 +1,122 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
-
-const autoDelete = require('../../functions/autoDelete.js');
-
-/** SKIP COMMAND */
+// command module
 
 let skipVotes = []; // votes
 
-module.exports = {
-    name: 'skip',
-    aliases: ['s'],
-    description: 'Pominięcie obecnie granego utworu (głosowanie)',
+export default {
+  name: "skip",
+  aliases: ["s"],
+  description: "Pominięcie obecnie granego utworu (głosowanie)",
 
-    async run(client, prefix, msg, args) {
+  async run(client, prefix, msg, args) {
+    // define
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
 
-        /** DEFINE */
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-        /** ERRORS */
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
+    // voting system
+    let users = uservoice.members.size;
 
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
+    uservoice.members.forEach((member) => {
+      if (member.user.bot) users = users - 1;
+    });
 
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
+    const required = Math.ceil(users / 2);
 
-        /** VOTING SYSTEM */
+    // voting errors
+    if (skipVotes.some((x) => x === msg.author.id)) {
+      msg.react("❌"), autoDelete(msg, 5);
 
-        let users = uservoice.members.size;
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription("🗳️ | Twój głos został już zapisany!"),
+          ],
+        })
+        .then((msg) => autoDelete(msg, 5));
+    }
 
-        uservoice.members.forEach(member => {
-            if (member.user.bot) users = users - 1;
-        });
+    skipVotes.push(msg.author.id);
+    process.setMaxListeners(Infinity);
 
-        const required = Math.ceil(users / 2);
+    // print voting message
+    if (required > 1) {
+      msg.react("✅");
 
-        /** error */
+      // translation
+      let votes;
+      const rest = required % 10;
 
-        if (skipVotes.some((x) => x === msg.author.id)) {
-            msg.react('❌'), autoDelete(msg, 5);
+      if (rest > 1 || rest < 5) votes = "głosy";
+      else if (rest < 2 || rest > 4) votes = "głosów";
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Twój głos został już zapisany!`)
-                ],
-            }).then(msg => autoDelete(msg, 5));
-        };
+      // message
+      msg.channel.send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR2)
+            .setDescription(
+              `🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`
+            ),
+        ],
+      });
+    }
 
-        /** message */
+    // command
+    if (skipVotes.length >= required) {
+      msg.react("✅");
 
-        skipVotes.push(msg.author.id);
-        process.setMaxListeners(Infinity);
+      // execute command
+      if (queue.paused) client.distube.resume(msg);
+      if (queue.songs.length < 2) {
+        if (queue.autoplay) client.distube.skip(msg);
+        else client.distube.stop(msg);
+      } else client.distube.skip(msg);
 
-        // print voting message
+      skipVotes = []; // reset votes
 
-        if (required > 1) {
+      // print message embed
+      msg.channel.send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR1)
+            .setDescription("⏭️ | Pominięto utwór."),
+        ],
+      });
+    }
 
-            msg.react('✅');
-
-            // translation
-
-            const rest = votes % 10;
-
-            if (rest > 1 || rest < 5) votes = 'głosy'
-            else if (rest < 2 || rest > 4) votes = 'głosów'
-
-            // message
-
-            msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription(`🗳️ | Głosujesz za **pominięciem** utworu (**${skipVotes.length}**/${required} ${votes})`)
-                ],
-            });
-        };
-
-        /** COMMAND */
-
-        if (skipVotes.length >= required) {
-
-            msg.react('✅');
-
-            // execute command
-
-            if (queue.paused) client.distube.resume(msg);
-
-            if (queue.songs.length < 2) {
-                if (queue.autoplay) client.distube.skip(msg);
-                else client.distube.stop(msg);
-            } else client.distube.skip(msg);
-
-            skipVotes = []; // reset votes
-
-            // print command message
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription('⏭️ | Pominięto utwór.')
-                ],
-            });
-        };
-
-        /** event */
-
-        client.distube.on('playSong', (queue, song) => {
-            return skipVotes = []; // reset votes
-        });
-
-    },
+    // event
+    client.distube.on("playSong", (queue, song) => {
+      return (skipVotes = []); // reset votes
+    });
+  },
 };

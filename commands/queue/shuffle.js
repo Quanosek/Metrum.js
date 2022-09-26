@@ -1,129 +1,127 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
-
-const autoDelete = require('../../functions/autoDelete.js');
-
-/** SHUFFLE COMMAND */
+// command module
 
 let shuffleVotes = []; // votes
 
-module.exports = {
-    name: 'shuffle',
-    aliases: ['sh'],
-    description: 'Jednorazowe wymieszanie kolejki utworów (głosowanie)',
+export default {
+  name: "shuffle",
+  aliases: ["sh"],
+  description: "Jednorazowe wymieszanie kolejki utworów (głosowanie)",
 
-    async run(client, prefix, msg, args) {
+  async run(client, prefix, msg, args) {
+    // define
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
 
-        /** DEFINE */
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-        /** ERRORS */
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
+    // voting system
+    let users = uservoice.members.size;
 
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
+    uservoice.members.forEach((member) => {
+      if (member.user.bot) users = users - 1;
+    });
 
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
+    const required = Math.ceil(users / 2);
 
-        /** VOTING SYSTEM */
+    // voting errors
+    if (shuffleVotes.some((x) => x === msg.author.id)) {
+      msg.react("❌"), autoDelete(msg, 5);
 
-        let users = uservoice.members.size;
+      return msg.channel
+        .send({
+          embeds: [
+            new discord.EmbedBuilder()
+              .setColor(process.env.COLOR_ERR)
+              .setDescription("🗳️ | Twój głos został już zapisany!"),
+          ],
+        })
+        .then((msg) => autoDelete(msg, 5));
+    }
 
-        uservoice.members.forEach(member => {
-            if (member.user.bot) users = users - 1;
-        });
+    shuffleVotes.push(msg.author.id);
+    process.setMaxListeners(Infinity);
 
-        const required = Math.ceil(users / 2);
+    // print voting message
+    if (required > 1) {
+      msg.react("✅");
 
-        /** error */
+      // translation
+      let votes;
+      const rest = required % 10;
 
-        if (shuffleVotes.some((x) => x === msg.author.id)) {
-            msg.react('❌'), autoDelete(msg, 5);
+      if (rest > 1 || rest < 5) votes = "głosy";
+      else if (rest < 2 || rest > 4) votes = "głosów";
 
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR_ERR)
-                    .setDescription(`🗳️ | Twój głos został już zapisany!`)
-                ],
-            }).then(msg => autoDelete(msg, 5));
-        };
+      // message
+      msg.channel.send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR2)
+            .setDescription(
+              `🗳️ | Głosujesz za **wymieszaniem kolejki utworów** (**${shuffleVotes.length}**/${required} ${votes}).`
+            ),
+        ],
+      });
+    }
 
-        /** message */
+    // command
+    if (shuffleVotes.length >= required) {
+      msg.react("✅");
 
-        shuffleVotes.push(msg.author.id);
-        process.setMaxListeners(Infinity);
+      client.distube.shuffle(msg); // execute command
 
-        // print voting message
+      shuffleVotes = []; // reset votes
 
-        if (required > 1) {
-            msg.react('✅');
+      // translation
+      let songs;
+      const rest = queue.songs.length % 10;
 
-            // translation
+      if (queue.songs.length === 1) songs = "utwór";
+      else if (rest > 1 || rest < 5) songs = "utwory";
+      else if (rest < 2 || rest > 4) songs = "utworów";
 
-            const rest = votes % 10;
+      // print message embed
+      msg.channel.send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR1)
+            .setDescription(
+              `🔀 | Wymieszano kolejkę zawierającą **${queue.songs.length}** ${songs}.`
+            ),
+        ],
+      });
+    }
 
-            if (rest > 1 || rest < 5) votes = 'głosy'
-            else if (rest < 2 || rest > 4) votes = 'głosów'
-
-            // message
-
-            msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR2)
-                    .setDescription(`🗳️ | Głosujesz za **wymieszaniem kolejki utworów** (**${shuffleVotes.length}**/${required} ${votes}).`)
-                ],
-            });
-        };
-
-        /** COMMAND */
-
-        if (shuffleVotes.length >= required) {
-
-            msg.react('✅');
-
-            client.distube.shuffle(msg) // execute command
-
-            shuffleVotes = []; // reset votes
-
-            // translation
-
-            const rest = queue.songs.length % 10;
-
-            if (queue.songs.length === 1) songs = 'utwór'
-            else if (rest > 1 || rest < 5) songs = 'utwory'
-            else if (rest < 2 || rest > 4) songs = 'utworów'
-
-            // print command message
-
-            return msg.channel.send({
-                embeds: [new MessageEmbed()
-                    .setColor(COLOR1)
-                    .setDescription(`🔀 | Wymieszano kolejkę zawierającą **${queue.songs.length}** ${songs}.`)
-                ],
-            });
-        };
-
-        /** event */
-
-        client.distube.on('initQueue', (queue) => {
-            return shuffleVotes = []; // reset votes
-        });
-
-    },
+    // event
+    client.distube.on("initQueue", (queue) => {
+      return (shuffleVotes = []); // reset votes
+    });
+  },
 };

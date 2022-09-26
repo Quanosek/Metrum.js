@@ -1,188 +1,183 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { NAME, TOKEN, COLOR_ERR, COLOR1, COLOR2, MONGO_URI } = process.env;
+import * as discord from "discord.js";
 
-require('colors');
-const fs = require('fs');
-const mongoose = require('mongoose');
+import "colors";
+import fs from "fs";
+import autoDelete from "./functions/autoDelete.js";
+import realDate from "./functions/realDate.js";
 
-const autoDelete = require('./functions/autoDelete.js')
-const realDate = require('./functions/realDate.js')
+// bot starts-up
+console.clear();
+console.log(
+  realDate() + " Bot " + process.env.NAME.brightYellow + " is starting up..."
+);
 
-/** ON RUN */
-
-console.clear(); // start with clear terminal
-console.log(realDate() + ' Bot ' + `${NAME}`.brightYellow + ' is starting up...'); // log
-
-/** MAIN DEFINE */
-
-const { Client, MessageEmbed } = require('discord.js');
-
-const client = new Client({ // define client
-    intents: 32767,
-    restTimeOffset: 0,
-    shards: 'auto',
+// define Client
+const intent = discord.GatewayIntentBits;
+const client = new discord.Client({
+  intents: [
+    intent.GuildMessages,
+    intent.GuildVoiceStates,
+    intent.Guilds,
+    intent.MessageContent,
+  ],
+  shards: "auto",
+  restTimeOffset: 0,
 });
 
-/** handlers define */
-
-const handlers = fs
-    .readdirSync('./handlers')
-    .filter(file => file.endsWith('.js'));
-
-/** MAIN FUNCTION */
-
-(async() => {
-
-    /** handlers run*/
-
-    for (file of handlers) {
-        require(`./handlers/${ file }`)(client);
-    };
-
-    client.handleEvents('clientEvents');
-    client.handleButtons('buttons');
-    client.handleSlashCommands('slashCommands');
-    client.handleCommands('commands');
-
-    /** mongoose connection */
-
+// handleInit
+fs.readdirSync(`./handlers`).map((file) => {
+  import(`./handlers/${file}`).then((result) => {
+    const handler = result.default;
+    // run handlers
     try {
-        if (!MONGO_URI) return;
-        await mongoose.connect(MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }).then(() => console.log(realDate() + ' Successfully connected to the database.'));
+      handler(client);
     } catch (err) {
-        if (err) return console.error(` >>> [MONGODB] ${err}`.brightRed);
-    };
+      console.log(realDate() + ` [handleInit] ${err}`.brightRed);
+    }
+  });
+});
 
-})();
-
-/** DISCORD TOGETHER */
-
-const { DiscordTogether } = require('discord-together');
+// define DiscordTogether
+import { DiscordTogether } from "discord-together";
 client.discordTogether = new DiscordTogether(client);
 
-/** DISTUBE DEFINE */
+// define Genius
+import Genius from "genius-lyrics";
+client.Genius = new Genius.Client();
 
-const { DisTube } = require('distube');
-const { YtDlpPlugin } = require('@distube/yt-dlp');
-const { SoundCloudPlugin } = require('@distube/soundcloud');
-const { SpotifyPlugin } = require('@distube/spotify');
+// define Distube
+import { DisTube } from "distube";
+import { SoundCloudPlugin } from "@distube/soundcloud";
+import { SpotifyPlugin } from "@distube/spotify";
+import { YtDlpPlugin } from "@distube/yt-dlp";
 
 client.distube = new DisTube(client, {
-    plugins: [new YtDlpPlugin(), new SoundCloudPlugin(), new SpotifyPlugin()],
-    emitNewSongOnly: true,
-    leaveOnStop: false,
-    searchSongs: 10,
-    youtubeDL: false,
-    nsfw: true,
+  plugins: [
+    new SoundCloudPlugin(),
+    new SpotifyPlugin({
+      parallel: true,
+      emitEventsAfterFetching: false,
+    }),
+    new YtDlpPlugin({ update: true }),
+  ],
+  emitNewSongOnly: true,
+  leaveOnStop: false,
+  searchSongs: 10,
+  nsfw: true,
 });
 
-client.distube.setMaxListeners(99);
+client.distube.setMaxListeners(Infinity);
 
-/** DISTUBE EVENTS */
+client.distube // all Distube events
+  .on("error", (channel, err) => {
+    console.log(`[Distube] ${err}`.brightRed);
 
-client.distube
+    return channel
+      .send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR_ERR)
+            .setDescription(`${err}`),
+        ],
+      })
+      .then((msg) => autoDelete(msg));
+  })
 
-    .on('addList', (queue, playlist) => {
+  .on("addList", (queue, playlist) => {
+    let tracks = `\nliczba utworów: \`${playlist.songs.length}\`\n`;
+    if (playlist.source === "spotify") tracks = "";
 
-    const rest = playlist.songs.length % 10;
-    if (playlist.songs.length === 1) songs = 'utwór'
-    else if (rest < 2 || rest > 4) songs = 'utworów'
-    else if (rest > 1 || rest < 5) songs = 'utwory'
-
-    let color = COLOR1,
-        source = '',
-        tracks = `\nliczba utworów: \`${playlist.songs.length}\`\n`
-
-    if (playlist.source === 'youtube')
-        color = '#ff0000', source = ' YouTube';
-    if (playlist.source === 'spotify')
-        color = '#1ed760', source = ' Spotify', tracks = '';
-    if (playlist.source === 'soundcloud')
-        color = '#ff5500', source = ' SoundCloud';
-
-    const embed = new MessageEmbed()
-        .setColor(color)
-        .setThumbnail(playlist.thumbnail)
-        .setTitle(`➕ | Dodano do kolejki playlistę${source}:`)
-        .setDescription(`
-[${playlist.name}](${playlist.url})
-${tracks}
-        `)
-        .setFooter({ text: `Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue` })
+    const embed = new discord.EmbedBuilder()
+      .setColor(process.env.COLOR1)
+      .setThumbnail(playlist.thumbnail)
+      .setTitle(`➕ | Dodano do kolejki playlistę:`)
+      .setDescription(`[${playlist.name}](${playlist.url})\n${tracks}`)
+      .setFooter({
+        text: "Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue",
+      });
 
     return queue.textChannel.send({ embeds: [embed] });
-})
+  })
 
-.on('addSong', (queue, song) => {
-
+  .on("addSong", (queue, song) => {
     if (queue.songs.length < 2) return;
 
-    const embed = new MessageEmbed()
-        .setColor(COLOR2)
-        .setThumbnail(song.thumbnail)
+    const embed = new discord.EmbedBuilder()
+      .setColor(process.env.COLOR2)
+      .setThumbnail(song.thumbnail);
 
     if (queue.added) {
+      queue.added = false;
+      embed.setTitle("➕ | Dodano do kolejki jako następny:");
+      embed.setDescription(
+        `**2.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``
+      );
 
-        queue.added = false;
-        embed.setTitle('➕ | Dodano do kolejki jako następny:');
-        embed.setDescription(`**2.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``);
-
-        if (queue.songs.length > 2) embed.setFooter({ text: `Utworów w kolejce: ${queue.songs.length}` });
-
+      if (queue.songs.length > 2)
+        embed.setFooter({ text: `Utworów w kolejce: ${queue.songs.length}` });
     } else {
+      embed.setTitle("➕ | Dodano do kolejki:");
+      embed.setDescription(
+        `**${queue.songs.length}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``
+      );
 
-        embed.setTitle('➕ | Dodano do kolejki:');
-        embed.setDescription(`**${queue.songs.length}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``);
+      if (queue.songs.length)
+        embed.setFooter({
+          text: "Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue",
+        });
+    }
 
-        if (queue.songs.length) embed.setFooter({ text: `Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue` });
-    };
+    return queue.textChannel.send({ embeds: [embed] });
+  })
 
-    return queue.textChannel.send({ embeds: [embed] })
-})
-
-.on("error", (channel, err) => {
-
-    console.error(` >>> [DISTUBE] ${err}`.brightRed);
-
-    return channel.send({
-        embeds: [new MessageEmbed()
-            .setColor(COLOR_ERR)
-            .setDescription(`${err}`)
-        ],
-    }).then(msg => autoDelete(msg));
-})
-
-.on('noRelated', (queue) => {
-
-    return queue.textChannel.send({
-        embeds: [new MessageEmbed()
-            .setColor(COLOR_ERR)
-            .setDescription('Nie znaleziono podobnych utworów.')
-        ],
-    }).then(msg => autoDelete(msg));
-})
-
-.on('playSong', (queue, song) => {
-
+  .on("playSong", (queue, song) => {
     client.distube.setSelfDeaf;
     let requester = song.member.user;
 
     return queue.textChannel.send({
-        embeds: [new MessageEmbed()
-            .setColor(COLOR2)
-            .setThumbnail(`${song.thumbnail}`)
-            .setTitle('🎶 | Teraz odtwarzane:')
-            .setDescription(`[${song.name}](${song.url}) - \`${song.formattedDuration}\``)
-            .setFooter({ text: `dodał(a): ${requester.username}`, iconURL: `${requester.displayAvatarURL()}` })
-        ],
+      embeds: [
+        new discord.EmbedBuilder()
+          .setColor(process.env.COLOR2)
+          .setThumbnail(`${song.thumbnail}`)
+          .setTitle("🎶 | Teraz odtwarzane:")
+          .setDescription(
+            `[${song.name}](${song.url}) - \`${song.formattedDuration}\``
+          )
+          .setFooter({
+            text: `dodał(a): ${requester.username}`,
+            iconURL: `${requester.displayAvatarURL()}`,
+          }),
+      ],
     });
-})
+  })
 
-/** TOKEN */
+  .on("noRelated", (queue) => {
+    return queue.textChannel
+      .send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR_ERR)
+            .setDescription("Nie znaleziono podobnych utworów."),
+        ],
+      })
+      .then((msg) => autoDelete(msg));
+  })
 
-client.login(TOKEN);
+  .on("searchNoResult", (msg, query) => {
+    return msg.channel
+      .send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR_ERR)
+            .setDescription(`**Brak wyników wyszukiwania** dla: \`${query}\``),
+        ],
+      })
+      .then((msg) => autoDelete(msg));
+  });
+
+// token
+client.login(process.env.TOKEN);

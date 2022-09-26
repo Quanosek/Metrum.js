@@ -1,71 +1,68 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { COLOR_ERR, COLOR1, COLOR2 } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "radio",
+  aliases: ["r"],
+  description:
+    "Auto-odtwarzanie podobnych utworów, gdy skończy się kolejka (radio utworu)",
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    // define
+    let choice;
+    if (args[0] === "enable" || args[0] === "e") choice = 1;
+    if (args[0] === "disable" || args[0] === "d") choice = 0;
 
-/** RADIO COMMAND */
+    const botvoice = msg.guild.members.me.voice.channel;
+    const uservoice = msg.member.voice.channel;
+    const queue = client.distube.getQueue(msg);
 
-module.exports = {
-    name: 'radio',
-    aliases: ['r'],
-    description: 'Auto-odtwarzanie podobnych utworów (radio utworu)',
+    // errors
+    const errorEmbed = new discord.EmbedBuilder().setColor(
+      process.env.COLOR_ERR
+    );
 
-    async run(client, prefix, msg, args) {
+    if (!botvoice)
+      errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
+    else if (!uservoice || botvoice != uservoice)
+      errorEmbed.setDescription(
+        "Musisz być na kanale głosowym **razem ze mną**!"
+      );
+    else if (!queue)
+      errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
 
-        /** DEFINE */
+    if (errorEmbed.data.description) {
+      msg.react("❌"), autoDelete(msg);
+      return msg.channel
+        .send({ embeds: [errorEmbed] })
+        .then((msg) => autoDelete(msg));
+    }
 
-        if (args[0] === 'enable' || args[0] === 'e') choice = 1;
-        if (args[0] === 'disable' || args[0] === 'd') choice = 0;
+    msg.react("✅");
 
-        const queue = client.distube.getQueue(msg);
-        const botvoice = msg.guild.me.voice.channel;
-        const uservoice = msg.member.voice.channel;
+    // execute command
+    let mode = client.distube.toggleAutoplay(msg);
 
-        /** ERRORS */
+    if (isNaN(choice)) {
+      mode = mode ? "**Włączono**" : "**Wyłączono**";
+    } else {
+      queue.autoplay = choice;
+      if (choice === 1) mode = "**Włączono**";
+      if (choice === 0) mode = "**Wyłączono**";
+    }
 
-        const errorEmbed = new MessageEmbed() // create embed
-            .setColor(COLOR_ERR)
-
-        if (!botvoice)
-            errorEmbed.setDescription('Nie jestem na **żadnym** kanale głosowym!');
-        else if (!uservoice || botvoice != uservoice)
-            errorEmbed.setDescription('Musisz być na kanale głosowym **razem ze mną**!');
-        else if (!queue)
-            errorEmbed.setDescription('Obecnie nie jest odtwarzany **żaden utwór**!');
-
-        if (errorEmbed.description) { // print error embed
-            msg.react('❌'), autoDelete(msg);
-            return msg.channel.send({ embeds: [errorEmbed] }).then(msg => autoDelete(msg));
-        };
-
-        /** COMMAND */
-
-        msg.react('✅');
-        let mode = client.distube.toggleAutoplay(msg);
-
-        // execute command
-
-        if (!choice) {
-            mode = mode ? '**Włączono**' : '**Wyłączono**';
-
-        } else {
-            queue.autoplay = choice;
-            if (choice === 0) mode = '**Wyłączono**';
-            if (choice === 1) mode = '**Włączono**';
-        };
-
-        // print command message
-
-        return msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setColor(COLOR1)
-                .setDescription('📻 | ' + mode + ' auto-odtwarzanie (radio utworu).')
-            ],
-        });
-
-    },
+    // print message embed
+    return msg.channel.send({
+      embeds: [
+        new discord.EmbedBuilder()
+          .setColor(process.env.COLOR1)
+          .setDescription("📻 | " + mode + " auto-odtwarzanie (radio utworu)."),
+      ],
+    });
+  },
 };

@@ -1,47 +1,48 @@
-/** IMPORT */
+// import
+import dotenv from "dotenv";
+dotenv.config();
 
-require('dotenv').config();
-const { AUTHOR_NAME, AUTHOR_NICK, AUTHOR_HASH } = process.env;
+import * as discord from "discord.js";
+import autoDelete from "../../functions/autoDelete.js";
 
-const { MessageEmbed } = require('discord.js');
+// command module
+export default {
+  name: "ping",
+  aliases: ["pg"],
+  description: "Sprawdzenie pingu bota",
 
-const autoDelete = require('../../functions/autoDelete.js');
+  async run(client, prefix, msg, args) {
+    msg.react("🏓"), autoDelete(msg);
 
-/** PING COMMAND */
-
-module.exports = {
-    name: 'ping',
-    aliases: ['pg'],
-    description: 'Ping-pong',
-
-    async run(client, prefix, msg, args) {
-
-        /** MESSAGE */
-
-        msg.react('🏓'), autoDelete(msg);
-
-        msg.channel.send({ // send
-
-            embeds: [new MessageEmbed()
-                .setColor('RANDOM')
-                .setDescription('🏓 | Pong!')
-            ],
-
-        }).then(resultmsg => {
-
-            resultmsg.edit({ // modify sended
-                embeds: [new MessageEmbed()
-                    .setColor('RANDOM')
-                    .setTitle('🏓 | Pong!')
-                    .setDescription(`
-Opóźnienie bota: \`${resultmsg.createdTimestamp - msg.createdTimestamp} ms\`
+    // print message embed
+    return msg.channel
+      .send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR1)
+            .setDescription("🏓 | Pong!"),
+        ],
+      })
+      .then((results) => {
+        // edit message with values
+        results
+          .edit({
+            embeds: [
+              new discord.EmbedBuilder()
+                .setColor(process.env.COLOR2)
+                .setTitle("🏓 | Pong!")
+                .setDescription(
+                  `
+Opóźnienie bota: \`${results.createdTimestamp - msg.createdTimestamp} ms\`
 Opóźnienie API: \`${client.ws.ping} ms\`
-                    `)
-                    .setFooter({ text: `Autor bota: ${AUTHOR_NAME} (${AUTHOR_NICK}#${AUTHOR_HASH})` })
-                ],
-            }).then(msg => autoDelete(msg));
-
-        });
-
-    },
+                  `
+                )
+                .setFooter({
+                  text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+                }),
+            ],
+          })
+          .then((msg) => autoDelete(msg));
+      });
+  },
 };
