@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 // command module
 export default {
   name: "resume",
-  aliases: ["rs"],
+  aliases: ["rsm", "rs"],
   description: "Wznowienie odtwarzania utworu",
 
   async run(client, prefix, msg, args) {

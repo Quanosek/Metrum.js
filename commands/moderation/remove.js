@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 // command module
 export default {
   name: "remove",
-  aliases: ["rm", "rmv"],
+  aliases: ["rmv", "rm"],
   description:
     "Usunięcie wybranej pozycji z kolejki utworów (domyślnie: obecnie grany)",
   permissions: [discord.PermissionsBitField.Flags.ManageMessages],

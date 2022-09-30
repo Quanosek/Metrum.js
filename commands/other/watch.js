@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 // command module
 export default {
   name: "watch",
-  aliases: ["w", "wt"],
+  aliases: ["wt", "w"],
   description: "Aktywność YouTube Watch Together",
 
   async run(client, prefix, msg, args) {

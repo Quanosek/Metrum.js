@@ -11,7 +11,7 @@ let shuffleVotes = []; // votes
 
 export default {
   name: "shuffle",
-  aliases: ["sh"],
+  aliases: ["shf", "sh"],
   description: "Jednorazowe wymieszanie kolejki utworów (głosowanie)",
 
   async run(client, prefix, msg, args) {

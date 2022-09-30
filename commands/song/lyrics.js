@@ -9,7 +9,7 @@ import { Client } from "genius-lyrics/dist/helpers/http.js";
 // command module
 export default {
   name: "lyrics",
-  aliases: ["l", "ly"],
+  aliases: ["ly", "l"],
   description:
     "Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu",
 

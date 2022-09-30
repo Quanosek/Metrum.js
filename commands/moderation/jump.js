@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 // command module
 export default {
   name: "jump",
-  aliases: ["j"],
+  aliases: ["jmp", "jp", "j"],
   description: "Pominięcie określonej liczby utworów w kolejce (domyślnie: 1)",
   permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 

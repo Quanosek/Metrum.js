@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 // command module
 export default {
   name: "repeat",
-  aliases: ["rp"],
+  aliases: ["rpt", "rp"],
   description: "Przełączanie trybów zapętlenia: utworu/kolejki/wyłączone",
 
   async run(client, prefix, msg, args) {

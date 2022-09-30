@@ -10,7 +10,7 @@ export default {
   name: "filter",
   aliases: ["f"],
   description:
-    "Ustaw filtr na odtwarzaną muzykę (ponowne wybranie danego filtru, wyłączy go)",
+    "Ustaw filtr na odtwarzaną muzykę (ponowne wybranie danego filtru wyłączy go)",
 
   async run(client, prefix, msg, args) {
     // define

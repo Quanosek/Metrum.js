@@ -9,7 +9,7 @@ import autoDelete from "../../functions/autoDelete.js";
 export default {
   name: "filter",
   description:
-    "Ustaw filtr na odtwarzaną muzykę (ponowne wybranie danego filtru, wyłączy go)",
+    "Ustaw filtr na odtwarzaną muzykę (ponowne wybranie danego filtru wyłączy go)",
 
   options: [
     {
