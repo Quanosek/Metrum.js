@@ -9,7 +9,7 @@ export default {
   devOnly: true,
 
   async run(client, prefix, msg, args) {
-    msg.react("✅"), autoDelete(msg, "1ms");
+    msg.react("✅"), autoDelete(msg, 1);
 
     // console.log("test");
   },

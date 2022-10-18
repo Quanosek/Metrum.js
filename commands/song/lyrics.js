@@ -4,7 +4,6 @@ dotenv.config();
 
 import * as discord from "discord.js";
 import autoDelete from "../../functions/autoDelete.js";
-import { Client } from "genius-lyrics/dist/helpers/http.js";
 
 // command module
 export default {
