@@ -51,18 +51,17 @@ client.Genius = new Genius.Client();
 
 // define Distube
 import { DisTube } from "distube";
-import { SoundCloudPlugin } from "@distube/soundcloud";
+import { DeezerPlugin } from "@distube/deezer";
 import { SpotifyPlugin } from "@distube/spotify";
+import { SoundCloudPlugin } from "@distube/soundcloud";
 import { YtDlpPlugin } from "@distube/yt-dlp";
 
 client.distube = new DisTube(client, {
   plugins: [
+    new DeezerPlugin(),
+    new SpotifyPlugin(),
     new SoundCloudPlugin(),
-    new SpotifyPlugin({
-      parallel: true,
-      emitEventsAfterFetching: false,
-    }),
-    new YtDlpPlugin({ update: true }),
+    new YtDlpPlugin(),
   ],
   emitNewSongOnly: true,
   leaveOnStop: false,

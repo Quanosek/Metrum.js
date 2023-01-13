@@ -1,5 +1,5 @@
 {
-  "version": "3.0.1",
+  "version": "3.0.2",
   "name": "metrum",
   "description": "Polski zaawansowany bot muzyczny Discord",
   "main": "index.js",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Quanosek/Metrum#readme",
   "dependencies": {
     "@discordjs/voice": "^0.14.0",
+    "@distube/deezer": "^1.0.0",
     "@distube/soundcloud": "^1.3.0",
     "@distube/spotify": "^1.5.1",
     "@distube/yt-dlp": "^1.1.3",
