@@ -19,9 +19,9 @@ console.log(
 const intent = discord.GatewayIntentBits;
 const client = new discord.Client({
   intents: [
+    intent.Guilds,
     intent.GuildMessages,
     intent.GuildVoiceStates,
-    intent.Guilds,
     intent.MessageContent,
   ],
   shards: "auto",
@@ -32,11 +32,12 @@ const client = new discord.Client({
 fs.readdirSync(`./handlers`).map((file) => {
   import(`./handlers/${file}`).then((result) => {
     const handler = result.default;
+
     // run handlers
     try {
       handler(client);
     } catch (err) {
-      console.log(realDate() + ` [handleInit] ${err}`.brightRed);
+      return console.error(realDate() + ` [handleInit] ${err}`.brightRed);
     }
   });
 });
@@ -51,17 +52,19 @@ client.Genius = new Genius.Client();
 
 // define Distube
 import { DisTube } from "distube";
+import { YtDlpPlugin } from "@distube/yt-dlp";
+
 import { DeezerPlugin } from "@distube/deezer";
 import { SpotifyPlugin } from "@distube/spotify";
 import { SoundCloudPlugin } from "@distube/soundcloud";
-import { YtDlpPlugin } from "@distube/yt-dlp";
 
 client.distube = new DisTube(client, {
   plugins: [
+    new YtDlpPlugin({ update: false }),
+
     new DeezerPlugin(),
     new SpotifyPlugin(),
     new SoundCloudPlugin(),
-    new YtDlpPlugin(),
   ],
   emitNewSongOnly: true,
   leaveOnStop: false,
@@ -73,7 +76,7 @@ client.distube.setMaxListeners(Infinity);
 
 client.distube // all Distube events
   .on("error", (channel, err) => {
-    console.log(`[Distube] ${err}`.brightRed);
+    console.error(`[Distube] ${err}`.brightRed);
 
     return channel
       .send({

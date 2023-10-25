@@ -69,7 +69,7 @@ Aby dowiedzieć się więcej, użyj komendy \`help\` lub odwiedź moją [stronę
           ],
         });
       } catch (err) {
-        console.log(realDate() + ` [guildCreate] ${err}`.brightRed);
+        return console.error(realDate() + ` [guildCreate] ${err}`.brightRed);
       }
     }
   },

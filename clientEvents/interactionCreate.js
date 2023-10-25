@@ -49,7 +49,7 @@ export default {
     try {
       await execute();
     } catch (err) {
-      console.log(
+      console.error(
         realDate() + ` [${element.name} interaction] ${err}`.brightRed
       );
 

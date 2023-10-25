@@ -102,7 +102,7 @@ Użyj komendy \`help\` po więcej informacji!
     try {
       await cmd.run(client, prefix, msg, args);
     } catch (err) {
-      console.log(realDate() + ` [${cmd.name} command] ${err}`.brightRed);
+      console.error(realDate() + ` [${cmd.name} command] ${err}`.brightRed);
       autoDelete(msg);
 
       return msg.channel

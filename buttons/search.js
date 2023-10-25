@@ -37,7 +37,9 @@ export default {
         try {
           client.distube.voices.get(interaction).leave();
         } catch (err) {
-          console.log(realDate() + ` [search button] ${err}`.brightRed);
+          return console.error(
+            realDate() + ` [search button] ${err}`.brightRed
+          );
         }
       } else if (queue && uservoice != botvoice)
         errorEmbed.setDescription(

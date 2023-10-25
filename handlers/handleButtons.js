@@ -7,19 +7,18 @@ import realDate from "../functions/realDate.js";
 
 // buttons handler
 export default (client) => {
-  (async () => {
-    client.buttons = new discord.Collection();
+  client.buttons = new discord.Collection();
 
-    fs.readdirSync(`./buttons`).map((file) => {
-      import(`../buttons/${file}`).then((result) => {
-        const button = result.default;
-        // set buttons
-        try {
-          client.buttons.set(button.name, button);
-        } catch (err) {
-          return console.log(realDate() + ` [handleButtons] ${err}`.brightRed);
-        }
-      });
+  fs.readdirSync(`./buttons`).map((file) => {
+    import(`../buttons/${file}`).then((result) => {
+      const button = result.default;
+
+      // set buttons
+      try {
+        client.buttons.set(button.name, button);
+      } catch (err) {
+        return console.error(realDate() + ` [handleButtons] ${err}`.brightRed);
+      }
     });
-  })();
+  });
 };

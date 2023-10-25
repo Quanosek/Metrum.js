@@ -62,7 +62,9 @@ export default {
       //     "."
       // );
     } catch (err) {
-      console.log(realDate() + ` [handleSlashCommands] ${err}`.brightRed);
+      return console.error(
+        realDate() + ` [handleSlashCommands] ${err}`.brightRed
+      );
     }
   },
 };

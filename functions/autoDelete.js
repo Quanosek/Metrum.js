@@ -9,7 +9,6 @@ export default (msg, delay) => {
   if (!delay) delay = "10s"; // default value
   if (!/[a-z]/.test(delay)) delay += "000"; // change to milliseconds
 
-  // console.log(msg.type);
   if (msg.type === 0) {
     // Default
     setTimeout(() => {
