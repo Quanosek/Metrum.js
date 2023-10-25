@@ -4,7 +4,7 @@
   "description": "Advanced Discord music bot",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -x node index.js"
+    "dev": "nodemon -x 'node index.js || touch index.js'"
   },
   "dependencies": {
     "@discordjs/voice": "^0.16.0",
