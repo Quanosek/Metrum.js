@@ -74,7 +74,7 @@ export default {
         )
         .addFields({ name: "Dostępne tryby:", value: `\`${modeText}\`` })
         .setFooter({
-          text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+          text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
         });
 
       if (queue.filters.size !== 0) {

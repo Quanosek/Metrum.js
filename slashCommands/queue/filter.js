@@ -71,7 +71,7 @@ export default {
           "Możesz ustawić wybrane filtry z listy na odtwarzane utwory w danej sesji."
         )
         .setFooter({
-          text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+          text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
         });
 
       if (queue.filters.size !== 0) {

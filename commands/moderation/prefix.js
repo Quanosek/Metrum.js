@@ -99,7 +99,7 @@ Wszystkie komendy obsługują również skróty np. zamiast pisać \`${prefix}pr
               `
             )
             .setFooter({
-              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
             }),
         ],
       })

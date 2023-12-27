@@ -1,15 +1,13 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import Discord from "discord.js";
 
-import "colors";
-import db from "../functions/database.js";
-import realDate from "../functions/realDate.js";
+import { ErrorLog, ErrorEmbed } from "../functions/errorHandler.js";
+
 import autoDelete from "../functions/autoDelete.js";
+import db from "../functions/database.js";
 
-// define module
 export default {
   name: "messageCreate",
 
@@ -18,15 +16,17 @@ export default {
     if (
       !msg.channel
         .permissionsFor(msg.guild.members.me)
-        .has(discord.PermissionsBitField.Flags.SendMessages)
+        .has(Discord.PermissionsBitField.Flags.SendMessages)
     )
       return;
 
-    // database
-    let x = db.read(msg.guild.id);
-    if (!x) x = db.create(msg.guild.id, { prefix: process.env.PREFIX }); // create db
+    // database params
+    let guildDB = db.read(msg.guild.id);
+    if (!guildDB) {
+      guildDB = db.create(msg.guild.id, { prefix: process.env.PREFIX });
+    }
 
-    const prefix = x.prefix;
+    const prefix = guildDB.prefix;
 
     // bot mention message
     const mentionRegex = new RegExp(`^<@!?(${client.user.id})>( |)$`, "gi");
@@ -36,7 +36,7 @@ export default {
       return msg
         .reply({
           embeds: [
-            new discord.EmbedBuilder()
+            new Discord.EmbedBuilder()
               .setColor(process.env.COLOR1)
               .setTitle("😄 | Hej, to ja!")
               .setDescription(
@@ -48,7 +48,7 @@ Użyj komendy \`help\` po więcej informacji!
                 `
               )
               .setFooter({
-                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
               }),
           ],
         })
@@ -61,8 +61,9 @@ Użyj komendy \`help\` po więcej informacji!
       !msg.guild ||
       msg.author.bot ||
       msg.channel.type === "dm"
-    )
+    ) {
       return;
+    }
 
     // format message
     const [cmdName, ...args] = msg.content
@@ -73,9 +74,9 @@ Użyj komendy \`help\` po więcej informacji!
     // find command
     const cmd =
       client.commands.get(cmdName.toLowerCase()) ||
-      client.commands.find(
-        (cmd) => cmd.aliases && cmd.aliases.includes(cmdName.toLowerCase())
-      );
+      client.commands.find((cmd) => {
+        return cmd.aliases && cmd.aliases.includes(cmdName.toLowerCase());
+      });
 
     // error message
     if (!cmd) return;
@@ -87,7 +88,7 @@ Użyj komendy \`help\` po więcej informacji!
         return msg.channel
           .send({
             embeds: [
-              new discord.EmbedBuilder()
+              new Discord.EmbedBuilder()
                 .setColor(process.env.COLOR_ERR)
                 .setDescription(
                   "🛑 | **Nie masz uprawnień** do użycia tej komendy!"
@@ -102,20 +103,17 @@ Użyj komendy \`help\` po więcej informacji!
     try {
       await cmd.run(client, prefix, msg, args);
     } catch (err) {
-      console.error(realDate() + ` [${cmd.name} command] ${err}`.brightRed);
       autoDelete(msg);
 
-      return msg.channel
-        .send({
-          embeds: [
-            new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
-              .setDescription(
-                "🛑 | Pojawił się błąd podczas uruchamiania komendy!"
-              ),
-          ],
-        })
-        .then((msg) => autoDelete(msg));
+      try {
+        return msg.channel
+          .send({
+            embeds: [ErrorEmbed(err)],
+          })
+          .then((msg) => autoDelete(msg));
+      } catch (err) {
+        return ErrorLog(`${cmd.name} messageCreate`, err);
+      }
     }
   },
 };

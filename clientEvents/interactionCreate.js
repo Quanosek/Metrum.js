@@ -1,31 +1,27 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import Discord from "discord.js";
 
-import "colors";
-import realDate from "../functions/realDate.js";
+import { ErrorLog, ErrorEmbed } from "../functions/errorHandler.js";
 
-// define module
 export default {
   name: "interactionCreate",
 
   async run(client, msgInt) {
-    // define
-    let element, execute;
+    let element, Execute;
     msgInt.member = msgInt.guild.members.cache.get(msgInt.user.id);
 
     // slashCommand
     if (msgInt.isCommand()) {
       element = client.slashCommands.get(msgInt.commandName);
-      execute = () => element.run(client, msgInt);
+      Execute = () => element.run(client, msgInt);
     }
     // button
     if (msgInt.isButton()) {
       const [name, ...params] = msgInt.customId.split("-");
       element = client.buttons.get(name);
-      execute = () => element.run(client, msgInt, params);
+      Execute = () => element.run(client, msgInt, params);
     }
 
     // error message
@@ -34,7 +30,7 @@ export default {
       if (!msgInt.member.permissions.has(element.permissions)) {
         return msgInt.reply({
           embeds: [
-            new discord.EmbedBuilder()
+            new Discord.EmbedBuilder()
               .setColor(process.env.COLOR_ERR)
               .setDescription(
                 "🛑 | **Nie masz uprawnień** do użycia tej komendy!"
@@ -45,24 +41,18 @@ export default {
       }
     }
 
-    // execute command
+    // run interaction
     try {
-      await execute();
+      await Execute();
     } catch (err) {
-      console.error(
-        realDate() + ` [${element.name} interaction] ${err}`.brightRed
-      );
-
-      return msgInt.reply({
-        embeds: [
-          new discord.EmbedBuilder()
-            .setColor(process.env.COLOR_ERR)
-            .setDescription(
-              "🛑 | Pojawił się błąd podczas uruchamiania komendy!"
-            ),
-        ],
-        ephemeral: true,
-      });
+      try {
+        return msgInt.reply({
+          embeds: [ErrorEmbed(err)],
+          ephemeral: true,
+        });
+      } catch (err) {
+        return ErrorLog(`${element.name} interactionCreate`, err);
+      }
     }
   },
 };

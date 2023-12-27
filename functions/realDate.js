@@ -1,19 +1,18 @@
-// import
-import "colors";
+import colors from "colors";
 
-// define function
 export default () => {
-  const newDate = new Intl.DateTimeFormat("pl-PL", {
+  const options = {
     timeZone: "Europe/Warsaw",
-
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
 
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  }).format(new Date());
 
-  return `[${newDate}]`.brightCyan;
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+  const newDate = new Intl.DateTimeFormat("pl-PL", options).format(new Date());
+  return colors.brightCyan(`[${newDate}]`);
 };

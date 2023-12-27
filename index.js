@@ -1,23 +1,26 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import Discord from "discord.js";
 
-import "colors";
 import fs from "fs";
+import colors from "colors";
+
 import autoDelete from "./functions/autoDelete.js";
+import { ErrorLog, ErrorEmbed } from "./functions/errorHandler.js";
 import realDate from "./functions/realDate.js";
 
 // bot starts-up
 console.clear();
 console.log(
-  realDate() + " Bot " + process.env.NAME.brightYellow + " is starting up..."
+  realDate() +
+    " " +
+    `Bot "${colors.brightYellow(process.env.NAME)}" is starting up...`
 );
 
 // define Client
-const intent = discord.GatewayIntentBits;
-const client = new discord.Client({
+const intent = Discord.GatewayIntentBits;
+const client = new Discord.Client({
   intents: [
     intent.Guilds,
     intent.GuildMessages,
@@ -35,9 +38,9 @@ fs.readdirSync(`./handlers`).map((file) => {
 
     // run handlers
     try {
-      handler(client);
+      return handler(client);
     } catch (err) {
-      return console.error(realDate() + ` [handleInit] ${err}`.brightRed);
+      return ErrorLog("handleInit", err);
     }
   });
 });
@@ -60,7 +63,7 @@ import { SoundCloudPlugin } from "@distube/soundcloud";
 
 client.distube = new DisTube(client, {
   plugins: [
-    new YtDlpPlugin({ update: false }),
+    new YtDlpPlugin({ update: true }),
 
     new DeezerPlugin(),
     new SpotifyPlugin(),
@@ -74,17 +77,14 @@ client.distube = new DisTube(client, {
 
 client.distube.setMaxListeners(Infinity);
 
-client.distube // all Distube events
+// handle Distube default events
+client.distube
   .on("error", (channel, err) => {
-    console.error(`[Distube] ${err}`.brightRed);
+    ErrorLog("Distube", err);
 
     return channel
       .send({
-        embeds: [
-          new discord.EmbedBuilder()
-            .setColor(process.env.COLOR_ERR)
-            .setDescription(`${err}`),
-        ],
+        embeds: [ErrorEmbed(err)],
       })
       .then((msg) => autoDelete(msg));
   })
@@ -93,22 +93,24 @@ client.distube // all Distube events
     let tracks = `\nliczba utworów: \`${playlist.songs.length}\`\n`;
     if (playlist.source === "spotify") tracks = "";
 
-    const embed = new discord.EmbedBuilder()
-      .setColor(process.env.COLOR1)
-      .setThumbnail(playlist.thumbnail)
-      .setTitle(`➕ | Dodano do kolejki playlistę:`)
-      .setDescription(`[${playlist.name}](${playlist.url})\n${tracks}`)
-      .setFooter({
-        text: "Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue",
-      });
-
-    return queue.textChannel.send({ embeds: [embed] });
+    return queue.textChannel.send({
+      embeds: [
+        new Discord.EmbedBuilder()
+          .setColor(process.env.COLOR1)
+          .setThumbnail(playlist.thumbnail)
+          .setTitle(`➕ | Dodano do kolejki playlistę:`)
+          .setDescription(`[${playlist.name}](${playlist.url})\n${tracks}`)
+          .setFooter({
+            text: "Aby dowiedzieć się więcej o obecnej kolejce użyj komendy: queue",
+          }),
+      ],
+    });
   })
 
   .on("addSong", (queue, song) => {
     if (queue.songs.length < 2) return;
 
-    const embed = new discord.EmbedBuilder()
+    const embed = new Discord.EmbedBuilder()
       .setColor(process.env.COLOR2)
       .setThumbnail(song.thumbnail);
 
@@ -138,11 +140,11 @@ client.distube // all Distube events
 
   .on("playSong", (queue, song) => {
     client.distube.setSelfDeaf;
-    let requester = song.member.user;
+    const requester = song.member.user;
 
     return queue.textChannel.send({
       embeds: [
-        new discord.EmbedBuilder()
+        new Discord.EmbedBuilder()
           .setColor(process.env.COLOR2)
           .setThumbnail(`${song.thumbnail}`)
           .setTitle("🎶 | Teraz odtwarzane:")
@@ -161,7 +163,7 @@ client.distube // all Distube events
     return queue.textChannel
       .send({
         embeds: [
-          new discord.EmbedBuilder()
+          new Discord.EmbedBuilder()
             .setColor(process.env.COLOR_ERR)
             .setDescription("Nie znaleziono podobnych utworów."),
         ],
@@ -173,7 +175,7 @@ client.distube // all Distube events
     return msg.channel
       .send({
         embeds: [
-          new discord.EmbedBuilder()
+          new Discord.EmbedBuilder()
             .setColor(process.env.COLOR_ERR)
             .setDescription(`**Brak wyników wyszukiwania** dla: \`${query}\``),
         ],

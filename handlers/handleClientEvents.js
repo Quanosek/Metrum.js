@@ -1,13 +1,11 @@
-// import
-import * as discord from "discord.js";
+import Discord from "discord.js";
 
-import "colors";
 import fs from "fs";
-import realDate from "../functions/realDate.js";
 
-// events handler
+import { ErrorLog } from "../functions/errorHandler.js";
+
 export default (client) => {
-  client.events = new discord.Collection();
+  client.events = new Discord.Collection();
 
   fs.readdirSync(`./clientEvents`).map((file) => {
     import(`../clientEvents/${file}`).then((result) => {
@@ -20,10 +18,10 @@ export default (client) => {
         } else {
           client.on(event.name, (...args) => event.run(client, ...args));
         }
+
+        return;
       } catch (err) {
-        return console.error(
-          realDate() + ` [handleClientEvents] ${err}`.brightRed
-        );
+        return ErrorLog("handleClientEvents", err);
       }
     });
   });

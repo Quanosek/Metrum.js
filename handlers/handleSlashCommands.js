@@ -1,26 +1,25 @@
-// import
-import * as discord from "discord.js";
+import Discord from "discord.js";
 
-import "colors";
 import fs from "fs";
-import realDate from "../functions/realDate.js";
 
-// slash commands handler
+import { ErrorLog } from "../functions/errorHandler.js";
+
 export default (client) => {
-  client.slashCommands = new discord.Collection();
+  client.slashCommands = new Discord.Collection();
 
   fs.readdirSync(`./slashCommands`).map((folder) => {
     fs.readdirSync(`./slashCommands/${folder}`).map((file) => {
       import(`../slashCommands/${folder}/${file}`).then((result) => {
         const cmd = result.default;
 
-        // set slash commands
+        // run slash commands
         try {
-          if (!cmd.name) return;
           client.slashCommands.set(cmd.name, cmd);
           if (cmd.userPermissions) cmd.defaultPermission = false;
+
+          return;
         } catch (err) {
-          console.error(realDate() + ` [handleSlashCommands] ${err}`.brightRed);
+          return ErrorLog("handleSlashCommands", err);
         }
       });
     });

@@ -35,7 +35,7 @@ Opóźnienie API: \`${client.ws.ping} ms\`
                 `
               )
               .setFooter({
-                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
               }),
           ],
         });

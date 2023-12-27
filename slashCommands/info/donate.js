@@ -20,7 +20,7 @@ export default {
             .setTitle("🪙 | Wspomóż twórcę i doceń jego pracę!")
             .setURL(process.env.DONATE)
             .setFooter({
-              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
             }),
         ],
       })

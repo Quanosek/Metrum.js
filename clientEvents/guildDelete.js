@@ -1,22 +1,20 @@
-// import
-import "colors";
+import colors from "colors";
+
 import db from "../functions/database.js";
 import realDate from "../functions/realDate.js";
 
-// define module
 export default {
   name: "guildDelete",
 
+  // quit from guild console log
   async run(client, guild) {
-    db.delete(guild.id); // delete db
+    db.delete(guild.id);
 
-    // log
-    console.log(
+    return console.log(
       realDate() +
-        ` Guild: ${guild.name}, ID: ${guild.id}`.grey +
-        "\n >>> Bot " +
-        "left".brightRed +
-        " the server!"
+        " " +
+        colors.gray(`Guild: "${guild.name}", ID: ${guild.id}`) +
+        `\n >>> Bot ${colors.brightRed("left")} the server!`
     );
   },
 };

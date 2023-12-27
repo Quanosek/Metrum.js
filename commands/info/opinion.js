@@ -23,7 +23,7 @@ export default {
             .setTitle("📣 | Podziel się swoją opinią na temat bota!")
             .setURL(process.env.OPINION)
             .setFooter({
-              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
             }),
         ],
       })

@@ -37,7 +37,7 @@ export default {
 
     // create message embed
     const embed = new discord.EmbedBuilder()
-      .setColor(process.env.COLOR2)
+      .setColor(process.env.COLOR1)
       .setTitle("💿 | Kolejka utworów:")
       .setDescription(
         queue.songs
@@ -57,7 +57,7 @@ export default {
       });
     else
       embed.setFooter({
-        text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK}#${process.env.AUTHOR_HASH})`,
+        text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
       });
 
     // translation

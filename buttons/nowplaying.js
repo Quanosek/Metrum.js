@@ -1,4 +1,3 @@
-// button module
 export default {
   name: "nowplaying",
 
