@@ -19,7 +19,7 @@ export default {
     console.log(realDate() + " " + colors.brightYellow("Bot is ready to use!"));
 
     if (Developer) {
-      client.user.setActivity("Aktualizacja w drodze...", { type: 3 });
+      client.user.setActivity("Aktualizacje w drodze...", { type: 3 });
       client.user.setStatus("idle");
     } else {
       client.user.setActivity();

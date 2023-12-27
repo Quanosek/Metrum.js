@@ -28,6 +28,10 @@ export default {
       errorEmbed.setDescription(
         "Musisz najpierw **dołączyć** na kanał głosowy!"
       );
+    } else if (uservoice.userLimit >= uservoice.members.size) {
+      errorEmbed.setDescription(
+        `Osiągnięto **limit użytkowników** (${uservoice.userLimit}) na kanale głosowym! `
+      );
     } else if (interaction.guild.afkChannel) {
       if (uservoice.id === interaction.guild.afkChannel.id) {
         errorEmbed.setDescription("Jesteś na kanale **AFK**!");
