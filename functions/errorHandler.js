@@ -4,13 +4,6 @@ import colors from "colors";
 import realDate from "../functions/realDate.js";
 
 export function ErrorLog(title, error) {
-  console.log(
-    realDate() +
-      " " +
-      colors.gray(`Guild: "${guild.name}", ID: ${guild.id}`) +
-      `\n >>> Bot ${colors.brightGreen("joined")} to the server!`
-  );
-
   return console.log(
     realDate() + " " + colors.brightRed(`[${title}] ${error}`)
   );

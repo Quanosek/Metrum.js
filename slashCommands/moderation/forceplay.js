@@ -56,7 +56,7 @@ export default {
       return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
     }
 
-    // print command message
+    // print message embed
     if (
       song.includes("youtu.be/") ||
       song.includes("youtube.com/") ||
