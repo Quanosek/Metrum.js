@@ -1,8 +1,8 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
+
 import db from "../../functions/database.js";
 
 // command module

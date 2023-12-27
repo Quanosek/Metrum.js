@@ -1,10 +1,8 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
 
-// command module
 export default {
   name: "move",
   description: "Przesunięcie wybranej pozycji w kolejce utworów",
@@ -42,27 +40,29 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!botvoice)
+    if (!botvoice) {
       errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
-    else if (!uservoice || botvoice != uservoice)
+    } else if (!uservoice || botvoice != uservoice) {
       errorEmbed.setDescription(
         "Musisz być na kanale głosowym **razem ze mną**!"
       );
-    else if (!queue) {
+    } else if (!queue) {
       errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
     } else {
-      if (isNaN(before) || before > queue.songs.length)
+      if (isNaN(before) || before > queue.songs.length) {
         errorEmbed.setDescription("Wprowadź poprawny number utworu!");
-      else if (isNaN(after) || after > queue.songs.length)
+      } else if (isNaN(after) || after > queue.songs.length) {
         errorEmbed.setDescription("Wprowadź poprawną pozycję po przesunięciu!");
-      else if (before === after)
+      } else if (before === after) {
         errorEmbed.setDescription(
           "Pozycja po przesunięciu **nie może** być taka sama, jak obecna pozycja utworu w kolejce!"
         );
+      }
     }
 
-    if (errorEmbed.data.description)
+    if (errorEmbed.data.description) {
       return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+    }
 
     // execute command
     const song = queue.songs[before - 1]; // chosen song

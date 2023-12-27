@@ -1,11 +1,9 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
 import ms from "ms";
 
-// command module
 export default {
   name: "seek",
   description: "Przewinięcie obecnie granego utworu do podanej wartości",
@@ -36,27 +34,30 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!botvoice)
+    if (!botvoice) {
       errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
-    else if (!uservoice || botvoice != uservoice)
+    } else if (!uservoice || botvoice != uservoice) {
       errorEmbed.setDescription(
         "Musisz być na kanale głosowym **razem ze mną**!"
       );
-    else if (!queue) {
+    } else if (!queue) {
       errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
     } else {
-      if (song.isLive)
+      if (song.isLive) {
         errorEmbed.setDescription(
           "**Nie można** przewijać transmisji na żywo!"
         );
-      if (isNaN(number) || number > queue.songs[0].duration || number < 0)
+      }
+      if (isNaN(number) || number > queue.songs[0].duration || number < 0) {
         errorEmbed.setDescription(
           "Wprowadź **poprawną** wartość, większą od zera, ale nie większą niż długość piosenki!"
         );
+      }
     }
 
-    if (errorEmbed.data.description)
+    if (errorEmbed.data.description) {
       return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+    }
 
     // execute command
     client.distube.seek(msgInt, number);

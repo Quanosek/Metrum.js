@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import Discord from "discord.js";
+import discord from "discord.js";
 
 import { ErrorLog, ErrorEmbed } from "../functions/errorHandler.js";
 
@@ -30,7 +30,7 @@ export default {
       if (!msgInt.member.permissions.has(element.permissions)) {
         return msgInt.reply({
           embeds: [
-            new Discord.EmbedBuilder()
+            new discord.EmbedBuilder()
               .setColor(process.env.COLOR_ERR)
               .setDescription(
                 "🛑 | **Nie masz uprawnień** do użycia tej komendy!"

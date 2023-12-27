@@ -1,11 +1,10 @@
-import Discord from "discord.js";
-
+import discord from "discord.js";
 import fs from "fs";
 
 import { ErrorLog } from "../functions/errorHandler.js";
 
 export default (client) => {
-  client.slashCommands = new Discord.Collection();
+  client.slashCommands = new discord.Collection();
 
   fs.readdirSync(`./slashCommands`).map((folder) => {
     fs.readdirSync(`./slashCommands/${folder}`).map((file) => {

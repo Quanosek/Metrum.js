@@ -1,7 +1,5 @@
-// import
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "guildowners",
   aliases: ["devg"],

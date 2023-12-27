@@ -1,11 +1,10 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
+
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "help",
   aliases: ["h"],
@@ -17,9 +16,9 @@ export default {
     if (args[0]) {
       const command = args[0].toLowerCase();
 
-      const cmd = client.commands.find(
-        (x) => x.name.includes(command) || x.aliases.includes(command)
-      );
+      const cmd = client.commands.find((x) => {
+        return x.name.includes(command) || x.aliases.includes(command);
+      });
 
       // command not found
       if (!cmd) {

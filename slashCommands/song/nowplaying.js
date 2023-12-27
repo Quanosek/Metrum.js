@@ -1,10 +1,8 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
 
-// command module
 export default {
   name: "nowplaying",
   description: "Informacje o obecnie odtwarzanym utworze",
@@ -21,13 +19,15 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!botvoice)
+    if (!botvoice) {
       errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
-    else if (!queue)
+    } else if (!queue) {
       errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
+    }
 
-    if (errorEmbed.data.description)
+    if (errorEmbed.data.description) {
       return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+    }
 
     // create message embed
     const embed = new discord.EmbedBuilder()

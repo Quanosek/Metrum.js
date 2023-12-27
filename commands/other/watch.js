@@ -1,11 +1,9 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "watch",
   aliases: ["wt", "w"],
@@ -20,24 +18,27 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!uservoice)
+    if (!uservoice) {
       errorEmbed.setDescription(
         "Musisz najpierw **dołączyć** na kanał głosowy!"
       );
-    else if (msg.guild.afkChannel) {
-      if (uservoice.id === msg.guild.afkChannel.id)
+    } else if (msg.guild.afkChannel) {
+      if (uservoice.id === msg.guild.afkChannel.id) {
         errorEmbed.setDescription("Jesteś na kanale **AFK**!");
+      }
     } else if (
       !uservoice
         .permissionsFor(msg.guild.members.me)
         .has(discord.PermissionsBitField.Flags.CreateInstantInvite)
-    )
+    ) {
       errorEmbed.setDescription(
         `**Nie mam uprawnień** do tworzenia zaproszeń na kanał **${uservoice}**!`
       );
+    }
 
     if (errorEmbed.data.description) {
       msg.react("❌"), autoDelete(msg);
+
       return msg.channel
         .send({ embeds: [errorEmbed] })
         .then((msg) => autoDelete(msg));

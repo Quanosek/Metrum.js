@@ -1,11 +1,10 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
+
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "queue",
   aliases: ["q"],
@@ -21,13 +20,15 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!botvoice)
+    if (!botvoice) {
       errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
-    else if (!queue)
+    } else if (!queue) {
       errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
+    }
 
     if (errorEmbed.data.description) {
       msg.react("❌"), autoDelete(msg);
+
       return msg.channel
         .send({ embeds: [errorEmbed] })
         .then((msg) => autoDelete(msg));
@@ -51,14 +52,15 @@ export default {
           .join("\n")
       );
 
-    if (queue.songs.length < 2)
+    if (queue.songs.length < 2) {
       embed.setFooter({
         text: "Aby dowiedzieć się więcej o tym utworze użyj komendy: nowplaying",
       });
-    else
+    } else {
       embed.setFooter({
         text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
       });
+    }
 
     // translation
     let songs;

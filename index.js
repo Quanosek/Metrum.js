@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import Discord from "discord.js";
-
+import discord from "discord.js";
 import fs from "fs";
 import colors from "colors";
 
@@ -19,8 +18,8 @@ console.log(
 );
 
 // define Client
-const intent = Discord.GatewayIntentBits;
-const client = new Discord.Client({
+const intent = discord.GatewayIntentBits;
+const client = new discord.Client({
   intents: [
     intent.Guilds,
     intent.GuildMessages,
@@ -95,7 +94,7 @@ client.distube
 
     return queue.textChannel.send({
       embeds: [
-        new Discord.EmbedBuilder()
+        new discord.EmbedBuilder()
           .setColor(process.env.COLOR1)
           .setThumbnail(playlist.thumbnail)
           .setTitle(`➕ | Dodano do kolejki playlistę:`)
@@ -110,7 +109,7 @@ client.distube
   .on("addSong", (queue, song) => {
     if (queue.songs.length < 2) return;
 
-    const embed = new Discord.EmbedBuilder()
+    const embed = new discord.EmbedBuilder()
       .setColor(process.env.COLOR2)
       .setThumbnail(song.thumbnail);
 
@@ -144,7 +143,7 @@ client.distube
 
     return queue.textChannel.send({
       embeds: [
-        new Discord.EmbedBuilder()
+        new discord.EmbedBuilder()
           .setColor(process.env.COLOR2)
           .setThumbnail(`${song.thumbnail}`)
           .setTitle("🎶 | Teraz odtwarzane:")
@@ -163,7 +162,7 @@ client.distube
     return queue.textChannel
       .send({
         embeds: [
-          new Discord.EmbedBuilder()
+          new discord.EmbedBuilder()
             .setColor(process.env.COLOR_ERR)
             .setDescription("Nie znaleziono podobnych utworów."),
         ],
@@ -175,7 +174,7 @@ client.distube
     return msg.channel
       .send({
         embeds: [
-          new Discord.EmbedBuilder()
+          new discord.EmbedBuilder()
             .setColor(process.env.COLOR_ERR)
             .setDescription(`**Brak wyników wyszukiwania** dla: \`${query}\``),
         ],

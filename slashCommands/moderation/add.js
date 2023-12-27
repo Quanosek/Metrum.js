@@ -1,10 +1,8 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
 
-// command module
 export default {
   name: "add",
   description:
@@ -32,24 +30,27 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!uservoice)
+    if (!uservoice) {
       errorEmbed.setDescription(
         "Musisz najpierw **dołączyć** na kanał głosowy!"
       );
-    else if (msgInt.guild.afkChannel) {
-      if (uservoice.id === msgInt.guild.afkChannel.id)
+    } else if (msgInt.guild.afkChannel) {
+      if (uservoice.id === msgInt.guild.afkChannel.id) {
         errorEmbed.setDescription("Jesteś na kanale **AFK**!");
+      }
     } else if (botvoice) {
       if (botvoice.members.size === 1) {
         client.distube.voices.get(msgInt).leave();
-      } else if (queue && uservoice != botvoice)
+      } else if (queue && uservoice != botvoice) {
         errorEmbed.setDescription(
           "Musisz być na kanale głosowym **razem ze mną**!"
         );
+      }
     }
 
-    if (errorEmbed.data.description)
+    if (errorEmbed.data.description) {
       return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+    }
 
     // print message embed
     if (

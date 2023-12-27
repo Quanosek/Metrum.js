@@ -1,11 +1,9 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
-import autoDelete from "../../functions/autoDelete.js";
+import discord from "discord.js";
 
-// command module
+import autoDelete from "../../functions/autoDelete.js";
 
 let previousVotes = []; // votes
 
@@ -25,17 +23,19 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!botvoice)
+    if (!botvoice) {
       errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
-    else if (!uservoice || botvoice != uservoice)
+    } else if (!uservoice || botvoice != uservoice) {
       errorEmbed.setDescription(
         "Musisz być na kanale głosowym **razem ze mną**!"
       );
-    else if (!queue || queue.previousSongs.length < 1)
+    } else if (!queue || queue.previousSongs.length < 1) {
       errorEmbed.setDescription("Nie znaleziono poprzedniego utworu!");
+    }
 
     if (errorEmbed.data.description) {
       msg.react("❌"), autoDelete(msg);
+
       return msg.channel
         .send({ embeds: [errorEmbed] })
         .then((msg) => autoDelete(msg));
@@ -96,7 +96,6 @@ export default {
       msg.react("✅");
 
       client.distube.previous(msg); // execute command
-
       previousVotes = []; // reset votes
     }
 

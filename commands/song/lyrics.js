@@ -1,10 +1,9 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
-import autoDelete from "../../functions/autoDelete.js";
+import discord from "discord.js";
 
+import autoDelete from "../../functions/autoDelete.js";
 // command module
 export default {
   name: "lyrics",

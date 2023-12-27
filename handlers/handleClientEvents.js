@@ -1,11 +1,10 @@
-import Discord from "discord.js";
-
+import discord from "discord.js";
 import fs from "fs";
 
 import { ErrorLog } from "../functions/errorHandler.js";
 
 export default (client) => {
-  client.events = new Discord.Collection();
+  client.events = new discord.Collection();
 
   fs.readdirSync(`./clientEvents`).map((file) => {
     import(`../clientEvents/${file}`).then((result) => {

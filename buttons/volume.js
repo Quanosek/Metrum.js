@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import Discord from "discord.js";
+import discord from "discord.js";
 
 export default {
   name: "volume",
-  permissions: [Discord.PermissionsBitField.Flags.ManageMessages],
+  permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
   async run(client, interaction, params) {
     // define
@@ -16,7 +16,7 @@ export default {
     const queue = client.distube.getQueue(interaction);
 
     // errors
-    const errorEmbed = new Discord.EmbedBuilder().setColor(
+    const errorEmbed = new discord.EmbedBuilder().setColor(
       process.env.COLOR_ERR
     );
 
@@ -45,7 +45,7 @@ export default {
       if (value === 50) {
         return interaction.reply({
           embeds: [
-            new Discord.EmbedBuilder()
+            new discord.EmbedBuilder()
               .setColor(process.env.COLOR_ERR)
               .setDescription(
                 "🔈 | Głośność bota **jest już ustawiona** na `100%`"
@@ -61,7 +61,7 @@ export default {
     // print button message
     interaction.reply({
       embeds: [
-        new Discord.EmbedBuilder()
+        new discord.EmbedBuilder()
           .setColor(process.env.COLOR1)
           .setDescription(
             `🔈 | ${interaction.user} zmienił **poziom głośności bota** na: \`${

@@ -1,10 +1,8 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
 
-// command module
 export default {
   name: "activity",
   description: "Włączanie aktywności Discord na kanale głosowym",
@@ -61,24 +59,27 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!chosenChannel)
+    if (!chosenChannel) {
       errorEmbed.setDescription(
         "**Dołącz** na kanał głosowy lub go **wybierz**!"
       );
-    else if (msgInt.guild.afkChannel) {
-      if (chosenChannel.id === msgInt.guild.afkChannel.id)
+    } else if (msgInt.guild.afkChannel) {
+      if (chosenChannel.id === msgInt.guild.afkChannel.id) {
         errorEmbed.setDescription("Został wybrany kanał **AFK**!");
+      }
     } else if (
       !chosenChannel
         .permissionsFor(msgInt.guild.members.me)
         .has(discord.PermissionsBitField.Flags.CreateInstantInvite)
-    )
+    ) {
       errorEmbed.setDescription(
         `**Nie mam uprawnień** do tworzenia zaproszeń na kanał **${chosenChannel}**!`
       );
+    }
 
-    if (errorEmbed.data.description)
+    if (errorEmbed.data.description) {
       return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+    }
 
     // activities list
     const allActivities = [

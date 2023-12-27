@@ -1,11 +1,10 @@
-import Discord from "discord.js";
-
+import discord from "discord.js";
 import fs from "fs";
 
 import { ErrorLog } from "../functions/errorHandler.js";
 
 export default (client) => {
-  client.commands = new Discord.Collection();
+  client.commands = new discord.Collection();
 
   fs.readdirSync(`./commands`).map((folder) => {
     fs.readdirSync(`./commands/${folder}`).map((file) => {

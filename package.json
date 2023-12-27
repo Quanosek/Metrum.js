@@ -4,7 +4,8 @@
   "description": "Officially verified Polish Discord music bot",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -x 'node index.js || touch index.js'"
+    "dev": "nodemon -x 'node index.js --local'",
+    "start": "nodemon -x 'node index.js || touch index.js'"
   },
   "dependencies": {
     "colors": "^1.4.0",

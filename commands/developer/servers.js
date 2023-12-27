@@ -1,11 +1,10 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
+
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "servers",
   aliases: ["devs"],
@@ -38,10 +37,11 @@ export default {
       })
       .slice(0, 25);
 
-    if (number > 25)
+    if (number > 25) {
       embed.setFooter({
         text: `...w sumie ${client.guilds.cache.size} serwerów!`,
       });
+    }
 
     // print message embed
     return msg.channel

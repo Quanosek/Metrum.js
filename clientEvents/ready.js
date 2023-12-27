@@ -14,66 +14,56 @@ export default {
   once: true,
 
   async run(client) {
+    const Developer = process.argv[2] !== undefined; // npm run dev (--local)
+
     console.log(realDate() + " " + colors.brightYellow("Bot is ready to use!"));
-    client.user.setActivity("Aktualizacja w drodze...", { type: 3 });
-    client.user.setStatus("idle");
+
+    if (Developer) {
+      client.user.setActivity("Aktualizacja w drodze...", { type: 3 });
+      client.user.setStatus("idle");
+    } else {
+      client.user.setActivity();
+      client.user.setStatus("online");
+    }
 
     // auto-leave voice channels
-    const guildsID = client.guilds.cache.map((guild) => guild.id);
     setInterval(() => {
-      guildsID.forEach((id) => {
-        if (getVoiceConnection(id) && !client.distube.getQueue(id))
-          connection.destroy();
-      });
+      client.guilds.cache
+        .map((guild) => guild.id)
+        .forEach((id) => {
+          if (getVoiceConnection(id) && !client.distube.getQueue(id)) {
+            connection.destroy();
+          }
+        });
     }, ms("10m")); // delay
 
-    const guild = client.guilds.cache.get(process.env.GUILD_ID);
+    const devGuild = client.guilds.cache.get(process.env.GUILD_ID);
 
     // register slash commands
     try {
       console.log(realDate() + " " + "Started refreshing slash commands...");
 
-      //
-      // GLOBALLY;
-      //
+      if (Developer) {
+        await client.application.commands.set([]); // clear global commands
+        await devGuild.commands.set(client.slashCommands); // register all locally
 
-      // await guild.commands.set([]); // clear all local cmds
-      // console.log(
-      //   realDate() +
-      //     " " +
-      //     colors.brightRed("Deleted") +
-      //     " " +
-      //     "all local slash commands."
-      // );
+        console.log(
+          realDate() +
+            " " +
+            `Registered all slash commands ${colors.brightYellow.underline(
+              "locally"
+            )}.`
+        );
+      } else {
+        await devGuild.commands.set([]); // clear local commands
+        await client.application.commands.set(client.slashCommands); // register all globally
 
-      // await client.application.commands.set(client.slashCommands); // register cmds globally
-      // console.log(
-      //   realDate() +
-      //     " " +
-      //     `Registered all slash commands ${colors.brightYellow("globally")}.`
-      // );
-
-      //
-      // LOCALLY;
-      //
-
-      // await client.application.commands.set([]); // clear all global cmds
-      // console.log(
-      //   realDate() +
-      //     " " +
-      //     colors.brightRed("Deleted") +
-      //     " " +
-      //     "all global slash commands."
-      // );
-
-      await guild.commands.set(client.slashCommands); // register cmds locally
-      console.log(
-        realDate() +
-          " " +
-          `Registered all slash commands ${colors.brightYellow.underline(
-            "locally"
-          )}.`
-      );
+        console.log(
+          realDate() +
+            " " +
+            `Registered all slash commands ${colors.brightYellow("globally")}.`
+        );
+      }
 
       return;
     } catch (err) {

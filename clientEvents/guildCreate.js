@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import Discord from "discord.js";
-
+import discord from "discord.js";
 import colors from "colors";
 
 import db from "../functions/database.js";
@@ -31,8 +30,8 @@ export default {
         channel
           .permissionsFor(guild.members.me)
           .has([
-            Discord.PermissionsBitField.Flags.SendMessages,
-            Discord.PermissionsBitField.Flags.ViewChannel,
+            discord.PermissionsBitField.Flags.SendMessages,
+            discord.PermissionsBitField.Flags.ViewChannel,
           ])
       )
         channelToSend = channel;
@@ -43,7 +42,7 @@ export default {
       try {
         return channelToSend.send({
           embeds: [
-            new Discord.EmbedBuilder()
+            new discord.EmbedBuilder()
               .setColor(process.env.COLOR1)
               .setThumbnail("attachment://metrum.png")
               .setTitle("😄 | Cieszę się, że tu jestem!")

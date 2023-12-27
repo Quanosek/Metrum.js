@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import Discord from "discord.js";
+import discord from "discord.js";
 
 import { ErrorLog } from "../functions/errorHandler.js";
 
@@ -20,7 +20,7 @@ export default {
     const result = await client.distube.search(name);
 
     // errors
-    const errorEmbed = new Discord.EmbedBuilder().setColor(
+    const errorEmbed = new discord.EmbedBuilder().setColor(
       process.env.COLOR_ERR
     );
 
@@ -48,10 +48,10 @@ export default {
       !(
         uservoice
           .permissionsFor(interaction.guild.members.me)
-          .has(Discord.PermissionsBitField.Flags.ViewChannel) ||
+          .has(discord.PermissionsBitField.Flags.ViewChannel) ||
         uservoice
           .permissionsFor(msgInt.guild.members.me)
-          .has(Discord.PermissionsBitField.Flags.Connect)
+          .has(discord.PermissionsBitField.Flags.Connect)
       )
     )
       errorEmbed.setDescription(
@@ -60,7 +60,7 @@ export default {
     else if (
       !uservoice
         .permissionsFor(interaction.guild.members.me)
-        .has(Discord.PermissionsBitField.Flags.Speak)
+        .has(discord.PermissionsBitField.Flags.Speak)
     )
       errorEmbed.setDescription(
         "**Nie mam uprawnień** do aktywności głosowej na twoim kanale!"
@@ -72,7 +72,7 @@ export default {
     // print message embed
     interaction.reply({
       embeds: [
-        new Discord.EmbedBuilder()
+        new discord.EmbedBuilder()
           .setColor(process.env.COLOR1)
           .setDescription(
             `

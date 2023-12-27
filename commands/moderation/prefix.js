@@ -1,12 +1,11 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
+
 import autoDelete from "../../functions/autoDelete.js";
 import db from "../../functions/database.js";
 
-// command module
 export default {
   name: "prefix",
   aliases: ["pref", "pf", "px"],
@@ -23,17 +22,19 @@ export default {
         process.env.COLOR_ERR
       );
 
-      if (!newPrefix)
+      if (!newPrefix) {
         errorEmbed.setDescription("⚙️ | Musisz jeszcze wpisać nowy prefix!");
-      else if (newPrefix.length > 8)
+      } else if (newPrefix.length > 8) {
         errorEmbed.setDescription(
           "⚙️ | Wybrany prefix jest zbyt długi *(max. 8 znaków)*!"
         );
-      else if (args[2])
+      } else if (args[2]) {
         errorEmbed.setDescription("⚙️ | W prefixie nie może być spacji!");
+      }
 
       if (errorEmbed.data.description) {
         msg.react("❌"), autoDelete(msg);
+
         return msg.channel
           .send({ embeds: [errorEmbed] })
           .then((msg) => autoDelete(msg));

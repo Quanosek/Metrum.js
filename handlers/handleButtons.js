@@ -1,11 +1,10 @@
-import Discord from "discord.js";
-
+import discord from "discord.js";
 import fs from "fs";
 
 import { ErrorLog } from "../functions/errorHandler.js";
 
 export default (client) => {
-  client.buttons = new Discord.Collection();
+  client.buttons = new discord.Collection();
 
   fs.readdirSync(`./buttons`).map((file) => {
     import(`../buttons/${file}`).then((result) => {

@@ -1,11 +1,10 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
+
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "filter",
   description:
@@ -49,17 +48,19 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!botvoice)
+    if (!botvoice) {
       errorEmbed.setDescription("Nie jestem na **żadnym** kanale głosowym!");
-    else if (!uservoice || botvoice != uservoice)
+    } else if (!uservoice || botvoice != uservoice) {
       errorEmbed.setDescription(
         "Musisz być na kanale głosowym **razem ze mną**!"
       );
-    else if (!queue)
+    } else if (!queue) {
       errorEmbed.setDescription("Obecnie nie jest odtwarzany **żaden utwór**!");
+    }
 
-    if (errorEmbed.data.description)
+    if (errorEmbed.data.description) {
       return msgInt.reply({ embeds: [errorEmbed], ephemeral: true });
+    }
 
     // no choices (info)
     if (!choice) {
@@ -103,6 +104,7 @@ export default {
     // execute command
     if (queue.filters.names.includes(choice)) queue.filters.remove(choice);
     else queue.filters.add(choice);
+
     if (queue.paused) client.distube.resume(msgInt);
 
     // print message embed

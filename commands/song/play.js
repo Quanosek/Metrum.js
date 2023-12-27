@@ -1,11 +1,10 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
+
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "play",
   aliases: ["p"],
@@ -23,28 +22,31 @@ export default {
       process.env.COLOR_ERR
     );
 
-    if (!song)
+    if (!song) {
       errorEmbed.setDescription(
         "Musisz jeszcze wpisać **tytuł utworu**, albo wkleić **dowolny link**!"
       );
-    else if (!uservoice)
+    } else if (!uservoice) {
       errorEmbed.setDescription(
         "Musisz najpierw **dołączyć** na kanał głosowy!"
       );
-    else if (msg.guild.afkChannel) {
-      if (uservoice.id === msg.guild.afkChannel.id)
+    } else if (msg.guild.afkChannel) {
+      if (uservoice.id === msg.guild.afkChannel.id) {
         errorEmbed.setDescription("Jesteś na kanale **AFK**!");
+      }
     } else if (botvoice) {
       if (botvoice.members.size === 1) {
         client.distube.voices.get(msg).leave();
-      } else if (queue && uservoice != botvoice)
+      } else if (queue && uservoice != botvoice) {
         errorEmbed.setDescription(
           "Musisz być na kanale głosowym **razem ze mną**!"
         );
+      }
     }
 
     if (errorEmbed.data.description) {
       msg.react("❌"), autoDelete(msg);
+
       return msg.channel
         .send({ embeds: [errorEmbed] })
         .then((msg) => autoDelete(msg));

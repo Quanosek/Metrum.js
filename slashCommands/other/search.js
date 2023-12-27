@@ -1,10 +1,8 @@
-// import
 import dotenv from "dotenv";
 dotenv.config();
 
-import * as discord from "discord.js";
+import discord from "discord.js";
 
-// command module
 export default {
   name: "search",
   description:
@@ -25,7 +23,6 @@ export default {
     if (msgInt.type === 20) {
       // ChatInputCommand
 
-      // define
       let title = msgInt.options.getString("title");
       const queue = client.distube.getQueue(msgInt);
 

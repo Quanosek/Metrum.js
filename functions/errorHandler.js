@@ -1,5 +1,4 @@
-import Discord from "discord.js";
-
+import discord from "discord.js";
 import colors from "colors";
 
 import realDate from "../functions/realDate.js";
@@ -18,7 +17,7 @@ export function ErrorLog(title, error) {
 }
 
 export function ErrorEmbed(error) {
-  return new Discord.EmbedBuilder()
+  return new discord.EmbedBuilder()
     .setColor(process.env.COLOR_ERR)
     .setTitle("🛑 | Pojawił się błąd!")
     .setDescription(`${error.message}`);

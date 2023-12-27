@@ -1,11 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import Discord from "discord.js";
-
-import { ErrorLog, ErrorEmbed } from "../functions/errorHandler.js";
+import discord from "discord.js";
 
 import autoDelete from "../functions/autoDelete.js";
+import { ErrorLog, ErrorEmbed } from "../functions/errorHandler.js";
 import db from "../functions/database.js";
 
 export default {
@@ -16,7 +15,7 @@ export default {
     if (
       !msg.channel
         .permissionsFor(msg.guild.members.me)
-        .has(Discord.PermissionsBitField.Flags.SendMessages)
+        .has(discord.PermissionsBitField.Flags.SendMessages)
     )
       return;
 
@@ -36,7 +35,7 @@ export default {
       return msg
         .reply({
           embeds: [
-            new Discord.EmbedBuilder()
+            new discord.EmbedBuilder()
               .setColor(process.env.COLOR1)
               .setTitle("😄 | Hej, to ja!")
               .setDescription(
@@ -88,7 +87,7 @@ Użyj komendy \`help\` po więcej informacji!
         return msg.channel
           .send({
             embeds: [
-              new Discord.EmbedBuilder()
+              new discord.EmbedBuilder()
                 .setColor(process.env.COLOR_ERR)
                 .setDescription(
                   "🛑 | **Nie masz uprawnień** do użycia tej komendy!"
