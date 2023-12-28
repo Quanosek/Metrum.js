@@ -61,7 +61,9 @@ export default {
         console.log(
           realDate() +
             " " +
-            `Registered all slash commands ${colors.brightYellow("globally")}.`
+            `Registered all slash commands ${colors.brightYellow.underline(
+              "globally"
+            )}.`
         );
       }
 

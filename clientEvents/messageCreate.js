@@ -16,8 +16,9 @@ export default {
       !msg.channel
         .permissionsFor(msg.guild.members.me)
         .has(discord.PermissionsBitField.Flags.SendMessages)
-    )
+    ) {
       return;
+    }
 
     // database params
     let guildDB = db.read(msg.guild.id);
@@ -102,14 +103,10 @@ Użyj komendy \`help\` po więcej informacji!
     try {
       await cmd.run(client, prefix, msg, args);
     } catch (err) {
-      autoDelete(msg);
-
       try {
-        return msg.channel
-          .send({
-            embeds: [ErrorEmbed(err)],
-          })
-          .then((msg) => autoDelete(msg));
+        return msg.channel.send({
+          embeds: [ErrorEmbed(err)],
+        });
       } catch (err) {
         return ErrorLog(`${cmd.name} messageCreate`, err);
       }

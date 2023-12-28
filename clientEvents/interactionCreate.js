@@ -12,6 +12,24 @@ export default {
     let element, Execute;
     msgInt.member = msgInt.guild.members.cache.get(msgInt.user.id);
 
+    // no permissions
+    if (
+      !msgInt.channel
+        .permissionsFor(msgInt.guild.members.me)
+        .has(discord.PermissionsBitField.Flags.SendMessages)
+    ) {
+      return msgInt.reply({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(process.env.COLOR_ERR)
+            .setDescription(
+              "🛑 | Bot **Nie posiada uprawnień** do tworzenia wiadomości na tym kanale!"
+            ),
+        ],
+        ephemeral: true,
+      });
+    }
+
     // slashCommand
     if (msgInt.isCommand()) {
       element = client.slashCommands.get(msgInt.commandName);
@@ -49,7 +67,6 @@ export default {
         return msgInt.editReply({
           content: "",
           embeds: [ErrorEmbed(err)],
-          ephemeral: true,
         });
       } catch (err) {
         return ErrorLog(`${element.name} interactionCreate`, err);

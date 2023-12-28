@@ -23,10 +23,14 @@ export default (msg, delay) => {
   setTimeout(() => {
     // https://discord.com/developers/docs/resources/channel#message-object-message-types
 
-    if (msg.type === 20) {
-      return msg.deleteReply().catch((err) => errorMessage(err));
-    } else {
-      return msg.delete().catch((err) => errorMessage(err));
+    try {
+      if (msg.type === 20) {
+        return msg.deleteReply().catch((err) => errorMessage(err));
+      } else {
+        return msg.delete().catch((err) => errorMessage(err));
+      }
+    } catch (err) {
+      return ErrorLog("autoDelete", err);
     }
   }, ms(delay));
 };
