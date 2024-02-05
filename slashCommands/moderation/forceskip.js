@@ -5,7 +5,7 @@ import discord from "discord.js";
 
 export default {
   name: "forceskip",
-  description: "Wymuszenie pominięcia utworu",
+  description: "Wymuszenie pominięcia utworu (bez głosowania)",
   permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
   async run(client, msgInt) {

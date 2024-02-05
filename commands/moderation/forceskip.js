@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 export default {
   name: "forceskip",
   aliases: ["fs"],
-  description: "Wymuszenie pominięcia utworu",
+  description: "Wymuszenie pominięcia utworu (bez głosowania)",
   permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
   async run(client, prefix, msg, args) {

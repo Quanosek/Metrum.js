@@ -9,7 +9,7 @@ export default {
   name: "lyrics",
   aliases: ["ly", "l"],
   description:
-    "Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu",
+    "Wyświetlenie tekstu dla obecnie odtwarzanego lub podanego utworu",
 
   async run(client, prefix, msg, args) {
     // define

@@ -9,7 +9,7 @@ import autoDelete from "../../functions/autoDelete.js";
 export default {
   name: "volume",
   aliases: ["v"],
-  description: "Zmiana głośności bota",
+  description: "Zmiana głośności bota na kanale głosowym (domyślnie: 100%)",
   permissions: [discord.PermissionsBitField.Flags.Administrator],
 
   async run(client, prefix, msg, args) {

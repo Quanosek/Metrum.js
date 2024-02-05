@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 export default {
   name: "help",
   description:
-    "Wiadomość informacyjna o bocie; Opis dla wybranej komendy (podaj nazwę lub alias)",
+    "Wiadomość informacyjna o bocie; Opis działania wybranej komendy (podaj nazwę lub alias)",
 
   options: [
     {

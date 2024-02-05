@@ -9,7 +9,7 @@ export default {
   name: "help",
   aliases: ["h"],
   description:
-    "Wiadomość informacyjna o bocie; Opis dla wybranej komendy (podaj nazwę lub alias)",
+    "Wiadomość informacyjna o bocie; Opis działania wybranej komendy (podaj nazwę lub alias)",
 
   async run(client, prefix, msg, args) {
     // with arguments

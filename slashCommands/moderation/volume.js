@@ -5,7 +5,7 @@ import discord from "discord.js";
 
 export default {
   name: "volume",
-  description: "Zmienianie głośności bota",
+  description: "Zmienianie głośności bota na kanale głosowym (domyślnie: 100%)",
   permissions: [discord.PermissionsBitField.Flags.Administrator],
 
   options: [

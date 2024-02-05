@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 export default {
   name: "addend",
   aliases: ["ade", "ae"],
-  description: "Dodanie obecnie granego utworu jeszcze raz, na koniec kolejki",
+  description: "Dodanie obecnie granego utworu na koniec kolejki",
 
   async run(client, prefix, msg, args) {
     // define

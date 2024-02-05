@@ -9,7 +9,7 @@ export default {
   name: "forceplay",
   aliases: ["fp"],
   description:
-    "Wymuszenie puszczenia podanego utworu (podaj tytuł utworu lub wklej dowolny link)",
+    "Wymuszenie odtworzenia podanego utworu (podaj tytuł utworu lub wklej dowolny link)",
   permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
   async run(client, prefix, msg, args) {

@@ -6,7 +6,7 @@ import discord from "discord.js";
 export default {
   name: "forceplay",
   description:
-    "Wymuszenie puszczenia podanego utworu (podaj tytuł utworu lub wklej dowolny link)",
+    "Wymuszenie odtworzenia podanego utworu (podaj tytuł utworu lub wklej dowolny link)",
   permissions: [discord.PermissionsBitField.Flags.ManageMessages],
 
   options: [

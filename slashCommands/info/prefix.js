@@ -8,7 +8,7 @@ import db from "../../functions/database.js";
 // command module
 export default {
   name: "prefix",
-  description: "Pokazuje prefix bota",
+  description: "Sprawdzenie prefixu bota",
 
   async run(client, msgInt) {
     // define

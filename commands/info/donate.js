@@ -8,7 +8,7 @@ import autoDelete from "../../functions/autoDelete.js";
 export default {
   name: "donate",
   aliases: ["dn", "dt"],
-  description: "Link do wsparcia twórcy",
+  description: "Link do przekazania wsparcia dla twórcy",
 
   async run(client, prefix, msg, args) {
     msg.react("✅"), autoDelete(msg, 20);
@@ -19,7 +19,7 @@ export default {
         embeds: [
           new discord.EmbedBuilder()
             .setColor(process.env.COLOR2)
-            .setTitle("🪙 | Wspomóż twórcę i doceń jego pracę!")
+            .setTitle("🪙 | Przekaż symboliczną kwotę dla twórcy!")
             .setURL(process.env.DONATE)
             .setFooter({
               text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,

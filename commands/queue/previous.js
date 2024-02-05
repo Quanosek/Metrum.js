@@ -9,8 +9,8 @@ let previousVotes = []; // votes
 
 export default {
   name: "previous",
-  aliases: ["prv", "pr"],
-  description: "Odtworzenie poprzednio granego utworu z kolejki (głosowanie)",
+  aliases: ["prev", "pr"],
+  description: "Powrót do poprzednio granego utworu (głosowanie)",
 
   async run(client, prefix, msg, args) {
     // define

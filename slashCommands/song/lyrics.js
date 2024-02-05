@@ -6,7 +6,7 @@ import discord from "discord.js";
 export default {
   name: "lyrics",
   description:
-    "Wyświetlenie tekstu dla obecnie odtwarzanego, lub podanego utworu",
+    "Wyświetlenie tekstu dla obecnie odtwarzanego lub podanego utworu",
 
   options: [
     {
