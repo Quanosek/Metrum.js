@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import { ErrorLog, ErrorEmbed } from "../functions/errorHandler.js";
@@ -21,7 +18,7 @@ export default {
       return msgInt.reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(client.config.color.error)
             .setDescription(
               "🛑 | Bot **Nie posiada uprawnień** do tworzenia wiadomości na tym kanale!"
             ),
@@ -49,7 +46,7 @@ export default {
         return msgInt.reply({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
+              .setColor(client.config.color.error)
               .setDescription(
                 "🛑 | **Nie masz uprawnień** do użycia tej komendy!"
               ),

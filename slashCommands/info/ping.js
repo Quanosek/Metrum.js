@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 export default {
@@ -13,7 +10,7 @@ export default {
       .reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR1)
+            .setColor(client.config.color.primary)
             .setDescription("🏓 | Pong!"),
         ],
         ephemeral: true,
@@ -24,7 +21,7 @@ export default {
         msgInt.editReply({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR2)
+              .setColor(client.config.color.secondary)
               .setTitle("🏓 | Pong!")
               .setDescription(
                 `
@@ -33,7 +30,7 @@ Opóźnienie API: \`${client.ws.ping} ms\`
                 `
               )
               .setFooter({
-                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+                text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
               }),
           ],
         });

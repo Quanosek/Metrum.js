@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -25,7 +22,7 @@ export default {
           .send({
             embeds: [
               new discord.EmbedBuilder()
-                .setColor(process.env.COLOR_ERR)
+                .setColor(client.config.color.error)
                 .setDescription(
                   "Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!"
                 ),
@@ -49,7 +46,7 @@ export default {
         .send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
+              .setColor(client.config.color.error)
               .setDescription("**Nie znaleziono** tekstu dla tego utworu!"),
           ],
         })
@@ -92,7 +89,7 @@ export default {
 
       //* dnia 30.07.2022 Krzysztof Olszewski zwrócił uwagę na nierozważne umiejscowienie "return", co psuło pętlę "for"
       const embed = new discord.EmbedBuilder()
-        .setColor(process.env.COLOR1)
+        .setColor(client.config.color.primary)
         .setDescription(chunks[i]);
 
       if (isFirst) {

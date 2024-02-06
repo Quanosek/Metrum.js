@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -32,7 +29,7 @@ export default {
         return msgInt.reply({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
+              .setColor(client.config.color.error)
               .setDescription("**Nie znaleziono** podanej komendy!"),
           ],
           ephemeral: true,
@@ -44,11 +41,11 @@ export default {
         .reply({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR2)
+              .setColor(client.config.color.secondary)
               .setTitle(`❓ | Opis komendy \`${cmd.name}\`:`)
               .setDescription(cmd.description)
               .setFooter({
-                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+                text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
               }),
           ],
         })
@@ -59,9 +56,9 @@ export default {
 
     // create embed
     const embed = new discord.EmbedBuilder()
-      .setColor(process.env.COLOR2)
+      .setColor(client.config.color.secondary)
       .setThumbnail("attachment://metrum.png")
-      .setTitle(`😄 | Hej, jestem ${process.env.NAME}!`)
+      .setTitle(`😄 | Hej, jestem ${client.config.bot.name}!`)
       .setDescription(
         `
 Zaawansowany, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **800+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
@@ -70,7 +67,7 @@ Jeśli chcesz się dowiedzieć o działaniu danej komendy wystarczy, że wpiszes
         `
       )
       .setFooter({
-        text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+        text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
       });
 
     // define buttons
@@ -78,25 +75,25 @@ Jeśli chcesz się dowiedzieć o działaniu danej komendy wystarczy, że wpiszes
       .addComponents(
         new discord.ButtonBuilder()
           .setStyle(5) // Link
-          .setURL(process.env.WEBSITE)
+          .setURL(client.config.website.link)
           .setLabel("Wbijaj na stronę!")
       )
       .addComponents(
         new discord.ButtonBuilder()
           .setStyle(5) // Link
-          .setURL(process.env.INVITE)
+          .setURL(client.config.bot.invite)
           .setLabel("Zaproś mnie na serwer!")
       )
       .addComponents(
         new discord.ButtonBuilder()
           .setStyle(5) // Link
-          .setURL(process.env.OPINION)
+          .setURL(client.config.website.opinion)
           .setLabel("Zostaw opinię!")
       )
       .addComponents(
         new discord.ButtonBuilder()
           .setStyle(5) // Link
-          .setURL(process.env.DONATE)
+          .setURL(client.config.website.donate)
           .setLabel("Wesprzyj twórcę!")
       );
 
@@ -107,7 +104,7 @@ Jeśli chcesz się dowiedzieć o działaniu danej komendy wystarczy, że wpiszes
         components: [buttons],
         files: [
           {
-            attachment: `images/${process.env.NAME}.png`,
+            attachment: `images/${client.config.bot.name}.png`,
             name: "metrum.png",
           },
         ],

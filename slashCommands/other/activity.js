@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 export default {
@@ -56,7 +53,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!chosenChannel) {
@@ -114,7 +111,7 @@ export default {
       return msgInt.reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(client.config.color.error)
             .setDescription(
               `**Poziom ulepszenia serwera jest niewystarczający** dla tej aktywności!`
             ),
@@ -133,7 +130,7 @@ export default {
         return msgInt.reply({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR1)
+              .setColor(client.config.color.primary)
               .setDescription(
                 `[🪁 | **Dołącz** do aktywności "**${activity}**" na kanale **${chosenChannel.name}**!](${invite.code})`
               ),

@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 export default {
@@ -14,7 +11,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -29,7 +26,7 @@ export default {
 
     // create message embed
     const embed = new discord.EmbedBuilder()
-      .setColor(process.env.COLOR1)
+      .setColor(client.config.color.primary)
       .setTitle("💿 | Kolejka utworów:")
       .setDescription(
         queue.songs
@@ -49,7 +46,7 @@ export default {
       });
     } else {
       embed.setFooter({
-        text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+        text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
       });
     }
 

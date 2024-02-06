@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 export default {
@@ -31,7 +28,7 @@ export default {
           return msgInt.reply({
             embeds: [
               new discord.EmbedBuilder()
-                .setColor(process.env.COLOR_ERR)
+                .setColor(client.config.color.error)
                 .setDescription(
                   "Obecnie **nie jest odtwarzamy żaden utwór**, ani **nie został podany żaden tytuł**!"
                 ),
@@ -60,7 +57,7 @@ export default {
 
       // create message embed
       const embed = new discord.EmbedBuilder()
-        .setColor(process.env.COLOR2)
+        .setColor(client.config.color.secondary)
         .setTitle(`🔎 | Wyniki wyszukiwania dla: \`${title}\``)
         .setDescription(searchResult)
         .setFooter({
@@ -85,7 +82,7 @@ export default {
       return msgInt.reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(client.config.color.error)
             .setDescription("**Brak wyników** wyszukiwania!"),
         ],
         ephemeral: true,

@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -20,7 +17,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -58,7 +55,7 @@ export default {
         .send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
+              .setColor(client.config.color.error)
               .setDescription("🗳️ | Twój głos został już zapisany!"),
           ],
         })
@@ -83,7 +80,7 @@ export default {
       msg.channel.send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR2)
+            .setColor(client.config.color.secondary)
             .setDescription(
               `🗳️ | Głosujesz za **wymieszaniem kolejki utworów** (**${shuffleVotes.length}**/${required} ${votes}).`
             ),
@@ -111,7 +108,7 @@ export default {
       msg.channel.send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR1)
+            .setColor(client.config.color.primary)
             .setDescription(
               `🔀 | Wymieszano kolejkę zawierającą **${queue.songs.length}** ${songs}.`
             ),

@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -16,7 +13,7 @@ export default {
 
     // create embed
     const embed = new discord.EmbedBuilder()
-      .setColor(process.env.COLOR2)
+      .setColor(client.config.color.secondary)
       .setTitle("**🔧 | Lista serwerów, na których jestem:**");
 
     let number = 1;

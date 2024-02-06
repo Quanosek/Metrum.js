@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -18,11 +15,11 @@ export default {
       .send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR2)
+            .setColor(client.config.color.secondary)
             .setTitle("📧 | Zaproś mnie na swój serwer!")
-            .setURL(process.env.INVITE)
+            .setURL(client.config.bot.invite)
             .setFooter({
-              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+              text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
             }),
         ],
       })

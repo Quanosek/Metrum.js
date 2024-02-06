@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../functions/autoDelete.js";
@@ -23,7 +20,7 @@ export default {
     // database params
     let guildDB = db.read(msg.guild.id);
     if (!guildDB) {
-      guildDB = db.create(msg.guild.id, { prefix: process.env.PREFIX });
+      guildDB = db.create(msg.guild.id, { prefix: client.config.bot.prefix });
     }
 
     const prefix = guildDB.prefix;
@@ -37,7 +34,7 @@ export default {
         .reply({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR1)
+              .setColor(client.config.color.primary)
               .setTitle("😄 | Hej, to ja!")
               .setDescription(
                 `
@@ -48,7 +45,7 @@ Użyj komendy \`help\` po więcej informacji!
                 `
               )
               .setFooter({
-                text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+                text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
               }),
           ],
         })
@@ -80,7 +77,7 @@ Użyj komendy \`help\` po więcej informacji!
 
     // error message
     if (!cmd) return;
-    if (cmd.devOnly && msg.member.user.id !== process.env.AUTHOR_ID) return;
+    if (cmd.devOnly && msg.member.user.id !== client.config.AUTHOR_ID) return;
     else if (cmd.permissions) {
       if (!msg.member.permissions.has(cmd.permissions)) {
         autoDelete(msg);
@@ -89,7 +86,7 @@ Użyj komendy \`help\` po więcej informacji!
           .send({
             embeds: [
               new discord.EmbedBuilder()
-                .setColor(process.env.COLOR_ERR)
+                .setColor(client.config.color.error)
                 .setDescription(
                   "🛑 | **Nie masz uprawnień** do użycia tej komendy!"
                 ),

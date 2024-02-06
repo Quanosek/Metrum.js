@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -21,7 +18,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -48,7 +45,7 @@ export default {
 
       // create message embed
       const embed = new discord.EmbedBuilder()
-        .setColor(process.env.COLOR2)
+        .setColor(client.config.color.secondary)
         .setTitle(`⚙️ | Ustawiona głośność: \`${queue.volume * 2}%\``)
         .setDescription(
           "Możesz ustawić poziom głośności bota w danej sesji. Podaj wartość (w procentach) w przedziale 1-200."
@@ -87,7 +84,7 @@ export default {
         .send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
+              .setColor(client.config.color.error)
               .setDescription(
                 `🔈 | Podano **niepoprawną wartość** *(w procentach)* poziomu głośności (\`1-200\`)!`
               ),
@@ -105,7 +102,7 @@ export default {
     msg.channel.send({
       embeds: [
         new discord.EmbedBuilder()
-          .setColor(process.env.COLOR1)
+          .setColor(client.config.color.primary)
           .setDescription(
             `🔈 | Ustawiono **poziom głośności bota** na: \`${value * 2}%\``
           ),

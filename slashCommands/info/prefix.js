@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import db from "../../functions/database.js";
@@ -18,10 +15,10 @@ export default {
     msgInt.reply({
       embeds: [
         new discord.EmbedBuilder()
-          .setColor(process.env.COLOR1)
+          .setColor(client.config.color.primary)
           .setDescription(`⚙️ | Mój prefix to: \`${prefix}\``)
           .setFooter({
-            text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+            text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
           }),
       ],
       ephemeral: true,

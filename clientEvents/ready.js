@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import { getVoiceConnection } from "@discordjs/voice";
 
 import ms from "ms";
@@ -37,7 +34,7 @@ export default {
         });
     }, ms("10m")); // delay
 
-    const devGuild = client.guilds.cache.get(process.env.GUILD_ID);
+    const devGuild = client.guilds.cache.get(client.config.dev_guild_id);
 
     // register slash commands
     try {

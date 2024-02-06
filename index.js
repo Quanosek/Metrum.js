@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 import fs from "fs";
 import colors from "colors";
@@ -9,12 +6,14 @@ import autoDelete from "./functions/autoDelete.js";
 import { ErrorLog, ErrorEmbed } from "./functions/errorHandler.js";
 import realDate from "./functions/realDate.js";
 
+const config = JSON.parse(fs.readFileSync("./.secret/config.json"));
+
 // bot starts-up
 console.clear();
 console.log(
   realDate() +
     " " +
-    `Bot "${colors.brightYellow(process.env.NAME)}" is starting up...`
+    `Bot "${colors.brightYellow(config.bot.name)}" is starting up...`
 );
 
 // define Client
@@ -29,6 +28,8 @@ const client = new discord.Client({
   shards: "auto",
   restTimeOffset: 0,
 });
+
+client.config = config;
 
 // handleInit
 fs.readdirSync(`./handlers`).map((file) => {
@@ -94,7 +95,7 @@ client.distube
     return queue.textChannel.send({
       embeds: [
         new discord.EmbedBuilder()
-          .setColor(process.env.COLOR1)
+          .setColor(config.color.primary)
           .setThumbnail(playlist.thumbnail)
           .setTitle(`➕ | Dodano do kolejki playlistę:`)
           .setDescription(`[${playlist.name}](${playlist.url})\n${tracks}`)
@@ -109,7 +110,7 @@ client.distube
     if (queue.songs.length < 2) return;
 
     const embed = new discord.EmbedBuilder()
-      .setColor(process.env.COLOR2)
+      .setColor(config.color.secondary)
       .setThumbnail(song.thumbnail);
 
     if (queue.added) {
@@ -143,7 +144,7 @@ client.distube
     return queue.textChannel.send({
       embeds: [
         new discord.EmbedBuilder()
-          .setColor(process.env.COLOR2)
+          .setColor(config.color.secondary)
           .setThumbnail(`${song.thumbnail}`)
           .setTitle("🎶 | Teraz odtwarzane:")
           .setDescription(
@@ -162,7 +163,7 @@ client.distube
       .send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(config.color.error)
             .setDescription("Nie znaleziono podobnych utworów."),
         ],
       })
@@ -174,7 +175,7 @@ client.distube
       .send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR_ERR)
+            .setColor(config.color.error)
             .setDescription(`**Brak wyników wyszukiwania** dla: \`${query}\``),
         ],
       })
@@ -182,4 +183,4 @@ client.distube
   });
 
 // token
-client.login(process.env.TOKEN);
+client.login(config.bot.token);

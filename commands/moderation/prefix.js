@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -19,7 +16,7 @@ export default {
 
       // errors
       const errorEmbed = new discord.EmbedBuilder().setColor(
-        process.env.COLOR_ERR
+        client.config.color.error
       );
 
       if (!newPrefix) {
@@ -50,7 +47,7 @@ export default {
         .send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR1)
+              .setColor(client.config.color.primary)
               .setDescription(`⚙️ | Ustawiono nowy prefix: \`${newPrefix}\``),
           ],
         })
@@ -61,16 +58,16 @@ export default {
     if (args[0] === "reset" || args[0] === "r") {
       msg.react("✅"), autoDelete(msg, 15);
 
-      db.set.prefix(msg.guild.id, process.env.PREFIX); // change prefix
+      db.set.prefix(msg.guild.id, client.config.bot.prefix); // change prefix
 
       // print message embed
       return msg.channel
         .send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR1)
+              .setColor(client.config.color.primary)
               .setDescription(
-                `⚙️ | Przywrócono domyślny prefix: \`${process.env.PREFIX}\``
+                `⚙️ | Przywrócono domyślny prefix: \`${client.config.bot.prefix}\``
               ),
           ],
         })
@@ -85,22 +82,22 @@ export default {
       .send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR2)
+            .setColor(client.config.color.secondary)
             .setTitle("⚙️ | Menu zmiany prefixu")
             .setDescription(
               `
-Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia prefixu zawsze można wspomnieć bota, tzn. wpisać @${process.env.NAME}.
+Komenda pozwala na zmianę prefixu tylko dla tego serwera, w razie zapomnienia prefixu zawsze można wspomnieć bota, tzn. wpisać @${client.config.bot.name}.
 
 ** ● Komendy:**
 \`${prefix}prefix set <prefix>\` - ustawia nowy prefix
-\`${prefix}prefix reset\` - przywraca domyślny prefix (\`${process.env.PREFIX}\`)
+\`${prefix}prefix reset\` - przywraca domyślny prefix (\`${client.config.bot.prefix}\`)
 
 ** ● Informacje dodatkowe:**
 Wszystkie komendy obsługują również skróty np. zamiast pisać \`${prefix}prefix\`, równie dobrze możesz wpisać: \`${prefix}px\` itp..
               `
             )
             .setFooter({
-              text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+              text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
             }),
         ],
       })

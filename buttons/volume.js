@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 export default {
@@ -17,7 +14,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -46,7 +43,7 @@ export default {
         return interaction.reply({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
+              .setColor(client.config.color.error)
               .setDescription(
                 "🔈 | Głośność bota **jest już ustawiona** na `100%`"
               ),
@@ -62,7 +59,7 @@ export default {
     interaction.reply({
       embeds: [
         new discord.EmbedBuilder()
-          .setColor(process.env.COLOR1)
+          .setColor(client.config.color.primary)
           .setDescription(
             `🔈 | ${interaction.user} zmienił **poziom głośności bota** na: \`${
               value * 2

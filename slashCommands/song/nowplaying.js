@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 export default {
@@ -16,7 +13,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -31,7 +28,7 @@ export default {
 
     // create message embed
     const embed = new discord.EmbedBuilder()
-      .setColor(process.env.COLOR2)
+      .setColor(client.config.color.secondary)
       .setTitle("🎵 | Teraz odtwarzane:")
       .setThumbnail(song.thumbnail);
 

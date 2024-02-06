@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -18,7 +15,7 @@ export default {
       .send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR1)
+            .setColor(client.config.color.primary)
             .setDescription("🏓 | Pong!"),
         ],
       })
@@ -28,7 +25,7 @@ export default {
           .edit({
             embeds: [
               new discord.EmbedBuilder()
-                .setColor(process.env.COLOR2)
+                .setColor(client.config.color.secondary)
                 .setTitle("🏓 | Pong!")
                 .setDescription(
                   `
@@ -37,7 +34,7 @@ Opóźnienie API: \`${client.ws.ping} ms\`
                   `
                 )
                 .setFooter({
-                  text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+                  text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
                 }),
             ],
           })

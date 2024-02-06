@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -39,7 +36,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -68,14 +65,14 @@ export default {
 
       // create message embed
       const embed = new discord.EmbedBuilder()
-        .setColor(process.env.COLOR2)
+        .setColor(client.config.color.secondary)
         .setTitle("⚙️ | Menu filtrów:")
         .setDescription(
           "Możesz ustawić filtr na odtwarzane utwory w danej sesji."
         )
         .addFields({ name: "Dostępne tryby:", value: `\`${modeText}\`` })
         .setFooter({
-          text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+          text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
         });
 
       if (queue.filters.size !== 0) {
@@ -104,7 +101,7 @@ export default {
         return msg.channel.send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR1)
+              .setColor(client.config.color.primary)
               .setDescription("🪄 | **Wyłączono** wszystkie filtry."),
           ],
         });
@@ -121,7 +118,7 @@ export default {
         return msg.channel.send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR1)
+              .setColor(client.config.color.primary)
               .setDescription("🪄 | Żaden filtr **nie jest aktywny**."),
           ],
         });
@@ -131,7 +128,7 @@ export default {
       return msg.channel.send({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR1)
+            .setColor(client.config.color.primary)
             .setDescription(
               `🪄 | **Włączone filtry**: \`${queue.filters.names.join(
                 "`, `"
@@ -147,7 +144,7 @@ export default {
         .send({
           embeds: [
             new discord.EmbedBuilder()
-              .setColor(process.env.COLOR_ERR)
+              .setColor(client.config.color.error)
               .setDescription("🪄 | Podano **nieprawidłową nazwę** filtru!"),
           ],
         })

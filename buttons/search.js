@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import { ErrorLog } from "../functions/errorHandler.js";
@@ -21,7 +18,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!uservoice) {
@@ -77,7 +74,7 @@ export default {
     interaction.reply({
       embeds: [
         new discord.EmbedBuilder()
-          .setColor(process.env.COLOR1)
+          .setColor(client.config.color.primary)
           .setDescription(
             `
 **🎵 | ${interaction.user} wybrał(a) utwór:**
@@ -88,7 +85,7 @@ export default {
                 `
           )
           .setFooter({
-            text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+            text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
           }),
       ],
     });

@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 export default {
@@ -29,7 +26,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -59,7 +56,7 @@ export default {
       return msgInt.reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR1)
+            .setColor(client.config.color.primary)
             .setDescription(
               "🗑️ | Usunięto **obecnie odtwarzany** utwór z kolejki."
             ),
@@ -74,7 +71,7 @@ export default {
       return msgInt.reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR2)
+            .setColor(client.config.color.secondary)
             .setTitle("🗑️ | Usunięto z kolejki utworów pozycję:")
             .setDescription(
               `**${number}.** [${song.name}](${song.url}) - \`${song.formattedDuration}\``

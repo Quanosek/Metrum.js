@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
@@ -45,7 +42,7 @@ export default {
 
     // errors
     const errorEmbed = new discord.EmbedBuilder().setColor(
-      process.env.COLOR_ERR
+      client.config.color.error
     );
 
     if (!botvoice) {
@@ -66,13 +63,13 @@ export default {
     if (!choice) {
       // create message embed
       const embed = new discord.EmbedBuilder()
-        .setColor(process.env.COLOR2)
+        .setColor(client.config.color.secondary)
         .setTitle("⚙️ | Menu filtrów:")
         .setDescription(
           "Możesz ustawić wybrane filtry z listy na odtwarzane utwory w danej sesji."
         )
         .setFooter({
-          text: `Autor bota: ${process.env.AUTHOR_NAME} (${process.env.AUTHOR_NICK})`,
+          text: `Autor bota: ${client.config.author.name} (${client.config.author.nick})`,
         });
 
       if (queue.filters.size !== 0) {
@@ -95,7 +92,7 @@ export default {
       return msgInt.reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR1)
+            .setColor(client.config.color.primary)
             .setDescription("🪄 | **Wyłączono** wszystkie filtry."),
         ],
       });
@@ -112,7 +109,7 @@ export default {
       return msgInt.reply({
         embeds: [
           new discord.EmbedBuilder()
-            .setColor(process.env.COLOR1)
+            .setColor(client.config.color.primary)
             .setDescription("🪄 | Żaden filtr **nie jest aktywny**."),
         ],
       });
@@ -122,7 +119,7 @@ export default {
     return msgInt.reply({
       embeds: [
         new discord.EmbedBuilder()
-          .setColor(process.env.COLOR1)
+          .setColor(client.config.color.primary)
           .setDescription(
             "🪄 | **Włączone filtry**: " +
               `\`${queue.filters.names.join("`, `")}\``
