@@ -64,10 +64,12 @@ export default {
       await Execute();
     } catch (err) {
       try {
-        return msgInt.editReply({
-          content: "",
-          embeds: [ErrorEmbed(err)],
-        });
+        return msgInt.channel
+          .send({
+            content: "",
+            embeds: [ErrorEmbed(err)],
+          })
+          .then((msg) => autoDelete(msg, "1m"));
       } catch (err) {
         return ErrorLog(`${element.name} interactionCreate`, err);
       }

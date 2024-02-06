@@ -4,7 +4,7 @@ dotenv.config();
 import fs from "fs";
 
 // database local path
-const JSONpath = `./.files/database.json`;
+const JSONpath = `./.secret/database.json`;
 
 // open json file
 const JSONopen = () => {

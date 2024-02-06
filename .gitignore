@@ -1,6 +1,6 @@
-.files/database.json
-.vscode/
 node_modules/
+
+.secret/
 .env
 
 start.sh

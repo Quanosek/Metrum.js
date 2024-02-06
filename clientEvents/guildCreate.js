@@ -48,7 +48,7 @@ export default {
               .setTitle("😄 | Cieszę się, że tu jestem!")
               .setDescription(
                 `
-Dziękuję za dodanie mnie na ten serwer! Jestem ${process.env.NAME}, czyli zaawansowany, polski bot muzyczny z serii Metrum, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify** i **SoundCloud**, oraz **800+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
+Dziękuję za dodanie mnie na ten serwer! Jestem ${process.env.NAME}, czyli w pełni darmowy, polski bot muzyczny, oferujący odtwarzanie po hasłach lub bezpośrednio linków z **YouTube**, **Spotify**, **Deezer**, **SoundCloud**, oraz **800+ innych platform**, w najlepszej jakości, z możliwością szukania, tworzenia kolejek, odtwarzania transmisji na żywo czy całych playlist, auto-odtwarzania, zapętlania i dużo więcej!
 
 Obsługuję zarówno komendy po ukośniku, jak i prefixie. Moim domyślnym prefixem jest: \`${process.env.PREFIX}\`
 
@@ -61,7 +61,7 @@ Aby dowiedzieć się więcej, użyj komendy \`help\` lub odwiedź moją [stronę
           ],
           files: [
             {
-              attachment: `.files/logo/${process.env.NAME}.png`,
+              attachment: `images/${process.env.NAME}.png`,
               name: "metrum.png",
             },
           ],

@@ -107,7 +107,7 @@ Jeśli chcesz się dowiedzieć o działaniu danej komendy wystarczy, że wpiszes
         components: [buttons],
         files: [
           {
-            attachment: `.files/logo/${process.env.NAME}.png`,
+            attachment: `images/${process.env.NAME}.png`,
             name: "metrum.png",
           },
         ],

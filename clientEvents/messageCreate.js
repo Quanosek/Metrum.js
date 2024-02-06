@@ -104,9 +104,11 @@ Użyj komendy \`help\` po więcej informacji!
       await cmd.run(client, prefix, msg, args);
     } catch (err) {
       try {
-        return msg.channel.send({
-          embeds: [ErrorEmbed(err)],
-        });
+        return msg.channel
+          .send({
+            embeds: [ErrorEmbed(err)],
+          })
+          .then((msg) => autoDelete(msg, "1m"));
       } catch (err) {
         return ErrorLog(`${cmd.name} messageCreate`, err);
       }

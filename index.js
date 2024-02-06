@@ -71,10 +71,9 @@ client.distube = new DisTube(client, {
   emitNewSongOnly: true,
   leaveOnStop: false,
   searchSongs: 10,
+  youtubeCookie: [fs.readFileSync(".secret/cookies.json")],
   nsfw: true,
-});
-
-client.distube.setMaxListeners(Infinity);
+}).setMaxListeners(Infinity);
 
 // handle Distube default events
 client.distube
