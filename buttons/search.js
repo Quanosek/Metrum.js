@@ -92,9 +92,9 @@ export default {
 
     // execute command
     return client.distube.play(uservoice, result[songId - 1].url, {
-      interaction,
-      textChannel: interaction.channel,
       member: interaction.member,
+      textChannel: interaction.channel,
+      interaction,
     });
   },
 };

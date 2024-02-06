@@ -80,10 +80,10 @@ export default {
     // execute command
     if (queue) queue.added = true;
     return client.distube.play(uservoice, song, {
-      msg,
-      textChannel: msg.channel,
       member: msg.member,
+      textChannel: msg.channel,
       position: 1,
+      message: msg,
     });
   },
 };

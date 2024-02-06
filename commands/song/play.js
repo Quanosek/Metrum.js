@@ -77,9 +77,9 @@ export default {
 
     // execute command
     return client.distube.play(uservoice, song, {
-      msg,
-      textChannel: msg.channel,
       member: msg.member,
+      textChannel: msg.channel,
+      message: msg,
     });
   },
 };

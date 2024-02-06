@@ -8,7 +8,7 @@ import realDate from "./functions/realDate.js";
 
 const config = JSON.parse(fs.readFileSync("./.secret/config.json"));
 
-// bot starts-up
+// boot log
 console.clear();
 console.log(
   realDate() +
@@ -31,12 +31,11 @@ const client = new discord.Client({
 
 client.config = config;
 
-// handleInit
+// run handlers
 fs.readdirSync(`./handlers`).map((file) => {
   import(`./handlers/${file}`).then((result) => {
     const handler = result.default;
 
-    // run handlers
     try {
       return handler(client);
     } catch (err) {
@@ -45,15 +44,15 @@ fs.readdirSync(`./handlers`).map((file) => {
   });
 });
 
-// define DiscordTogether
+// https://www.npmjs.com/package/discord-together
 import { DiscordTogether } from "discord-together";
 client.discordTogether = new DiscordTogether(client);
 
-// define Genius
+// https://genius-lyrics.js.org/
 import Genius from "genius-lyrics";
 client.Genius = new Genius.Client();
 
-// define Distube
+// https://distube.js.org/#/docs/DisTube/main/typedef/DisTubeOptions
 import { DisTube } from "distube";
 import { YtDlpPlugin } from "@distube/yt-dlp";
 
@@ -63,7 +62,7 @@ import { SoundCloudPlugin } from "@distube/soundcloud";
 
 client.distube = new DisTube(client, {
   plugins: [
-    new YtDlpPlugin({ update: true }),
+    new YtDlpPlugin({ update: false }),
 
     new DeezerPlugin(),
     new SpotifyPlugin(),
@@ -71,23 +70,12 @@ client.distube = new DisTube(client, {
   ],
   emitNewSongOnly: true,
   leaveOnStop: false,
-  searchSongs: 10,
   youtubeCookie: [fs.readFileSync(".secret/cookies.json")],
   nsfw: true,
 }).setMaxListeners(Infinity);
 
-// handle Distube default events
+// https://distube.js.org/#/docs/DisTube/main/class/DisTube
 client.distube
-  .on("error", (channel, err) => {
-    ErrorLog("Distube", err);
-
-    return channel
-      .send({
-        embeds: [ErrorEmbed(err)],
-      })
-      .then((msg) => autoDelete(msg));
-  })
-
   .on("addList", (queue, playlist) => {
     let tracks = `\nliczba utworów: \`${playlist.songs.length}\`\n`;
     if (playlist.source === "spotify") tracks = "";
@@ -105,7 +93,6 @@ client.distube
       ],
     });
   })
-
   .on("addSong", (queue, song) => {
     if (queue.songs.length < 2) return;
 
@@ -136,12 +123,33 @@ client.distube
 
     return queue.textChannel.send({ embeds: [embed] });
   })
+  .on("error", (channel, err) => {
+    ErrorLog("Distube", err);
 
+    if (channel) {
+      channel
+        .send({
+          embeds: [ErrorEmbed(err)],
+        })
+        .then((msg) => autoDelete(msg));
+    } else console.log(err);
+  })
+  .on("noRelated", (queue) => {
+    queue.textChannel
+      .send({
+        embeds: [
+          new discord.EmbedBuilder()
+            .setColor(config.color.error)
+            .setDescription("Nie znaleziono podobnych utworów."),
+        ],
+      })
+      .then((msg) => autoDelete(msg));
+  })
   .on("playSong", (queue, song) => {
     client.distube.setSelfDeaf;
     const requester = song.member.user;
 
-    return queue.textChannel.send({
+    queue.textChannel.send({
       embeds: [
         new discord.EmbedBuilder()
           .setColor(config.color.secondary)
@@ -157,21 +165,8 @@ client.distube
       ],
     });
   })
-
-  .on("noRelated", (queue) => {
-    return queue.textChannel
-      .send({
-        embeds: [
-          new discord.EmbedBuilder()
-            .setColor(config.color.error)
-            .setDescription("Nie znaleziono podobnych utworów."),
-        ],
-      })
-      .then((msg) => autoDelete(msg));
-  })
-
   .on("searchNoResult", (msg, query) => {
-    return msg.channel
+    msg.channel
       .send({
         embeds: [
           new discord.EmbedBuilder()

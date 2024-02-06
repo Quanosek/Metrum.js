@@ -61,12 +61,10 @@ export default {
       await Execute();
     } catch (err) {
       try {
-        return msgInt.channel
-          .send({
-            content: "",
-            embeds: [ErrorEmbed(err)],
-          })
-          .then((msg) => autoDelete(msg, "1m"));
+        return msgInt.channel.send({
+          content: "",
+          embeds: [ErrorEmbed(err)],
+        });
       } catch (err) {
         return ErrorLog(`${element.name} interactionCreate`, err);
       }

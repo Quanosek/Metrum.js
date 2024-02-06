@@ -75,10 +75,10 @@ export default {
 
     // execute command
     return client.distube.play(uservoice, song, {
-      msgInt,
-      textChannel: msgInt.channel,
       member: msgInt.member,
+      textChannel: msgInt.channel,
       skip: true,
+      message: msgInt,
     });
   },
 };
