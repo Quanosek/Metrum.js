@@ -78,7 +78,7 @@ export default {
       member: msgInt.member,
       textChannel: msgInt.channel,
       skip: true,
-      message: msgInt,
+      msgInt,
     });
   },
 };

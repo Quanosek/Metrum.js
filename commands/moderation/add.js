@@ -83,7 +83,7 @@ export default {
       member: msg.member,
       textChannel: msg.channel,
       position: 1,
-      message: msg,
+      msg,
     });
   },
 };

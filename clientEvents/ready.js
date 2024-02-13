@@ -11,11 +11,11 @@ export default {
   once: true,
 
   async run(client) {
-    const Developer = process.argv[2] !== undefined; // npm run dev (--local)
+    const devMode = process.argv[2] !== undefined; // npm run dev (--local)
 
     console.log(realDate() + " " + colors.brightYellow("Bot is ready to use!"));
 
-    if (Developer) {
+    if (devMode) {
       client.user.setActivity("Aktualizacje w drodze...", { type: 3 });
       client.user.setStatus("idle");
     } else {
@@ -38,16 +38,18 @@ export default {
 
     // register slash commands
     try {
-      console.log(realDate() + " " + "Started refreshing slash commands...");
+      console.log(
+        realDate() + " " + "Started refreshing application slash commands..."
+      );
 
-      if (Developer) {
+      if (devMode) {
         await client.application.commands.set([]); // clear global commands
         await devGuild.commands.set(client.slashCommands); // register all locally
 
         console.log(
           realDate() +
             " " +
-            `Registered all slash commands ${colors.brightYellow.underline(
+            `Successfully reloaded application slash commands ${colors.brightYellow.underline(
               "locally"
             )}.`
         );
@@ -58,7 +60,7 @@ export default {
         console.log(
           realDate() +
             " " +
-            `Registered all slash commands ${colors.brightYellow.underline(
+            `Successfully reloaded application slash commands ${colors.brightYellow.underline(
               "globally"
             )}.`
         );
@@ -66,7 +68,7 @@ export default {
 
       return;
     } catch (err) {
-      return ErrorLog("handleSlashCommands", err);
+      return ErrorLog("onReadyRegister", err);
     }
   },
 };

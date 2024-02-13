@@ -2,7 +2,6 @@ import discord from "discord.js";
 
 import db from "../../functions/database.js";
 
-// command module
 export default {
   name: "prefix",
   description: "Sprawdzenie prefixu bota",

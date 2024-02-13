@@ -74,7 +74,7 @@ export default {
     return client.distube.play(uservoice, song, {
       member: msgInt.member,
       textChannel: msgInt.channel,
-      message: msgInt,
+      msgInt,
     });
   },
 };

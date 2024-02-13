@@ -79,7 +79,7 @@ export default {
       member: msgInt.member,
       textChannel: msgInt.channel,
       position: 1,
-      message: msgInt,
+      msgInt,
     });
   },
 };

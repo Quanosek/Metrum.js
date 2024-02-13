@@ -11,31 +11,13 @@ W pełni darmowy, polski bot muzyczny, oferujący odtwarzanie po hasłach lub be
   domyślnie pusta tablica, w której będą zapisywane dane dla konkretnych serwerów po ich ID
 
 - 🗝️ **config.json**:\
-  plik zawierające wszystkie domyślne ustawienia bota, takie jzgodnie ze schematem:
+  wszystkie domyślne ustawienia bota w wartościach `string`, zgodnie ze schematem:
   ```
   {
-    "bot": {
-      "name": <string>,
-      "prefix": <string>,
-      "id": <number>,
-      "token": <string>,
-      "invite": <string>
-    },
-    "color": {
-      "error": <string>,
-      "primary": <string>,
-      "secondary": <string>
-    },
-    "website": {
-      "link": <string>,
-      "donate": <string>,
-      "opinion": <string>
-    },
-    "author": {
-      "name": <string>,
-      "nick": <string>,
-      "id": <number>
-    },
-    "dev_guild_id": <number>
+    "bot": { name, prefix, id, token, invite },
+    "color": { error, primary, secondary },
+    "website": { link, donate, opinion },
+    "author": { name, nick id },
+    "dev_guild_id"
   }
   ```

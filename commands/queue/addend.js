@@ -44,7 +44,7 @@ export default {
     return client.distube.play(uservoice, song.url, {
       member: msg.member,
       textChannel: msg.channel,
-      message: msg,
+      msg,
     });
   },
 };

@@ -2,7 +2,6 @@ import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
 
-// command module
 export default {
   name: "volume",
   aliases: ["v"],

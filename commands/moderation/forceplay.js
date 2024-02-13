@@ -1,7 +1,7 @@
 import discord from "discord.js";
 
 import autoDelete from "../../functions/autoDelete.js";
-// command module
+
 export default {
   name: "forceplay",
   aliases: ["fp"],
@@ -82,7 +82,7 @@ export default {
       member: msg.member,
       textChannel: msg.channel,
       skip: true,
-      message: msg,
+      msg,
     });
   },
 };
