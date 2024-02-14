@@ -31,7 +31,10 @@ export default {
       errorEmbed.setDescription(
         "Musisz najpierw **dołączyć** na kanał głosowy!"
       );
-    } else if (uservoice.userLimit <= uservoice.members.size) {
+    } else if (
+      uservoice.userLimit !== 0 &&
+      uservoice.userLimit <= uservoice.members.size
+    ) {
       errorEmbed.setDescription(
         `Osiągnięto **limit użytkowników** (${uservoice.userLimit}) na kanale głosowym!`
       );
