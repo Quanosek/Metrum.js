@@ -24,7 +24,7 @@ export default (msg, delay) => {
     // https://discord.com/developers/docs/resources/channel#message-object-message-types
 
     try {
-      if (msg.type === 20) {
+      if ([2, 20].includes(msg.type)) {
         return msg.deleteReply().catch((err) => errorMessage(err));
       } else {
         return msg.delete().catch((err) => errorMessage(err));
